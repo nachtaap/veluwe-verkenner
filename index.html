@@ -1,62 +1,501 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="nl">
 <head>
-  <meta charset="utf-8">
-  <title>Veluwe Ontdekkingen – Rond De Wije Werelt</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomerse Facebook Omslagfoto</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+```
+    .template-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    
+    .facebook-cover {
+        width: 820px;
+        height: 312px;
+        background: radial-gradient(circle at 108px 228px, #FFD700 0%, #FFA500 30%, #87CEEB 70%, #98FB98 100%);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #e4e6ea;
+    }
+    
+    .sun-rays {
+        position: absolute;
+        left: 108px;
+        bottom: 84px;
+        width: 400px;
+        height: 400px;
+        transform: translate(-50%, 50%);
+        animation: rotate 20s linear infinite;
+    }
+    
+    .sun-ray {
+        position: absolute;
+        width: 4px;
+        height: 120px;
+        background: linear-gradient(to top, rgba(255,215,0,0.8), transparent);
+        border-radius: 2px;
+        transform-origin: 2px 0px;
+    }
+    
+    .profile-circle {
+        width: 168px;
+        height: 168px;
+        border: 6px solid #FFD700;
+        border-radius: 50%;
+        position: absolute;
+        left: 24px;
+        bottom: -84px;
+        background: radial-gradient(circle, #FFF8DC, #FFE4B5);
+        box-shadow: 0 0 30px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,255,255,0.3);
+        z-index: 10;
+    }
+    
+    .profile-circle::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
+        border-radius: 50%;
+    }
+    
+    .profile-circle::after {
+        content: '☀️';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 40px;
+        opacity: 0.3;
+    }
+    
+    .bee {
+        position: absolute;
+        font-size: 20px;
+        animation: fly 8s ease-in-out infinite;
+    }
+    
+    .bee1 {
+        top: 50px;
+        left: 200px;
+        animation-delay: 0s;
+    }
+    
+    .bee2 {
+        top: 80px;
+        right: 150px;
+        animation-delay: 2s;
+    }
+    
+    .bee3 {
+        top: 120px;
+        left: 400px;
+        animation-delay: 4s;
+    }
+    
+    .butterfly {
+        position: absolute;
+        font-size: 24px;
+        animation: flutter 6s ease-in-out infinite;
+    }
+    
+    .butterfly1 {
+        top: 40px;
+        left: 300px;
+        animation-delay: 1s;
+    }
+    
+    .butterfly2 {
+        top: 100px;
+        right: 200px;
+        animation-delay: 3s;
+    }
+    
+    .butterfly3 {
+        top: 70px;
+        left: 500px;
+        animation-delay: 5s;
+    }
+    
+    .bird {
+        position: absolute;
+        font-size: 18px;
+        animation: soar 12s ease-in-out infinite;
+    }
+    
+    .bird1 {
+        top: 30px;
+        left: 150px;
+        animation-delay: 0s;
+    }
+    
+    .bird2 {
+        top: 60px;
+        right: 100px;
+        animation-delay: 4s;
+    }
+    
+    .flower {
+        position: absolute;
+        font-size: 16px;
+        animation: sway 4s ease-in-out infinite;
+    }
+    
+    .flower1 {
+        bottom: 40px;
+        left: 250px;
+    }
+    
+    .flower2 {
+        bottom: 20px;
+        left: 350px;
+        animation-delay: 1s;
+    }
+    
+    .flower3 {
+        bottom: 60px;
+        right: 200px;
+        animation-delay: 2s;
+    }
+    
+    .flower4 {
+        bottom: 30px;
+        right: 100px;
+        animation-delay: 3s;
+    }
+    
+    .flower5 {
+        bottom: 50px;
+        left: 600px;
+        animation-delay: 0.5s;
+    }
+    
+    .cloud {
+        position: absolute;
+        color: rgba(255,255,255,0.8);
+        font-size: 30px;
+        animation: drift 15s ease-in-out infinite;
+    }
+    
+    .cloud1 {
+        top: 20px;
+        right: 50px;
+    }
+    
+    .cloud2 {
+        top: 40px;
+        left: 600px;
+        animation-delay: 5s;
+    }
+    
+    .sparkles {
+        position: absolute;
+        font-size: 12px;
+        color: #FFD700;
+        animation: twinkle 3s ease-in-out infinite;
+    }
+    
+    .sparkle1 {
+        top: 80px;
+        left: 180px;
+    }
+    
+    .sparkle2 {
+        top: 120px;
+        left: 320px;
+        animation-delay: 1s;
+    }
+    
+    .sparkle3 {
+        top: 90px;
+        right: 180px;
+        animation-delay: 2s;
+    }
+    
+    .grass {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to top, #228B22, #98FB98);
+        border-radius: 0 0 8px 8px;
+    }
+    
+    .grass::before {
+        content: '🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 20px;
+        opacity: 0.7;
+    }
+    
+    @keyframes rotate {
+        from { transform: translate(-50%, 50%) rotate(0deg); }
+        to { transform: translate(-50%, 50%) rotate(360deg); }
+    }
+    
+    @keyframes fly {
+        0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        25% { transform: translateY(-10px) translateX(15px) rotate(5deg); }
+        50% { transform: translateY(-5px) translateX(30px) rotate(0deg); }
+        75% { transform: translateY(-15px) translateX(15px) rotate(-5deg); }
+    }
+    
+    @keyframes flutter {
+        0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+        25% { transform: translateY(-15px) translateX(10px) scale(1.1); }
+        50% { transform: translateY(-8px) translateX(20px) scale(1); }
+        75% { transform: translateY(-20px) translateX(10px) scale(1.1); }
+    }
+    
+    @keyframes soar {
+        0% { transform: translateX(0px) translateY(0px); }
+        25% { transform: translateX(100px) translateY(-20px); }
+        50% { transform: translateX(200px) translateY(-10px); }
+        75% { transform: translateX(300px) translateY(-30px); }
+        100% { transform: translateX(400px) translateY(-15px); }
+    }
+    
+    @keyframes sway {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(5deg); }
+    }
+    
+    @keyframes drift {
+        0%, 100% { transform: translateX(0px); }
+        50% { transform: translateX(30px); }
+    }
+    
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.5); }
+    }
+    
+    .download-info {
+        margin-top: 20px;
+        text-align: center;
+        color: #65676b;
+        font-size: 14px;
+    }
+    
+    .download-btn {
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .btn {
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(255,165,0,0.3);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,165,0,0.4);
+    }
+</style>
+```
+
 </head>
 <body>
-  <h1>🌿 Veluwe Ontdekkingen – Dichtbij De Wije Werelt</h1>
-  <div id="map" style="height: 400px;"></div>
-  <script>
-    var map = L.map('map').setView([52.096, 5.78], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    <div class="template-container">
+        <div class="facebook-cover">
+            <!-- Zonnestralen -->
+            <div class="sun-rays">
+                <div class="sun-ray" style="transform: rotate(0deg);"></div>
+                <div class="sun-ray" style="transform: rotate(30deg);"></div>
+                <div class="sun-ray" style="transform: rotate(60deg);"></div>
+                <div class="sun-ray" style="transform: rotate(90deg);"></div>
+                <div class="sun-ray" style="transform: rotate(120deg);"></div>
+                <div class="sun-ray" style="transform: rotate(150deg);"></div>
+                <div class="sun-ray" style="transform: rotate(180deg);"></div>
+                <div class="sun-ray" style="transform: rotate(210deg);"></div>
+                <div class="sun-ray" style="transform: rotate(240deg);"></div>
+                <div class="sun-ray" style="transform: rotate(270deg);"></div>
+                <div class="sun-ray" style="transform: rotate(300deg);"></div>
+                <div class="sun-ray" style="transform: rotate(330deg);"></div>
+            </div>
 
-    var locaties = [
-      {name:"Otterloop-pad", coords:[52.096,5.781], km:1, type:"route"},
-      {name:"Mosselse Zand & Beekse Hoeve", coords:[52.095,5.78], km:1, type:"route"},
-      {name:"Hoenderloo–Otterlo via Sint‑Hubertus", coords:[52.04,5.8], km:3, type:"route"},
-      {name:"Kleinschalig vogelbos bij Hulshorst", coords:[52.397,5.785], km:30, type:"route"},
-      {name:"Verstilde heidese rand bij Epe", coords:[52.429,6.103], km:33, type:"route"},
-      {name:"Stille boerendorp Joppe", coords:[52.177,6.210], km:36, type:"route"},
-      {name:"Dorenweertsepad (Klompenpad)", coords:[51.995,5.896], km:27, type:"route"},
-      {name:"Uddelermeerpad (Klompenpad)", coords:[52.207,5.726], km:35, type:"route"},
-      {name:"Route Deelen (Deelerwoud)", coords:[52.000,5.900], km:30, type:"route"},
-      {name:"Trage Tocht Drie (Speulderbos)", coords:[52.285,5.470], km:35, type:"route"},
-      {name:"Loenense Enkenpad", coords:[52.113,6.030], km:24, type:"route"},
-      {name:"Zandenbos – Nunspeet", coords:[52.378,5.808], km:29, type:"route"},
-      {name:"Wolfheze & Heelsumse beek", coords:[52.009,5.788], km:14, type:"route"}
-    ];
+```
+        <!-- Gras onderaan -->
+        <div class="grass"></div>
+        
+        <!-- Bijen -->
+        <div class="bee bee1">🐝</div>
+        <div class="bee bee2">🐝</div>
+        <div class="bee bee3">🐝</div>
+        
+        <!-- Vlinders -->
+        <div class="butterfly butterfly1">🦋</div>
+        <div class="butterfly butterfly2">🦋</div>
+        <div class="butterfly butterfly3">🦋</div>
+        
+        <!-- Vogels -->
+        <div class="bird bird1">🐦</div>
+        <div class="bird bird2">🐦</div>
+        
+        <!-- Bloemen -->
+        <div class="flower flower1">🌺</div>
+        <div class="flower flower2">🌻</div>
+        <div class="flower flower3">🌷</div>
+        <div class="flower flower4">🌸</div>
+        <div class="flower flower5">🌼</div>
+        
+        <!-- Wolken -->
+        <div class="cloud cloud1">☁️</div>
+        <div class="cloud cloud2">☁️</div>
+        
+        <!-- Sparkles -->
+        <div class="sparkles sparkle1">✨</div>
+        <div class="sparkles sparkle2">✨</div>
+        <div class="sparkles sparkle3">✨</div>
+        
+        <!-- Profiel cirkel als zon -->
+        <div class="profile-circle"></div>
+    </div>
+    
+    <div class="download-info">
+        <strong>Zomerse Facebook Omslagfoto</strong><br>
+        820 x 312 pixels • Je profielfoto wordt het middelpunt van de zon! ☀️
+    </div>
+    
+    <div class="download-btn">
+        <button class="btn" onclick="downloadCover()">
+            🌻 Download Zomerse Omslagfoto
+        </button>
+    </div>
+</div>
 
-    locaties.forEach(l => {
-      L.marker(l.coords).addTo(map)
-        .bindPopup('<b>' + l.name + '</b><br>' + l.km + ' km afstand');
-    });
-  </script>
+<script>
+    function downloadCover() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 820;
+        canvas.height = 312;
+        
+        // Achtergrond gradient (hemel naar gras)
+        const bgGradient = ctx.createRadialGradient(108, 228, 0, 108, 228, 400);
+        bgGradient.addColorStop(0, '#FFD700');
+        bgGradient.addColorStop(0.3, '#FFA500');
+        bgGradient.addColorStop(0.7, '#87CEEB');
+        bgGradient.addColorStop(1, '#98FB98');
+        ctx.fillStyle = bgGradient;
+        ctx.fillRect(0, 0, 820, 312);
+        
+        // Gras onderaan
+        const grassGradient = ctx.createLinearGradient(0, 272, 0, 312);
+        grassGradient.addColorStop(0, '#98FB98');
+        grassGradient.addColorStop(1, '#228B22');
+        ctx.fillStyle = grassGradient;
+        ctx.fillRect(0, 272, 820, 40);
+        
+        // Zonnestralen
+        ctx.save();
+        ctx.translate(108, 228);
+        for (let i = 0; i < 12; i++) {
+            ctx.save();
+            ctx.rotate((i * 30) * Math.PI / 180);
+            const rayGradient = ctx.createLinearGradient(0, 0, 0, -120);
+            rayGradient.addColorStop(0, 'rgba(255,215,0,0.8)');
+            rayGradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = rayGradient;
+            ctx.fillRect(-2, -120, 4, 120);
+            ctx.restore();
+        }
+        ctx.restore();
+        
+        // Profiel cirkel (zon)
+        ctx.beginPath();
+        ctx.arc(108, 228, 84, 0, 2 * Math.PI);
+        const sunGradient = ctx.createRadialGradient(108, 228, 0, 108, 228, 84);
+        sunGradient.addColorStop(0, '#FFF8DC');
+        sunGradient.addColorStop(1, '#FFE4B5');
+        ctx.fillStyle = sunGradient;
+        ctx.fill();
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        
+        // Binnenste gloed
+        ctx.beginPath();
+        ctx.arc(108, 228, 70, 0, 2 * Math.PI);
+        const innerGlow = ctx.createRadialGradient(108, 228, 0, 108, 228, 70);
+        innerGlow.addColorStop(0, 'rgba(255,255,255,0.4)');
+        innerGlow.addColorStop(1, 'transparent');
+        ctx.fillStyle = innerGlow;
+        ctx.fill();
+        
+        // Voeg emoji's toe
+        ctx.font = '20px Arial';
+        ctx.fillText('🐝', 200, 70);
+        ctx.fillText('🐝', 670, 100);
+        ctx.fillText('🐝', 400, 140);
+        
+        ctx.font = '24px Arial';
+        ctx.fillText('🦋', 300, 60);
+        ctx.fillText('🦋', 620, 120);
+        ctx.fillText('🦋', 500, 90);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText('🐦', 150, 50);
+        ctx.fillText('🐦', 720, 80);
+        
+        ctx.font = '16px Arial';
+        ctx.fillText('🌺', 250, 272);
+        ctx.fillText('🌻', 350, 292);
+        ctx.fillText('🌷', 620, 252);
+        ctx.fillText('🌸', 720, 282);
+        ctx.fillText('🌼', 600, 262);
+        
+        ctx.font = '30px Arial';
+        ctx.fillText('☁️', 770, 50);
+        ctx.fillText('☁️', 600, 60);
+        
+        ctx.font = '12px Arial';
+        ctx.fillText('✨', 180, 100);
+        ctx.fillText('✨', 320, 140);
+        ctx.fillText('✨', 640, 110);
+        
+        // Download
+        const link = document.createElement('a');
+        link.download = 'zomerse-facebook-cover.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+</script>
+```
 
-  <hr>
-  <section>
-    <h2>📋 Beschrijvingen van verborgen parels</h2>
-    <ul>
-      <li><b>Otterloop-pad (~5 km):</b> Rood gemarkeerde lus over heide en zand; start bij De Wije Werelt.</li>
-      <li><b>Mosselse Zand & Beekse Hoeve (~4 km):</b> Zen-zandvlaktes en dennenbos; korte route met stilte en ruimte.</li>
-      <li><b>Hoenderloo–Otterlo via Sint‑Hubertus (~10 km):</b> Kleine lanen en verstilde heide; niet toeristisch.</li>
-      <li><b>Kleinschalig vogelbos bij Hulshorst (~30 km):</b> Rustige wandeling langs rietvelden, zonder drukte.</li>
-      <li><b>Verstilde heidese rand bij Epe (~33 km):</b> Geen uitkijktoren, maar wel weids uitzicht en stilte.</li>
-      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met boerderijen en landweggetjes.</li>
-      <li><b>Dorenweertsepad (~8–13 km):</b> Stuwwal, uitzicht over de Nederrijn vanaf Duno-plateau bij Doorwerth.</li>
-      <li><b>Uddelermeerpad (~10–16 km):</b> Rond het Uddelermeer, over boerenland en door het Kroondomein.</li>
-      <li><b>Route Deelen (~12–14 km):</b> Door heide en bos, langs oude vliegbasis en kans op wild.</li>
-      <li><b>Trage Tocht Drie (~11 km):</b> Speulder- en Sprielderbos: dansende bomen, Solse Gat, zeer rustig.</li>
-      <li><b>Loenense Enkenpad (~9 km):</b> Door sprengen, essen en oude akkers rond Loenen.</li>
-      <li><b>Zandenbos – Nunspeet (~6–10 km):</b> Stille dennenbossen, wit zand en zonnedauw langs de beek.</li>
-      <li><b>Wolfheze & Heelsumse Beek (~8 km):</b> Grafheuvels, eeuwenoude eiken en stille paadjes langs het water.</li>
-    </ul>
-  </section>
-  <footer>
-    <p>📍 Afstanden zijn in luchtlijn vanaf De Wije Werelt.</p>
-  </footer>
 </body>
 </html>
