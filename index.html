@@ -4,496 +4,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zomerse Facebook Omslagfoto</title>
+    <title>Verborgen Wandelroutes rond De Wije Werelt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
         }
 
 ```
-    .template-container {
-        background: white;
+    body {
+        font-family: 'Georgia', serif;
+        line-height: 1.6;
+        background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+        color: #2F4F4F;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
     }
-    
-    .facebook-cover {
-        width: 820px;
-        height: 312px;
-        background: radial-gradient(circle at 108px 228px, #FFD700 0%, #FFA500 30%, #87CEEB 70%, #98FB98 100%);
-        border-radius: 8px;
-        position: relative;
+
+    header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    h1 {
+        color: #228B22;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .subtitle {
+        color: #6B8E23;
+        font-size: 1.2em;
+        font-style: italic;
+    }
+
+    .map-container {
+        height: 600px;
+        border-radius: 15px;
         overflow: hidden;
-        border: 2px solid #e4e6ea;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        margin-bottom: 30px;
+        border: 3px solid #90EE90;
     }
-    
-    .sun-rays {
-        position: absolute;
-        left: 108px;
-        bottom: 84px;
-        width: 400px;
-        height: 400px;
-        transform: translate(-50%, 50%);
-        animation: rotate 20s linear infinite;
+
+    #map {
+        height: 100%;
+        width: 100%;
     }
-    
-    .sun-ray {
-        position: absolute;
-        width: 4px;
-        height: 120px;
-        background: linear-gradient(to top, rgba(255,215,0,0.8), transparent);
-        border-radius: 2px;
-        transform-origin: 2px 0px;
-    }
-    
-    .profile-circle {
-        width: 168px;
-        height: 168px;
-        border: 6px solid #FFD700;
-        border-radius: 50%;
-        position: absolute;
-        left: 24px;
-        bottom: -84px;
-        background: radial-gradient(circle, #FFF8DC, #FFE4B5);
-        box-shadow: 0 0 30px rgba(255,215,0,0.6), inset 0 0 20px rgba(255,255,255,0.3);
-        z-index: 10;
-    }
-    
-    .profile-circle::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 140px;
-        height: 140px;
-        background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
-        border-radius: 50%;
-    }
-    
-    .profile-circle::after {
-        content: '☀️';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 40px;
-        opacity: 0.3;
-    }
-    
-    .bee {
-        position: absolute;
-        font-size: 20px;
-        animation: fly 8s ease-in-out infinite;
-    }
-    
-    .bee1 {
-        top: 50px;
-        left: 200px;
-        animation-delay: 0s;
-    }
-    
-    .bee2 {
-        top: 80px;
-        right: 150px;
-        animation-delay: 2s;
-    }
-    
-    .bee3 {
-        top: 120px;
-        left: 400px;
-        animation-delay: 4s;
-    }
-    
-    .butterfly {
-        position: absolute;
-        font-size: 24px;
-        animation: flutter 6s ease-in-out infinite;
-    }
-    
-    .butterfly1 {
-        top: 40px;
-        left: 300px;
-        animation-delay: 1s;
-    }
-    
-    .butterfly2 {
-        top: 100px;
-        right: 200px;
-        animation-delay: 3s;
-    }
-    
-    .butterfly3 {
-        top: 70px;
-        left: 500px;
-        animation-delay: 5s;
-    }
-    
-    .bird {
-        position: absolute;
-        font-size: 18px;
-        animation: soar 12s ease-in-out infinite;
-    }
-    
-    .bird1 {
-        top: 30px;
-        left: 150px;
-        animation-delay: 0s;
-    }
-    
-    .bird2 {
-        top: 60px;
-        right: 100px;
-        animation-delay: 4s;
-    }
-    
-    .flower {
-        position: absolute;
-        font-size: 16px;
-        animation: sway 4s ease-in-out infinite;
-    }
-    
-    .flower1 {
-        bottom: 40px;
-        left: 250px;
-    }
-    
-    .flower2 {
-        bottom: 20px;
-        left: 350px;
-        animation-delay: 1s;
-    }
-    
-    .flower3 {
-        bottom: 60px;
-        right: 200px;
-        animation-delay: 2s;
-    }
-    
-    .flower4 {
-        bottom: 30px;
-        right: 100px;
-        animation-delay: 3s;
-    }
-    
-    .flower5 {
-        bottom: 50px;
-        left: 600px;
-        animation-delay: 0.5s;
-    }
-    
-    .cloud {
-        position: absolute;
-        color: rgba(255,255,255,0.8);
-        font-size: 30px;
-        animation: drift 15s ease-in-out infinite;
-    }
-    
-    .cloud1 {
-        top: 20px;
-        right: 50px;
-    }
-    
-    .cloud2 {
-        top: 40px;
-        left: 600px;
-        animation-delay: 5s;
-    }
-    
-    .sparkles {
-        position: absolute;
-        font-size: 12px;
-        color: #FFD700;
-        animation: twinkle 3s ease-in-out infinite;
-    }
-    
-    .sparkle1 {
-        top: 80px;
-        left: 180px;
-    }
-    
-    .sparkle2 {
-        top: 120px;
-        left: 320px;
-        animation-delay: 1s;
-    }
-    
-    .sparkle3 {
-        top: 90px;
-        right: 180px;
-        animation-delay: 2s;
-    }
-    
-    .grass {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 40px;
-        background: linear-gradient(to top, #228B22, #98FB98);
-        border-radius: 0 0 8px 8px;
-    }
-    
-    .grass::before {
-        content: '🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        font-size: 14px;
-        line-height: 20px;
-        opacity: 0.7;
-    }
-    
-    @keyframes rotate {
-        from { transform: translate(-50%, 50%) rotate(0deg); }
-        to { transform: translate(-50%, 50%) rotate(360deg); }
-    }
-    
-    @keyframes fly {
-        0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-        25% { transform: translateY(-10px) translateX(15px) rotate(5deg); }
-        50% { transform: translateY(-5px) translateX(30px) rotate(0deg); }
-        75% { transform: translateY(-15px) translateX(15px) rotate(-5deg); }
-    }
-    
-    @keyframes flutter {
-        0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
-        25% { transform: translateY(-15px) translateX(10px) scale(1.1); }
-        50% { transform: translateY(-8px) translateX(20px) scale(1); }
-        75% { transform: translateY(-20px) translateX(10px) scale(1.1); }
-    }
-    
-    @keyframes soar {
-        0% { transform: translateX(0px) translateY(0px); }
-        25% { transform: translateX(100px) translateY(-20px); }
-        50% { transform: translateX(200px) translateY(-10px); }
-        75% { transform: translateX(300px) translateY(-30px); }
-        100% { transform: translateX(400px) translateY(-15px); }
-    }
-    
-    @keyframes sway {
-        0%, 100% { transform: rotate(0deg); }
-        50% { transform: rotate(5deg); }
-    }
-    
-    @keyframes drift {
-        0%, 100% { transform: translateX(0px); }
-        50% { transform: translateX(30px); }
-    }
-    
-    @keyframes twinkle {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.5); }
-    }
-    
-    .download-info {
+
+    .route-details {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         margin-top: 20px;
-        text-align: center;
-        color: #65676b;
-        font-size: 14px;
+        border-left: 5px solid #32CD32;
+        backdrop-filter: blur(10px);
+        min-height: 200px;
+        transition: all 0.3s ease;
     }
-    
-    .download-btn {
+
+    .route-details.active {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .route-title {
+        color: #228B22;
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .route-icon {
+        font-size: 1.2em;
+    }
+
+    .route-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        background: linear-gradient(135deg, #F0FFF0, #E6FFE6);
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #98FB98;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #2F4F4F;
+        font-size: 0.9em;
+    }
+
+    .info-value {
+        color: #228B22;
+        font-weight: bold;
+    }
+
+    .route-description {
+        color: #2F4F4F;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+
+    .highlights {
+        background: linear-gradient(135deg, #FFFACD, #F5F5DC);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #DAA520;
         margin-top: 15px;
-        text-align: center;
     }
-    
-    .btn {
+
+    .highlights h4 {
+        color: #B8860B;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+
+    .highlights ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .highlights li {
+        margin-bottom: 5px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .highlights li:before {
+        content: "🌿";
+        position: absolute;
+        left: 0;
+    }
+
+    .season-badge {
+        display: inline-block;
         background: linear-gradient(45deg, #FFD700, #FFA500);
         color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 25px;
-        font-size: 14px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
         font-weight: bold;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(255,165,0,0.3);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
-    
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255,165,0,0.4);
+
+    .welcome-text {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-popup {
+        font-family: 'Georgia', serif;
+    }
+
+    .popup-title {
+        color: #228B22;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .popup-distance {
+        color: #6B8E23;
+        font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+        
+        h1 {
+            font-size: 2em;
+        }
+        
+        .map-container {
+            height: 400px;
+        }
+        
+        .route-info {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     }
 </style>
 ```
 
 </head>
 <body>
-    <div class="template-container">
-        <div class="facebook-cover">
-            <!-- Zonnestralen -->
-            <div class="sun-rays">
-                <div class="sun-ray" style="transform: rotate(0deg);"></div>
-                <div class="sun-ray" style="transform: rotate(30deg);"></div>
-                <div class="sun-ray" style="transform: rotate(60deg);"></div>
-                <div class="sun-ray" style="transform: rotate(90deg);"></div>
-                <div class="sun-ray" style="transform: rotate(120deg);"></div>
-                <div class="sun-ray" style="transform: rotate(150deg);"></div>
-                <div class="sun-ray" style="transform: rotate(180deg);"></div>
-                <div class="sun-ray" style="transform: rotate(210deg);"></div>
-                <div class="sun-ray" style="transform: rotate(240deg);"></div>
-                <div class="sun-ray" style="transform: rotate(270deg);"></div>
-                <div class="sun-ray" style="transform: rotate(300deg);"></div>
-                <div class="sun-ray" style="transform: rotate(330deg);"></div>
-            </div>
+    <div class="container">
+        <header>
+            <h1>🌲 Verborgen Parels rond De Wije Werelt 🌲</h1>
+            <p class="subtitle">Ontdek de mooiste onbekende wandelroutes op de Veluwe</p>
+        </header>
 
 ```
-        <!-- Gras onderaan -->
-        <div class="grass"></div>
-        
-        <!-- Bijen -->
-        <div class="bee bee1">🐝</div>
-        <div class="bee bee2">🐝</div>
-        <div class="bee bee3">🐝</div>
-        
-        <!-- Vlinders -->
-        <div class="butterfly butterfly1">🦋</div>
-        <div class="butterfly butterfly2">🦋</div>
-        <div class="butterfly butterfly3">🦋</div>
-        
-        <!-- Vogels -->
-        <div class="bird bird1">🐦</div>
-        <div class="bird bird2">🐦</div>
-        
-        <!-- Bloemen -->
-        <div class="flower flower1">🌺</div>
-        <div class="flower flower2">🌻</div>
-        <div class="flower flower3">🌷</div>
-        <div class="flower flower4">🌸</div>
-        <div class="flower flower5">🌼</div>
-        
-        <!-- Wolken -->
-        <div class="cloud cloud1">☁️</div>
-        <div class="cloud cloud2">☁️</div>
-        
-        <!-- Sparkles -->
-        <div class="sparkles sparkle1">✨</div>
-        <div class="sparkles sparkle2">✨</div>
-        <div class="sparkles sparkle3">✨</div>
-        
-        <!-- Profiel cirkel als zon -->
-        <div class="profile-circle"></div>
+    <div class="welcome-text">
+        <p>Welkom bij jouw gids voor de beste verborgen wandelroutes binnen 40km van EuroParcs De Wije Werelt! Klik op een marker op de kaart om meer te ontdekken over elke unieke route. Van mysterieuze bossen tot uitgestrekte zandverstuivingen - de Veluwe heeft zoveel meer te bieden dan de bekende toeristische paden.</p>
     </div>
-    
-    <div class="download-info">
-        <strong>Zomerse Facebook Omslagfoto</strong><br>
-        820 x 312 pixels • Je profielfoto wordt het middelpunt van de zon! ☀️
+
+    <div class="map-container">
+        <div id="map"></div>
     </div>
-    
-    <div class="download-btn">
-        <button class="btn" onclick="downloadCover()">
-            🌻 Download Zomerse Omslagfoto
-        </button>
+
+    <div id="route-details" class="route-details">
+        <div class="route-title">
+            <span class="route-icon">🗺️</span>
+            Selecteer een wandelroute op de kaart
+        </div>
+        <p class="route-description">Klik op een van de markers op de kaart om gedetailleerde informatie over de wandelroute te bekijken. Elke route is zorgvuldig geselecteerd om je een unieke en onvergetelijke ervaring te bieden, weg van de drukte.</p>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
-    function downloadCover() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 820;
-        canvas.height = 312;
-        
-        // Achtergrond gradient (hemel naar gras)
-        const bgGradient = ctx.createRadialGradient(108, 228, 0, 108, 228, 400);
-        bgGradient.addColorStop(0, '#FFD700');
-        bgGradient.addColorStop(0.3, '#FFA500');
-        bgGradient.addColorStop(0.7, '#87CEEB');
-        bgGradient.addColorStop(1, '#98FB98');
-        ctx.fillStyle = bgGradient;
-        ctx.fillRect(0, 0, 820, 312);
-        
-        // Gras onderaan
-        const grassGradient = ctx.createLinearGradient(0, 272, 0, 312);
-        grassGradient.addColorStop(0, '#98FB98');
-        grassGradient.addColorStop(1, '#228B22');
-        ctx.fillStyle = grassGradient;
-        ctx.fillRect(0, 272, 820, 40);
-        
-        // Zonnestralen
-        ctx.save();
-        ctx.translate(108, 228);
-        for (let i = 0; i < 12; i++) {
-            ctx.save();
-            ctx.rotate((i * 30) * Math.PI / 180);
-            const rayGradient = ctx.createLinearGradient(0, 0, 0, -120);
-            rayGradient.addColorStop(0, 'rgba(255,215,0,0.8)');
-            rayGradient.addColorStop(1, 'transparent');
-            ctx.fillStyle = rayGradient;
-            ctx.fillRect(-2, -120, 4, 120);
-            ctx.restore();
+    // Coördinaten voor EuroParcs De Wije Werelt
+    const wijeWereltCoords = [52.0864, 5.7769];
+    
+    // Initialiseer de kaart
+    const map = L.map('map').setView(wijeWereltCoords, 11);
+    
+    // Voeg OpenStreetMap tiles toe
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Aangepaste iconen
+    const wijeWereltIcon = L.divIcon({
+        html: '🏕️',
+        iconSize: [30, 30],
+        className: 'custom-div-icon'
+    });
+
+    const routeIcon = L.divIcon({
+        html: '🥾',
+        iconSize: [25, 25],
+        className: 'custom-div-icon'
+    });
+
+    // Voeg De Wije Werelt marker toe
+    L.marker(wijeWereltCoords, {icon: wijeWereltIcon})
+        .addTo(map)
+        .bindPopup('<div class="custom-popup"><div class="popup-title">EuroParcs De Wije Werelt</div><div class="popup-distance">Jouw uitvalsbasis voor avontuur!</div></div>');
+
+    // Wandelroute data
+    const routes = [
+        {
+            name: "Het Mysterieuze Mosselse Zand",
+            coords: [52.0920, 5.7650],
+            distance: "6.2 km",
+            difficulty: "Gemiddeld",
+            duration: "2-2.5 uur",
+            terrain: "Zandverstuiving & bos",
+            season: "Zomer Perfect",
+            description: "Een verborgen parel direct bij De Wije Werelt! Het Mosselse Zand is een adembenemende zandverstuiving waar je je waant in de Kalahari. Vroeg in de ochtend zie je hier hazen en reeën, terwijl de nachtzwaluw zijn mysterieuze roep laat horen.",
+            highlights: [
+                "Grootste zandverstuiving ter plaatse - mini-woestijn ervaring",
+                "Kans op zeldzame dieren: zandhagedissen en heideblauwtjes",
+                "Vanaf De Wije Werelt direct toegankelijk (300m!)",
+                "Magische zonsondergang vanaf de zandduinen",
+                "Oerrr natuurspeeltuin voor kinderen onderweg"
+            ]
+        },
+        {
+            name: "Planken Wambuis Wildsafari",
+            coords: [52.0650, 5.7800],
+            distance: "8.5 km",
+            difficulty: "Gemiddeld",
+            duration: "3-4 uur",
+            terrain: "Bos, heide & weiland",
+            season: "Herfst Spectaculair",
+            description: "De geheime tuin van de Veluwe! Dit uitgestrekte natuurgebied is een waar paradijs voor wilde dieren. Edelherten, wilde zwijnen en zelfs de zeldzame das maken dit tot een echte safari-ervaring in Nederland.",
+            highlights: [
+                "Beste wildspotting op de Veluwe - zelfs wolven gezien!",
+                "Theeschenkerij Mossel - perfecte tussenstop",
+                "Eeuwenoude beukenlanen en mysterieuze knoestige eiken",
+                "Graeme klauwier en nachtzwaluw in broedseizoen",
+                "New Forest pony's en Spaanse runderen"
+            ]
+        },
+        {
+            name: "Geheime Grenspalenroute",
+            coords: [52.0580, 5.8200],
+            distance: "4.8 km",
+            difficulty: "Makkelijk",
+            duration: "1.5-2 uur",
+            terrain: "Bospad & historisch",
+            season: "Altijd Mooi",
+            description: "Een verborgen geschiedenisles! Wandel langs 250 jaar oude grenspalen uit 1757 die de grens tussen Arnhem en Ede markeerden. Dit rustige deel van de Hoge Veluwe kent weinig bezoekers maar veel verhalen.",
+            highlights: [
+                "Historische grenspalen uit 1757 - levende geschiedenis",
+                "Rustigste deel van de Hoge Veluwe",
+                "Dichte eikenbossen met eeuwenoude bomen",
+                "Kans op wilde zwijnen en dassen",
+                "Perfecte route voor contemplatieve wandeling"
+            ]
+        },
+        {
+            name: "Wekeromse Zand Mini-Sahara",
+            coords: [52.1080, 5.7100],
+            distance: "5.5 km",
+            difficulty: "Makkelijk",
+            duration: "2 uur",
+            terrain: "Zandverstuiving",
+            season: "Zomer Ideaal",
+            description: "Minder bekend dan het Kootwijkerzand maar minstens zo spectaculair! Deze kleine zandverstuiving voelt aan als een echte woestijn. Perfecte plek voor een picknick met uitzicht over glooiende zandduinen.",
+            highlights: [
+                "Kleinschalige maar prachtige zandverstuiving",
+                "Totaal geen drukte - vaak helemaal alleen",
+                "Grafheuvels en restanten van vroege nederzettingen",
+                "Perfecte picknickplekken tussen de sparren",
+                "Kinderen kunnen urenlang spelen in het zand"
+            ]
+        },
+        {
+            name: "Otterlose Buurtbos Avontuur",
+            coords: [52.0780, 5.7580],
+            distance: "7.2 km",
+            difficulty: "Gemiddeld",
+            duration: "2.5-3 uur",
+            terrain: "Dicht bos & kronkelpaadjes",
+            season: "Lente Prachtig",
+            description: "Een van de oudste bossen van de Hoge Veluwe met kronkelende paadjes die lijken uit een sprookje. De Big Five van Otterlo maken dit bos tot een ware ontdekkingstocht voor alle leeftijden.",
+            highlights: [
+                "Houten sculpturen 'Big Five van Otterlo'",
+                "Kronkelende bomen en mysterieuze paadjes",
+                "Direct vanaf De Wije Werelt toegankelijk",
+                "Paddenstoelen en zwammen op dode boomstammen",
+                "Oudste jeneverbessenbes van de Veluwe"
+            ]
+        },
+        {
+            name: "Roekelse Bos Verborgen Parels",
+            coords: [52.0950, 5.7350],
+            distance: "6.8 km",
+            difficulty: "Gemiddeld",
+            duration: "2.5 uur",
+            terrain: "Bos & heide",
+            season: "Altijd Mooi",
+            description: "Een onbekend bosgebied waar je gemakkelijk kunt verdwalen in de beste zin van het woord. Hier vind je de rust en stilte die steeds zeldzamer wordt. Perfect voor wie echt wil ontsnappen aan de drukte.",
+            highlights: [
+                "Totale rust en stilte - weg van alle drukte",
+                "Hondenlossloopgebied - hondenparadijs",
+                "Geocache wandelroute voor extra avontuur",
+                "Prachtige heidebloeiplassen verstopt in het bos",
+                "Perfecte vogelspotting vroeg in de ochtend"
+            ]
+        },
+        {
+            name: "Klompenpad Kreelsepad",
+            coords: [52.0350, 5.8450],
+            distance: "14 km",
+            difficulty: "Pittig",
+            duration: "4-5 uur",
+            terrain: "Heide, bos & landbouw",
+            season: "Herfst Goud",
+            description: "Voor de echte wandelliefhebber! Dit Klompenpad neemt je mee door de mooiste hoekjes van de Zuid-Veluwe. Van uitgestrekte heidevelden tot historische schaapskooien - een complete Veluwe-ervaring.",
+            highlights: [
+                "Langste route voor serieuze wandelaars",
+                "Heidebloemplas - verborgen idyllisch meertje",
+                "Historische grafheuvels en schaapskooi",
+                "Natuurcentrum Veluwe als startpunt",
+                "Authentiek Gelders cultuurlandschap"
+            ]
+        },
+        {
+            name: "Nederlands Tegelmuseum Geheim",
+            coords: [52.0950, 5.7680],
+            distance: "2.5 km",
+            difficulty: "Makkelijk",
+            duration: "1 uur + museumbezoek",
+            terrain: "Dorpswandeling",
+            season: "Altijd Open",
+            description: "Otterlo's best bewaarde geheim! Het Nederlands Tegelmuseum herbergt de grootste tegelcollectie van Nederland, deels van Helene Kröller-Müller zelf. Een culturele verrassing die niemand verwacht.",
+            highlights: [
+                "Unieke collectie tegels van Kröller-Müller",
+                "Slechts 5 minuten lopen van Kröller-Müller Museum",
+                "Delfts Blauw en zeldzame antieke tegels",
+                "Gedetailleerde schilderingen die lijken op foto's",
+                "Perfecte regendag activiteit"
+            ]
         }
-        ctx.restore();
+    ];
+
+    // Functie om route details te tonen
+    function showRouteDetails(route) {
+        const detailsDiv = document.getElementById('route-details');
+        detailsDiv.className = 'route-details active';
         
-        // Profiel cirkel (zon)
-        ctx.beginPath();
-        ctx.arc(108, 228, 84, 0, 2 * Math.PI);
-        const sunGradient = ctx.createRadialGradient(108, 228, 0, 108, 228, 84);
-        sunGradient.addColorStop(0, '#FFF8DC');
-        sunGradient.addColorStop(1, '#FFE4B5');
-        ctx.fillStyle = sunGradient;
-        ctx.fill();
-        ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 6;
-        ctx.stroke();
-        
-        // Binnenste gloed
-        ctx.beginPath();
-        ctx.arc(108, 228, 70, 0, 2 * Math.PI);
-        const innerGlow = ctx.createRadialGradient(108, 228, 0, 108, 228, 70);
-        innerGlow.addColorStop(0, 'rgba(255,255,255,0.4)');
-        innerGlow.addColorStop(1, 'transparent');
-        ctx.fillStyle = innerGlow;
-        ctx.fill();
-        
-        // Voeg emoji's toe
-        ctx.font = '20px Arial';
-        ctx.fillText('🐝', 200, 70);
-        ctx.fillText('🐝', 670, 100);
-        ctx.fillText('🐝', 400, 140);
-        
-        ctx.font = '24px Arial';
-        ctx.fillText('🦋', 300, 60);
-        ctx.fillText('🦋', 620, 120);
-        ctx.fillText('🦋', 500, 90);
-        
-        ctx.font = '18px Arial';
-        ctx.fillText('🐦', 150, 50);
-        ctx.fillText('🐦', 720, 80);
-        
-        ctx.font = '16px Arial';
-        ctx.fillText('🌺', 250, 272);
-        ctx.fillText('🌻', 350, 292);
-        ctx.fillText('🌷', 620, 252);
-        ctx.fillText('🌸', 720, 282);
-        ctx.fillText('🌼', 600, 262);
-        
-        ctx.font = '30px Arial';
-        ctx.fillText('☁️', 770, 50);
-        ctx.fillText('☁️', 600, 60);
-        
-        ctx.font = '12px Arial';
-        ctx.fillText('✨', 180, 100);
-        ctx.fillText('✨', 320, 140);
-        ctx.fillText('✨', 640, 110);
-        
-        // Download
-        const link = document.createElement('a');
-        link.download = 'zomerse-facebook-cover.png';
-        link.href = canvas.toDataURL();
-        link.click();
+        detailsDiv.innerHTML = `
+            <div class="route-title">
+                <span class="route-icon">🥾</span>
+                ${route.name}
+                <span class="season-badge">${route.season}</span>
+            </div>
+            
+            <div class="route-info">
+                <div class="info-item">
+                    <div class="info-label">Afstand</div>
+                    <div class="info-value">${route.distance}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Moeilijkheid</div>
+                    <div class="info-value">${route.difficulty}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Duur</div>
+                    <div class="info-value">${route.duration}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Terrein</div>
+                    <div class="info-value">${route.terrain}</div>
+                </div>
+            </div>
+            
+            <p class="route-description">${route.description}</p>
+            
+            <div class="highlights">
+                <h4>✨ Verborgen Schatten van deze Route</h4>
+                <ul>
+                    ${route.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                </ul>
+            </div>
+        `;
     }
+
+    // Voeg route markers toe
+    routes.forEach(route => {
+        const marker = L.marker(route.coords, {icon: routeIcon}).addTo(map);
+        
+        marker.bindPopup(`
+            <div class="custom-popup">
+                <div class="popup-title">${route.name}</div>
+                <div class="popup-distance">${route.distance} • ${route.difficulty}</div>
+            </div>
+        `);
+        
+        marker.on('click', () => showRouteDetails(route));
+    });
+
+    // Voeg control layer toe voor betere navigatie
+    const baseMaps = {
+        "Standaard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+        "Satelliet": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+
+    // Voeg schaal toe
+    L.control.scale().addTo(map);
 </script>
 ```
 
