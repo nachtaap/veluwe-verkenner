@@ -4,584 +4,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verborgen Wandelroutes & Mystieke Legendes rond De Wije Werelt</title>
+    <title>Wandelroutes & Mystieke Legendes - De Wije Werelt</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-```
-    body {
-        font-family: 'Georgia', serif;
-        line-height: 1.6;
-        background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
-        color: #2F4F4F;
-        min-height: 100vh;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-    }
-
-    h1 {
-        color: #228B22;
-        font-size: 2.5em;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .subtitle {
-        color: #6B8E23;
-        font-size: 1.2em;
-        font-style: italic;
-    }
-
-    .map-container {
-        height: 600px;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        margin-bottom: 30px;
-        border: 3px solid #90EE90;
-    }
-
-    #map {
-        height: 100%;
-        width: 100%;
-    }
-
-    .route-details {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-        border-left: 5px solid #32CD32;
-        backdrop-filter: blur(10px);
-        min-height: 200px;
-        transition: all 0.3s ease;
-    }
-
-    .route-details.active {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-    }
-
-    .route-title {
-        color: #228B22;
-        font-size: 1.8em;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .route-icon {
-        font-size: 1.2em;
-    }
-
-    .route-info {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .info-item {
-        background: linear-gradient(135deg, #F0FFF0, #E6FFE6);
-        padding: 10px 15px;
-        border-radius: 10px;
-        border: 1px solid #98FB98;
-    }
-
-    .info-label {
-        font-weight: bold;
-        color: #2F4F4F;
-        font-size: 0.9em;
-    }
-
-    .info-value {
-        color: #228B22;
-        font-weight: bold;
-    }
-
-    .route-description {
-        color: #2F4F4F;
-        line-height: 1.8;
-        margin-bottom: 15px;
-    }
-
-    .highlights {
-        background: linear-gradient(135deg, #FFFACD, #F5F5DC);
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 4px solid #DAA520;
-        margin-top: 15px;
-    }
-
-    .highlights h4 {
-        color: #B8860B;
-        margin-bottom: 10px;
-        font-size: 1.1em;
-    }
-
-    .highlights ul {
-        list-style: none;
-        padding-left: 0;
-    }
-
-    .highlights li {
-        margin-bottom: 5px;
-        padding-left: 20px;
-        position: relative;
-    }
-
-    .highlights li:before {
-        content: "🌿";
-        position: absolute;
-        left: 0;
-    }
-
-    .legend-section {
-        background: linear-gradient(135deg, #2F2F2F, #4A4A4A);
-        color: #FFD700;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 15px;
-        border-left: 4px solid #9370DB;
-        box-shadow: 0 0 15px rgba(147, 112, 219, 0.3);
-    }
-
-    .legend-section h4 {
-        color: #FFD700;
-        margin-bottom: 8px;
-        font-size: 1.1em;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
-
-    .legend-text {
-        font-style: italic;
-        line-height: 1.6;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .season-badge {
-        display: inline-block;
-        background: linear-gradient(45deg, #FFD700, #FFA500);
-        color: white;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 0.85em;
-        font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .welcome-text {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 20px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .custom-popup {
-        font-family: 'Georgia', serif;
-    }
-
-    .popup-title {
-        color: #228B22;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .popup-distance {
-        color: #6B8E23;
-        font-size: 0.9em;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 10px;
-        }
-        
-        h1 {
-            font-size: 2em;
-        }
-        
-        .map-container {
-            height: 400px;
-        }
-        
-        .route-info {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .leaflet-popup-content-wrapper {
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    }
-</style>
-```
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Georgia, serif; background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%); color: #2F4F4F; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; margin-bottom: 20px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        h1 { color: #228B22; font-size: 2.2em; margin-bottom: 10px; }
+        .subtitle { color: #6B8E23; font-size: 1.1em; font-style: italic; }
+        .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-bottom: 20px; }
+        .map-container { height: 500px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); border: 3px solid #90EE90; }
+        #map { height: 100%; width: 100%; }
+        .routes-sidebar { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; max-height: 500px; overflow-y: auto; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        .routes-sidebar h3 { color: #228B22; margin-bottom: 15px; text-align: center; border-bottom: 2px solid #90EE90; padding-bottom: 10px; }
+        .route-item { padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; background: linear-gradient(135deg, #F0FFF0, #E6FFE6); }
+        .route-item:hover { transform: translateX(5px); border-color: #32CD32; box-shadow: 0 5px 15px rgba(50, 205, 50, 0.3); }
+        .route-item.mystiek { background: linear-gradient(135deg, #2F2F2F, #4A4A4A); color: #FFD700; }
+        .route-item.mystiek:hover { border-color: #9370DB; }
+        .route-item-title { font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .route-item-info { font-size: 0.85em; opacity: 0.8; }
+        .route-item.active { border-color: #228B22; background: linear-gradient(135deg, #98FB98, #90EE90); transform: translateX(8px); }
+        .route-item.mystiek.active { border-color: #FFD700; background: linear-gradient(135deg, #4A4A4A, #2F2F2F); color: #FFD700; }
+        .route-details { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); margin-top: 20px; border-left: 5px solid #32CD32; }
+        .route-title { color: #228B22; font-size: 1.6em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .route-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        .info-item { background: linear-gradient(135deg, #F0FFF0, #E6FFE6); padding: 8px 12px; border-radius: 8px; border: 1px solid #98FB98; }
+        .info-label { font-weight: bold; color: #2F4F4F; font-size: 0.9em; }
+        .info-value { color: #228B22; font-weight: bold; }
+        .route-description { color: #2F4F4F; line-height: 1.6; margin-bottom: 15px; }
+        .highlights { background: linear-gradient(135deg, #FFFACD, #F5F5DC); padding: 15px; border-radius: 10px; border-left: 4px solid #DAA520; margin-top: 15px; }
+        .highlights h4 { color: #B8860B; margin-bottom: 10px; }
+        .highlights ul { list-style: none; padding-left: 0; }
+        .highlights li { margin-bottom: 5px; padding-left: 20px; position: relative; }
+        .highlights li:before { content: "🌿"; position: absolute; left: 0; }
+        .legend-section { background: linear-gradient(135deg, #2F2F2F, #4A4A4A); color: #FFD700; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #9370DB; }
+        .legend-section h4 { color: #FFD700; margin-bottom: 8px; }
+        .legend-text { font-style: italic; line-height: 1.6; }
+        .season-badge { background: linear-gradient(45deg, #FFD700, #FFA500); color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; }
+        @media (max-width: 768px) { .main-content { grid-template-columns: 1fr; } .routes-sidebar { order: -1; max-height: 250px; } .map-container { height: 350px; } h1 { font-size: 1.8em; } }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🌲 Verborgen Parels & Mystieke Legendes rond De Wije Werelt 🌲</h1>
-            <p class="subtitle">Ontdek de mooiste onbekende wandelroutes en eeuwenoude sagen op de Veluwe</p>
+            <h1>🌲 Verborgen Wandelroutes & Mystieke Legendes 🌲</h1>
+            <p class="subtitle">Ontdek onbekende routes en eeuwenoude sagen rond De Wije Werelt</p>
         </header>
 
 ```
-    <div class="welcome-text">
-        <p>Welkom bij jouw gids voor de mooiste verborgen wandelroutes én mystieke legendes binnen 40km van EuroParcs De Wije Werelt! Klik op een marker op de kaart om meer te ontdekken over elke unieke route en de eeuwenoude sagen die er leven. Van spookkastelen tot Witte Wieven, van verdwenen kloosters tot mysterieuze bosgeesten - de Veluwe barst van de verhalen die generaties lang zijn doorverteld. 👻🌲</p>
-    </div>
-
-    <div class="map-container">
-        <div id="map"></div>
+    <div class="main-content">
+        <div class="map-container"><div id="map"></div></div>
+        <div class="routes-sidebar">
+            <h3>🗺️ Alle Routes</h3>
+            <div id="routes-list"></div>
+        </div>
     </div>
 
     <div id="route-details" class="route-details">
-        <div class="route-title">
-            <span class="route-icon">🗺️</span>
-            Selecteer een wandelroute op de kaart
-        </div>
-        <p class="route-description">Klik op een van de markers op de kaart om gedetailleerde informatie over de wandelroute te bekijken. Elke route is zorgvuldig geselecteerd om je een unieke en onvergetelijke ervaring te bieden, weg van de drukte. De 👻 markers tonen locaties met mystieke legendes!</p>
+        <div class="route-title">🗺️ Selecteer een wandelroute</div>
+        <p class="route-description">Klik op een route in de lijst of een marker op de kaart. De 👻 routes bevatten mystieke legendes!</p>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
-    // Coördinaten voor EuroParcs De Wije Werelt
     const wijeWereltCoords = [52.0864, 5.7769];
-    
-    // Initialiseer de kaart
     const map = L.map('map').setView(wijeWereltCoords, 11);
     
-    // Voeg OpenStreetMap tiles toe
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+    // Eenvoudige kaart voor beter contrast
+    const simpleLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO'
     }).addTo(map);
+    
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+    
+    L.control.layers({"Eenvoudig": simpleLayer, "Satelliet": satelliteLayer}).addTo(map);
 
-    // Aangepaste iconen
+    // Betere iconen met contrast
     const wijeWereltIcon = L.divIcon({
-        html: '🏕️',
-        iconSize: [30, 30],
-        className: 'custom-div-icon'
+        html: '<div style="background:#FF4444;color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🏕️</div>',
+        iconSize: [30, 30]
     });
-
+    
     const routeIcon = L.divIcon({
-        html: '🥾',
-        iconSize: [25, 25],
-        className: 'custom-div-icon'
+        html: '<div style="background:#228B22;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🥾</div>',
+        iconSize: [26, 26]
     });
-
+    
     const mystiekIcon = L.divIcon({
-        html: '👻',
-        iconSize: [25, 25],
-        className: 'custom-div-icon'
+        html: '<div style="background:#9370DB;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">👻</div>',
+        iconSize: [26, 26]
     });
 
-    // Voeg De Wije Werelt marker toe
-    L.marker(wijeWereltCoords, {icon: wijeWereltIcon})
-        .addTo(map)
-        .bindPopup('<div class="custom-popup"><div class="popup-title">EuroParcs De Wije Werelt</div><div class="popup-distance">Jouw uitvalsbasis voor avontuur!</div></div>');
+    L.marker(wijeWereltCoords, {icon: wijeWereltIcon}).addTo(map).bindPopup('<b>EuroParcs De Wije Werelt</b><br>Jouw uitvalsbasis!');
 
-    // Wandelroute data
     const routes = [
-        {
-            name: "Het Mysterieuze Mosselse Zand",
-            coords: [52.0920, 5.7650],
-            distance: "6.2 km",
-            difficulty: "Gemiddeld",
-            duration: "2-2.5 uur",
-            terrain: "Zandverstuiving & bos",
-            season: "Zomer Perfect",
-            description: "Een verborgen parel direct bij De Wije Werelt! Het Mosselse Zand is een adembenemende zandverstuiving waar je je waant in de Kalahari. Vroeg in de ochtend zie je hier hazen en reeën, terwijl de nachtzwaluw zijn mysterieuze roep laat horen.",
-            highlights: [
-                "Grootste zandverstuiving ter plaatse - mini-woestijn ervaring",
-                "Kans op zeldzame dieren: zandhagedissen en heideblauwtjes",
-                "Vanaf De Wije Werelt direct toegankelijk (300m!)",
-                "Magische zonsondergang vanaf de zandduinen",
-                "Oerrr natuurspeeltuin voor kinderen onderweg"
-            ],
-            legend: "🌙 LEGENDE: In de nabije bossen rondzwervende Witte Wieven hielden hun jaarlijkse bijeenkomst. Locals beweren dat je 's avonds mysterieuze lichtjes kunt zien zweven over het zand..."
-        },
-        {
-            name: "Planken Wambuis Wildsafari",
-            coords: [52.0650, 5.7800],
-            distance: "8.5 km",
-            difficulty: "Gemiddeld",
-            duration: "3-4 uur",
-            terrain: "Bos, heide & weiland",
-            season: "Herfst Spectaculair",
-            description: "De geheime tuin van de Veluwe! Dit uitgestrekte natuurgebied is een waar paradijs voor wilde dieren. Edelherten, wilde zwijnen en zelfs de zeldzame das maken dit tot een echte safari-ervaring in Nederland.",
-            highlights: [
-                "Beste wildspotting op de Veluwe - zelfs wolven gezien!",
-                "Theeschenkerij Mossel - perfecte tussenstop",
-                "Eeuwenoude beukenlanen en mysterieuze knoestige eiken",
-                "Graeme klauwier en nachtzwaluw in broedseizoen",
-                "New Forest pony's en Spaanse runderen"
-            ],
-            legend: "👻 SPOOKLEGENDE: Langs de Renkumse heide zweeft 's avonds een brandende dakschoof - de geest van een boer die eeuwen geleden zijn boerderij in brand stak. Spoorwerkers zien dit mysterieuze licht nog steeds!"
-        },
-        {
-            name: "Geheime Grenspalenroute",
-            coords: [52.0580, 5.8200],
-            distance: "4.8 km",
-            difficulty: "Makkelijk",
-            duration: "1.5-2 uur",
-            terrain: "Bospad & historisch",
-            season: "Altijd Mooi",
-            description: "Een verborgen geschiedenisles! Wandel langs 250 jaar oude grenspalen uit 1757 die de grens tussen Arnhem en Ede markeerden. Dit rustige deel van de Hoge Veluwe kent weinig bezoekers maar veel verhalen.",
-            highlights: [
-                "Historische grenspalen uit 1757 - levende geschiedenis",
-                "Rustigste deel van de Hoge Veluwe",
-                "Dichte eikenbossen met eeuwenoude bomen",
-                "Kans op wilde zwijnen en dassen",
-                "Perfecte route voor contemplatieve wandeling"
-            ],
-            legend: "🔮 MYSTERIE: In deze dichte eikenbossen huist Blauwe Gerrit - een onzichtbare bosgeest die reizigers op de nek springt. Hij beschermde ooit het arme meisje Hanna tegen een kwaadaardige jonker!"
-        },
-        {
-            name: "Wekeromse Zand Mini-Sahara",
-            coords: [52.1080, 5.7100],
-            distance: "5.5 km",
-            difficulty: "Makkelijk",
-            duration: "2 uur",
-            terrain: "Zandverstuiving",
-            season: "Zomer Ideaal",
-            description: "Minder bekend dan het Kootwijkerzand maar minstens zo spectaculair! Deze kleine zandverstuiving voelt aan als een echte woestijn. Perfecte plek voor een picknick met uitzicht over glooiende zandduinen.",
-            highlights: [
-                "Kleinschalige maar prachtige zandverstuiving",
-                "Totaal geen drukte - vaak helemaal alleen",
-                "Grafheuvels en restanten van vroege nederzettingen",
-                "Perfecte picknickplekken tussen de sparren",
-                "Kinderen kunnen urenlang spelen in het zand"
-            ],
-            legend: "⚱️ PREHISTORIE: Hier werd het graf gevonden van de Lunterse Kopersmid uit 2500 v.Chr.! Zijn zeldzame grafgiften tonen dat de Veluwe al millennia een mystieke plek was..."
-        },
-        {
-            name: "Otterlose Buurtbos Avontuur",
-            coords: [52.0780, 5.7580],
-            distance: "7.2 km",
-            difficulty: "Gemiddeld",
-            duration: "2.5-3 uur",
-            terrain: "Dicht bos & kronkelpaadjes",
-            season: "Lente Prachtig",
-            description: "Een van de oudste bossen van de Hoge Veluwe met kronkelende paadjes die lijken uit een sprookje. De Big Five van Otterlo maken dit bos tot een ware ontdekkingstocht voor alle leeftijden.",
-            highlights: [
-                "Houten sculpturen 'Big Five van Otterlo'",
-                "Kronkelende bomen en mysterieuze paadjes",
-                "Direct vanaf De Wije Werelt toegankelijk",
-                "Paddenstoelen en zwammen op dode boomstammen",
-                "Oudste jeneverbessenbes van de Veluwe"
-            ],
-            legend: "🌙 WITTE WIEVEN: In dit jeneverbessenbos hielden de Witte Wieven van heel de Veluwe hun jaarlijkse vergadering! Herbergier Evert Mulder zag ze in 1853 vanuit zijn keukenraam..."
-        },
-        {
-            name: "Roekelse Bos Verborgen Parels",
-            coords: [52.0950, 5.7350],
-            distance: "6.8 km",
-            difficulty: "Gemiddeld",
-            duration: "2.5 uur",
-            terrain: "Bos & heide",
-            season: "Altijd Mooi",
-            description: "Een onbekend bosgebied waar je gemakkelijk kunt verdwalen in de beste zin van het woord. Hier vind je de rust en stilte die steeds zeldzamer wordt. Perfect voor wie echt wil ontsnappen aan de drukte.",
-            highlights: [
-                "Totale rust en stilte - weg van alle drukte",
-                "Hondenlossloopgebied - hondenparadijs",
-                "Geocache wandelroute voor extra avontuur",
-                "Prachtige heidebloeiplassen verstopt in het bos",
-                "Perfecte vogelspotting vroeg in de ochtend"
-            ]
-        },
-        {
-            name: "Klompenpad Kreelsepad",
-            coords: [52.0350, 5.8450],
-            distance: "14 km",
-            difficulty: "Pittig",
-            duration: "4-5 uur",
-            terrain: "Heide, bos & landbouw",
-            season: "Herfst Goud",
-            description: "Voor de echte wandelliefhebber! Dit Klompenpad neemt je mee door de mooiste hoekjes van de Zuid-Veluwe. Van uitgestrekte heidevelden tot historische schaapskooien - een complete Veluwe-ervaring.",
-            highlights: [
-                "Langste route voor serieuze wandelaars",
-                "Heidebloemplas - verborgen idyllisch meertje",
-                "Historische grafheuvels en schaapskooi",
-                "Natuurcentrum Veluwe als startpunt",
-                "Authentiek Gelders cultuurlandschap"
-            ]
-        },
-        {
-            name: "Nederlands Tegelmuseum Geheim",
-            coords: [52.0950, 5.7680],
-            distance: "2.5 km",
-            difficulty: "Makkelijk",
-            duration: "1 uur + museumbezoek",
-            terrain: "Dorpswandeling",
-            season: "Altijd Open",
-            description: "Otterlo's best bewaarde geheim! Het Nederlands Tegelmuseum herbergt de grootste tegelcollectie van Nederland, deels van Helene Kröller-Müller zelf. Een culturele verrassing die niemand verwacht.",
-            highlights: [
-                "Unieke collectie tegels van Kröller-Müller",
-                "Slechts 5 minuten lopen van Kröller-Müller Museum",
-                "Delfts Blauw en zeldzame antieke tegels",
-                "Gedetailleerde schilderingen die lijken op foto's",
-                "Perfecte regendag activiteit"
-            ],
-            legend: "⚔️ OORLOGSLEGENDE: Otterlo was het toneel van de laatste grote veldslag op Nederlandse bodem (16-17 april 1945). Meer dan 300 Duitse soldaten vielen hier, en hun geesten zouden nog rond het dorpsplein dwalen..."
-        },
-        {
-            name: "Het Spookachtige Solse Gat",
-            coords: [52.2433, 5.6469],
-            distance: "3.8 km",
-            difficulty: "Makkelijk",
-            duration: "1.5-2 uur",
-            terrain: "Mysterieuze kuil & bos",
-            season: "Halloween Perfect",
-            description: "Een van Nederlands meest beruchte spooklocaties! In deze natuurlijke kuil verdween eeuwen geleden een heel klooster in de aarde. Om middernacht hoor je nog altijd gebarsten klokken uit de diepte...",
-            highlights: [
-                "Nederlands bekendste spooklegende",
-                "Mysterieuze kuil met bovennatuurlijke verschijningen",
-                "Blauwe gloed 's avonds boven de kuil",
-                "Restaurant Boshuis Drie toont historische tegels",
-                "Kloostergeesten die om middernacht verschijnen"
-            ],
-            legend: "⛪ VERVLOEKT KLOOSTER: Monniken verkochten hun ziel aan de duivel. Op een stormachtige kerstnacht verdween het complete klooster in de diepte. Sindsdien klinken er gebarsten klokken uit de aarde..."
-        },
-        {
-            name: "Kasteel Doorwerth Spooktocht",
-            coords: [51.9847, 5.7889],
-            distance: "4.2 km",
-            difficulty: "Gemiddeld",
-            duration: "2-3 uur",
-            terrain: "Kasteel & kasteelpark",
-            season: "Spookseizoen",
-            description: "Nederlands bekendste spookkasteel! Wandel door het kasteelpark en ervaar de verhalen van het verhongerde meisje, moordenaar Jan Vinken en Baron Van Brakel die nog altijd rondwaart in zijn voormalige thuis.",
-            highlights: [
-                "Nederlands bekendste spookkasteel",
-                "Drie verschillende spoken met eigen verhalen",
-                "Elektromagnetische verstoringen gemeten door onderzoekers",
-                "Prachtig kasteelpark aan de Rijn",
-                "Jachtzaal waar het spook het meest actief is"
-            ],
-            legend: "👻 SPOKENPARADIJS: In de Jachtzaal verschijnt een verhongerd meisje, Jan Vinken die een kamenier vermoordde waart nog rond, en Baron Van Brakel (†1878) toont zich aan bezoekers. Paranormale onderzoekers registreerden hier doorschijnende gestalten!"
-        },
-        {
-            name: "De Jufferboom van Hoog Soeren",
-            coords: [52.1667, 5.9167],
-            distance: "5.5 km",
-            difficulty: "Gemiddeld",
-            duration: "2.5 uur",
-            terrain: "Grindwegen & mystiek bos",
-            season: "Mystiek Najaar",
-            description: "Een reusachtige holle beuk waarin de 'witte juffer' woont! 's Nachts brandt er een lichtje in de boom en hoor je haar spinnen. De boom is zo hol dat er een man rechtop in kan staan.",
-            highlights: [
-                "Reusachtige holle beuk met bewoonster",
-                "Nachtelijk lichtje en spingeluid",
-                "Zwarte hond met vurige ogen in de omgeving",
-                "Boom groot genoeg om in te staan",
-                "Grindweg vol geschiedenis en verhalen"
-            ],
-            legend: "🌙 WITTE JUFFER: In deze eeuwenoude holle beuk woont de mysterieuze witte juffer van Hoog Soeren. Ze spint elke nacht bij het licht van een kaars, en wandelaars horen haar spinwiel draaien door het bos..."
-        }
+        {name: "Het Mysterieuze Mosselse Zand", coords: [52.0920, 5.7650], distance: "6.2 km", difficulty: "Gemiddeld", duration: "2-2.5 uur", terrain: "Zandverstuiving & bos", season: "Zomer Perfect", description: "Een verborgen parel direct bij De Wije Werelt! Het Mosselse Zand is een adembenemende zandverstuiving waar je je waant in de Kalahari.", highlights: ["Mini-woestijn ervaring", "Zandhagedissen en heideblauwtjes", "Vanaf De Wije Werelt (300m!)", "Magische zonsondergang", "Oerrr natuurspeeltuin"], legend: "🌙 LEGENDE: Witte Wieven hielden hier hun jaarlijkse bijeenkomst. 's Avonds zie je mysterieuze lichtjes zweven..."},
+        {name: "Planken Wambuis Wildsafari", coords: [52.0650, 5.7800], distance: "8.5 km", difficulty: "Gemiddeld", duration: "3-4 uur", terrain: "Bos, heide & weiland", season: "Herfst Spectaculair", description: "De geheime tuin van de Veluwe! Dit uitgestrekte natuurgebied is een waar paradijs voor wilde dieren.", highlights: ["Beste wildspotting op de Veluwe", "Theeschenkerij Mossel", "Eeuwenoude beukenlanen", "New Forest pony's", "Spaanse runderen"], legend: "👻 SPOOKLEGENDE: 's Avonds zweeft een brandende dakschoof - de geest van een boer die zijn boerderij in brand stak."},
+        {name: "Het Spookachtige Solse Gat", coords: [52.2433, 5.6469], distance: "3.8 km", difficulty: "Makkelijk", duration: "1.5-2 uur", terrain: "Mysterieuze kuil & bos", season: "Halloween Perfect", description: "Nederlands meest beruchte spooklocatie! Hier verdween eeuwen geleden een heel klooster in de aarde.", highlights: ["Nederlandse spooklegende", "Mysterieuze kuil", "Blauwe gloed 's avonds", "Restaurant Boshuis Drie", "Kloostergeesten"], legend: "⛪ VERVLOEKT: Monniken verkochten hun ziel aan de duivel. Op een stormachtige kerstnacht verdween het klooster in de diepte..."},
+        {name: "Kasteel Doorwerth Spooktocht", coords: [51.9847, 5.7889], distance: "4.2 km", difficulty: "Gemiddeld", duration: "2-3 uur", terrain: "Kasteel & park", season: "Spookseizoen", description: "Nederlands bekendste spookkasteel! Drie verschillende spoken met eigen verhalen.", highlights: ["Bekendste spookkasteel", "Drie spoken", "Paranormaal onderzoek", "Kasteelpark aan Rijn", "Actieve Jachtzaal"], legend: "👻 SPOKENPARADIJS: Verhongerd meisje, moordenaar Jan Vinken en Baron Van Brakel (†1878) warten nog rond..."},
+        {name: "De Jufferboom van Hoog Soeren", coords: [52.1667, 5.9167], distance: "5.5 km", difficulty: "Gemiddeld", duration: "2.5 uur", terrain: "Grindwegen & bos", season: "Mystiek Najaar", description: "Reusachtige holle beuk waarin de 'witte juffer' woont! 's Nachts brandt er een lichtje en hoor je haar spinnen.", highlights: ["Holle beuk met bewoonster", "Nachtelijk lichtje", "Zwarte hond met vurige ogen", "Boom om in te staan", "Historische grindweg"], legend: "🌙 WITTE JUFFER: Spint elke nacht bij kaarslicht. Wandelaars horen haar spinwiel draaien door het bos..."}
     ];
 
-    // Functie om route details te tonen
-    function showRouteDetails(route) {
-        const detailsDiv = document.getElementById('route-details');
-        detailsDiv.className = 'route-details active';
+    function showRouteDetails(route, fromList = false) {
+        if (fromList) {
+            document.querySelectorAll('.route-item').forEach(item => item.classList.remove('active'));
+            const activeItem = Array.from(document.querySelectorAll('.route-item')).find(item => item.textContent.includes(route.name));
+            if (activeItem) activeItem.classList.add('active');
+            map.setView(route.coords, 13);
+        }
         
-        const legendSection = route.legend ? `
-            <div class="legend-section">
-                <h4>✨ Mystieke Legende</h4>
-                <div class="legend-text">${route.legend}</div>
-            </div>
-        ` : '';
+        const legendSection = route.legend ? `<div class="legend-section"><h4>✨ Mystieke Legende</h4><div class="legend-text">${route.legend}</div></div>` : '';
         
-        detailsDiv.innerHTML = `
-            <div class="route-title">
-                <span class="route-icon">🥾</span>
-                ${route.name}
-                <span class="season-badge">${route.season}</span>
-            </div>
-            
+        document.getElementById('route-details').innerHTML = `
+            <div class="route-title">🥾 ${route.name} <span class="season-badge">${route.season}</span></div>
             <div class="route-info">
-                <div class="info-item">
-                    <div class="info-label">Afstand</div>
-                    <div class="info-value">${route.distance}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Moeilijkheid</div>
-                    <div class="info-value">${route.difficulty}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Duur</div>
-                    <div class="info-value">${route.duration}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Terrein</div>
-                    <div class="info-value">${route.terrain}</div>
-                </div>
+                <div class="info-item"><div class="info-label">Afstand</div><div class="info-value">${route.distance}</div></div>
+                <div class="info-item"><div class="info-label">Moeilijkheid</div><div class="info-value">${route.difficulty}</div></div>
+                <div class="info-item"><div class="info-label">Duur</div><div class="info-value">${route.duration}</div></div>
+                <div class="info-item"><div class="info-label">Terrein</div><div class="info-value">${route.terrain}</div></div>
             </div>
-            
             <p class="route-description">${route.description}</p>
-            
-            <div class="highlights">
-                <h4>✨ Verborgen Schatten van deze Route</h4>
-                <ul>
-                    ${route.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
-                </ul>
-            </div>
-            
+            <div class="highlights"><h4>✨ Hoogtepunten</h4><ul>${route.highlights.map(h => `<li>${h}</li>`).join('')}</ul></div>
             ${legendSection}
         `;
     }
 
-    // Voeg route markers toe
+    function createRoutesList() {
+        const list = document.getElementById('routes-list');
+        routes.forEach(route => {
+            const isMystiek = route.name.includes('Spook') || route.name.includes('Solse Gat') || route.name.includes('Doorwerth') || route.name.includes('Jufferboom');
+            const icon = isMystiek ? '👻' : '🥾';
+            const item = document.createElement('div');
+            item.className = `route-item ${isMystiek ? 'mystiek' : ''}`;
+            item.innerHTML = `<div class="route-item-title">${icon} ${route.name}</div><div class="route-item-info">${route.distance} • ${route.difficulty}</div>`;
+            item.addEventListener('click', () => showRouteDetails(route, true));
+            list.appendChild(item);
+        });
+    }
+
     routes.forEach(route => {
-        // Gebruik mystiek icoon voor spooklocaties
         const isMystiek = route.name.includes('Spook') || route.name.includes('Solse Gat') || route.name.includes('Doorwerth') || route.name.includes('Jufferboom');
         const icon = isMystiek ? mystiekIcon : routeIcon;
-        
-        const marker = L.marker(route.coords, {icon: icon}).addTo(map);
-        
-        marker.bindPopup(`
-            <div class="custom-popup">
-                <div class="popup-title">${route.name}</div>
-                <div class="popup-distance">${route.distance} • ${route.difficulty}</div>
-            </div>
-        `);
-        
+        const marker = L.marker(route.coords, {icon}).addTo(map);
+        marker.bindPopup(`<b>${route.name}</b><br>${route.distance} • ${route.difficulty}`);
         marker.on('click', () => showRouteDetails(route));
     });
 
-    // Voeg control layer toe voor betere navigatie
-    const baseMaps = {
-        "Standaard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-        "Satelliet": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
-    };
-
-    L.control.layers(baseMaps).addTo(map);
-
-    // Voeg schaal toe
-    L.control.scale().addTo(map);
+    createRoutesList();
 </script>
 ```
 
