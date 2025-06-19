@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Veluwe Ontdekkingen – Rond De Wije Werelt</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+  <h1>🌿 Veluwe Ontdekkingen – Dichtbij De Wije Werelt</h1>
+  <div id="map" style="height:400px"></div>
+  <script>
+    var map = L.map('map').setView([52.096,5.78],12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    var locaties = [
+      {name:'Otterloop‑pad', coords:[52.096,5.781], km:1, type:'route'},
+      {name:'Mosselse Zand & Beekse Hoeve', coords:[52.095,5.78], km:1, type:'route'},
+      {name:'Hoenderloo–Otterlo via Sint‑Hubertus', coords:[52.04,5.8], km:3, type:'route'},
+      {name:'Kleinschalig vogelbos bij Hulshorst', coords:[52.397,5.785], km:30, type:'poi'},
+      {name:'Verstilde Heidese aanrand Epe', coords:[52.429,6.103], km:33, type:'route'},
+      {name:'Stille boerendorp Joppe', coords:[52.177,6.210], km:36, type:'poi'}
+    ];
+
+    locaties.forEach(l => {
+      L.marker(l.coords).addTo(map)
+        .bindPopup('<b>'+l.name+'</b><br>'+ (l.type==='route'? l.km+' km van park' : l.km+' km afstand') );
+    });
+  </script>
+
+  <hr>
+  <section>
+    <h2>📋 Beschrijvingen van verborgen parels</h2>
+    <ul>
+      <li><b>Otterloop-pad (~5 km):</b> Rood gemarkeerde lus over heide en zand; start bij De Wije Werelt. Rustiger dan standaard Otterlo-routes.</li>
+      <li><b>Mosselse Zand & Beekse Hoeve (~4 km):</b> Zen-zandvlaktes en dennenbos; korte route met stilte en ruimte .</li>
+      <li><b>Hoenderloo–Otterlo via Sint‑Hubertus (~10 km):</b> Kleine lanen en verstilde heide, veel rust en wit zand; niet te druk .</li>
+      <li><b>Kleinschalig vogelbos bij Hulshorst (~30 km):</b> Wandeling langs rietvelden, vogelspotplek, een lokaal natuurgebied zonder ‘promolabel’ .</li>
+      <li><b>Verstilde heidese rand bij Epe (~33 km):</b> Geen uitkijktoren, maar oneindige heide en vennen, stille routes, lokaal gebruik, geen commercie.</li>
+      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met authentieke boerderijen, kerk en landweggetjes; perfecte korte wandeling of foto‑stop.</li>
+    </ul>
+  </section>
+  <footer>
+    <p>📍 Afstand in luchtlijn vanaf De Wije Werelt.</p>
+  </footer>
+</body>
+</html>
