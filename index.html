@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verborgen Wandelroutes rond De Wije Werelt</title>
+    <title>Verborgen Wandelroutes & Mystieke Legendes rond De Wije Werelt</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <style>
         * {
@@ -157,6 +157,29 @@
         left: 0;
     }
 
+    .legend-section {
+        background: linear-gradient(135deg, #2F2F2F, #4A4A4A);
+        color: #FFD700;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+        border-left: 4px solid #9370DB;
+        box-shadow: 0 0 15px rgba(147, 112, 219, 0.3);
+    }
+
+    .legend-section h4 {
+        color: #FFD700;
+        margin-bottom: 8px;
+        font-size: 1.1em;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .legend-text {
+        font-style: italic;
+        line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
     .season-badge {
         display: inline-block;
         background: linear-gradient(45deg, #FFD700, #FFA500);
@@ -221,13 +244,13 @@
 <body>
     <div class="container">
         <header>
-            <h1>🌲 Verborgen Parels rond De Wije Werelt 🌲</h1>
-            <p class="subtitle">Ontdek de mooiste onbekende wandelroutes op de Veluwe</p>
+            <h1>🌲 Verborgen Parels & Mystieke Legendes rond De Wije Werelt 🌲</h1>
+            <p class="subtitle">Ontdek de mooiste onbekende wandelroutes en eeuwenoude sagen op de Veluwe</p>
         </header>
 
 ```
     <div class="welcome-text">
-        <p>Welkom bij jouw gids voor de beste verborgen wandelroutes binnen 40km van EuroParcs De Wije Werelt! Klik op een marker op de kaart om meer te ontdekken over elke unieke route. Van mysterieuze bossen tot uitgestrekte zandverstuivingen - de Veluwe heeft zoveel meer te bieden dan de bekende toeristische paden.</p>
+        <p>Welkom bij jouw gids voor de mooiste verborgen wandelroutes én mystieke legendes binnen 40km van EuroParcs De Wije Werelt! Klik op een marker op de kaart om meer te ontdekken over elke unieke route en de eeuwenoude sagen die er leven. Van spookkastelen tot Witte Wieven, van verdwenen kloosters tot mysterieuze bosgeesten - de Veluwe barst van de verhalen die generaties lang zijn doorverteld. 👻🌲</p>
     </div>
 
     <div class="map-container">
@@ -239,7 +262,7 @@
             <span class="route-icon">🗺️</span>
             Selecteer een wandelroute op de kaart
         </div>
-        <p class="route-description">Klik op een van de markers op de kaart om gedetailleerde informatie over de wandelroute te bekijken. Elke route is zorgvuldig geselecteerd om je een unieke en onvergetelijke ervaring te bieden, weg van de drukte.</p>
+        <p class="route-description">Klik op een van de markers op de kaart om gedetailleerde informatie over de wandelroute te bekijken. Elke route is zorgvuldig geselecteerd om je een unieke en onvergetelijke ervaring te bieden, weg van de drukte. De 👻 markers tonen locaties met mystieke legendes!</p>
     </div>
 </div>
 
@@ -269,6 +292,12 @@
         className: 'custom-div-icon'
     });
 
+    const mystiekIcon = L.divIcon({
+        html: '👻',
+        iconSize: [25, 25],
+        className: 'custom-div-icon'
+    });
+
     // Voeg De Wije Werelt marker toe
     L.marker(wijeWereltCoords, {icon: wijeWereltIcon})
         .addTo(map)
@@ -291,7 +320,8 @@
                 "Vanaf De Wije Werelt direct toegankelijk (300m!)",
                 "Magische zonsondergang vanaf de zandduinen",
                 "Oerrr natuurspeeltuin voor kinderen onderweg"
-            ]
+            ],
+            legend: "🌙 LEGENDE: In de nabije bossen rondzwervende Witte Wieven hielden hun jaarlijkse bijeenkomst. Locals beweren dat je 's avonds mysterieuze lichtjes kunt zien zweven over het zand..."
         },
         {
             name: "Planken Wambuis Wildsafari",
@@ -308,7 +338,8 @@
                 "Eeuwenoude beukenlanen en mysterieuze knoestige eiken",
                 "Graeme klauwier en nachtzwaluw in broedseizoen",
                 "New Forest pony's en Spaanse runderen"
-            ]
+            ],
+            legend: "👻 SPOOKLEGENDE: Langs de Renkumse heide zweeft 's avonds een brandende dakschoof - de geest van een boer die eeuwen geleden zijn boerderij in brand stak. Spoorwerkers zien dit mysterieuze licht nog steeds!"
         },
         {
             name: "Geheime Grenspalenroute",
@@ -325,7 +356,8 @@
                 "Dichte eikenbossen met eeuwenoude bomen",
                 "Kans op wilde zwijnen en dassen",
                 "Perfecte route voor contemplatieve wandeling"
-            ]
+            ],
+            legend: "🔮 MYSTERIE: In deze dichte eikenbossen huist Blauwe Gerrit - een onzichtbare bosgeest die reizigers op de nek springt. Hij beschermde ooit het arme meisje Hanna tegen een kwaadaardige jonker!"
         },
         {
             name: "Wekeromse Zand Mini-Sahara",
@@ -342,7 +374,8 @@
                 "Grafheuvels en restanten van vroege nederzettingen",
                 "Perfecte picknickplekken tussen de sparren",
                 "Kinderen kunnen urenlang spelen in het zand"
-            ]
+            ],
+            legend: "⚱️ PREHISTORIE: Hier werd het graf gevonden van de Lunterse Kopersmid uit 2500 v.Chr.! Zijn zeldzame grafgiften tonen dat de Veluwe al millennia een mystieke plek was..."
         },
         {
             name: "Otterlose Buurtbos Avontuur",
@@ -359,7 +392,8 @@
                 "Direct vanaf De Wije Werelt toegankelijk",
                 "Paddenstoelen en zwammen op dode boomstammen",
                 "Oudste jeneverbessenbes van de Veluwe"
-            ]
+            ],
+            legend: "🌙 WITTE WIEVEN: In dit jeneverbessenbos hielden de Witte Wieven van heel de Veluwe hun jaarlijkse vergadering! Herbergier Evert Mulder zag ze in 1853 vanuit zijn keukenraam..."
         },
         {
             name: "Roekelse Bos Verborgen Parels",
@@ -410,7 +444,62 @@
                 "Delfts Blauw en zeldzame antieke tegels",
                 "Gedetailleerde schilderingen die lijken op foto's",
                 "Perfecte regendag activiteit"
-            ]
+            ],
+            legend: "⚔️ OORLOGSLEGENDE: Otterlo was het toneel van de laatste grote veldslag op Nederlandse bodem (16-17 april 1945). Meer dan 300 Duitse soldaten vielen hier, en hun geesten zouden nog rond het dorpsplein dwalen..."
+        },
+        {
+            name: "Het Spookachtige Solse Gat",
+            coords: [52.2433, 5.6469],
+            distance: "3.8 km",
+            difficulty: "Makkelijk",
+            duration: "1.5-2 uur",
+            terrain: "Mysterieuze kuil & bos",
+            season: "Halloween Perfect",
+            description: "Een van Nederlands meest beruchte spooklocaties! In deze natuurlijke kuil verdween eeuwen geleden een heel klooster in de aarde. Om middernacht hoor je nog altijd gebarsten klokken uit de diepte...",
+            highlights: [
+                "Nederlands bekendste spooklegende",
+                "Mysterieuze kuil met bovennatuurlijke verschijningen",
+                "Blauwe gloed 's avonds boven de kuil",
+                "Restaurant Boshuis Drie toont historische tegels",
+                "Kloostergeesten die om middernacht verschijnen"
+            ],
+            legend: "⛪ VERVLOEKT KLOOSTER: Monniken verkochten hun ziel aan de duivel. Op een stormachtige kerstnacht verdween het complete klooster in de diepte. Sindsdien klinken er gebarsten klokken uit de aarde..."
+        },
+        {
+            name: "Kasteel Doorwerth Spooktocht",
+            coords: [51.9847, 5.7889],
+            distance: "4.2 km",
+            difficulty: "Gemiddeld",
+            duration: "2-3 uur",
+            terrain: "Kasteel & kasteelpark",
+            season: "Spookseizoen",
+            description: "Nederlands bekendste spookkasteel! Wandel door het kasteelpark en ervaar de verhalen van het verhongerde meisje, moordenaar Jan Vinken en Baron Van Brakel die nog altijd rondwaart in zijn voormalige thuis.",
+            highlights: [
+                "Nederlands bekendste spookkasteel",
+                "Drie verschillende spoken met eigen verhalen",
+                "Elektromagnetische verstoringen gemeten door onderzoekers",
+                "Prachtig kasteelpark aan de Rijn",
+                "Jachtzaal waar het spook het meest actief is"
+            ],
+            legend: "👻 SPOKENPARADIJS: In de Jachtzaal verschijnt een verhongerd meisje, Jan Vinken die een kamenier vermoordde waart nog rond, en Baron Van Brakel (†1878) toont zich aan bezoekers. Paranormale onderzoekers registreerden hier doorschijnende gestalten!"
+        },
+        {
+            name: "De Jufferboom van Hoog Soeren",
+            coords: [52.1667, 5.9167],
+            distance: "5.5 km",
+            difficulty: "Gemiddeld",
+            duration: "2.5 uur",
+            terrain: "Grindwegen & mystiek bos",
+            season: "Mystiek Najaar",
+            description: "Een reusachtige holle beuk waarin de 'witte juffer' woont! 's Nachts brandt er een lichtje in de boom en hoor je haar spinnen. De boom is zo hol dat er een man rechtop in kan staan.",
+            highlights: [
+                "Reusachtige holle beuk met bewoonster",
+                "Nachtelijk lichtje en spingeluid",
+                "Zwarte hond met vurige ogen in de omgeving",
+                "Boom groot genoeg om in te staan",
+                "Grindweg vol geschiedenis en verhalen"
+            ],
+            legend: "🌙 WITTE JUFFER: In deze eeuwenoude holle beuk woont de mysterieuze witte juffer van Hoog Soeren. Ze spint elke nacht bij het licht van een kaars, en wandelaars horen haar spinwiel draaien door het bos..."
         }
     ];
 
@@ -418,6 +507,13 @@
     function showRouteDetails(route) {
         const detailsDiv = document.getElementById('route-details');
         detailsDiv.className = 'route-details active';
+        
+        const legendSection = route.legend ? `
+            <div class="legend-section">
+                <h4>✨ Mystieke Legende</h4>
+                <div class="legend-text">${route.legend}</div>
+            </div>
+        ` : '';
         
         detailsDiv.innerHTML = `
             <div class="route-title">
@@ -453,12 +549,18 @@
                     ${route.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
                 </ul>
             </div>
+            
+            ${legendSection}
         `;
     }
 
     // Voeg route markers toe
     routes.forEach(route => {
-        const marker = L.marker(route.coords, {icon: routeIcon}).addTo(map);
+        // Gebruik mystiek icoon voor spooklocaties
+        const isMystiek = route.name.includes('Spook') || route.name.includes('Solse Gat') || route.name.includes('Doorwerth') || route.name.includes('Jufferboom');
+        const icon = isMystiek ? mystiekIcon : routeIcon;
+        
+        const marker = L.marker(route.coords, {icon: icon}).addTo(map);
         
         marker.bindPopup(`
             <div class="custom-popup">
