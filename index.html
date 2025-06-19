@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,17 +16,24 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     var locaties = [
-      {name:'Otterloop‑pad', coords:[52.096,5.781], km:1, type:'route'},
+      {name:'Otterloop-pad', coords:[52.096,5.781], km:1, type:'route'},
       {name:'Mosselse Zand & Beekse Hoeve', coords:[52.095,5.78], km:1, type:'route'},
       {name:'Hoenderloo–Otterlo via Sint‑Hubertus', coords:[52.04,5.8], km:3, type:'route'},
       {name:'Kleinschalig vogelbos bij Hulshorst', coords:[52.397,5.785], km:30, type:'poi'},
-      {name:'Verstilde Heidese aanrand Epe', coords:[52.429,6.103], km:33, type:'route'},
+      {name:'Verstilde heidese rand bij Epe', coords:[52.429,6.103], km:33, type:'route'},
       {name:'Stille boerendorp Joppe', coords:[52.177,6.210], km:36, type:'poi'}
-    ];
+      {name:"Dorenweertsepad (Klompenpad)", coords:[51.995,5.896], km:27, type:"route"},
+  {name:"Uddelermeerpad (Klompenpad)", coords:[52.207,5.726], km:35, type:"route"},
+  {name:"Route Deelen (Deelerwoud)", coords:[52.0,5.9], km:30, type:"route"},
+  {name:"Trage Tocht Drie (Speulderbos)", coords:[52.285,5.47], km:35, type:"route"},
+  {name:"Loenense Enkenpad", coords:[52.113,6.03], km:24, type:"route"},
+  {name:"Zandenbos – Nunspeet", coords:[52.378,5.808], km:29, type:"route"},
+  {name:"Wolfheze & Heelsumse beek", coords:[52.009,5.788], km:14, type:"route"},
+];
 
     locaties.forEach(l => {
       L.marker(l.coords).addTo(map)
-        .bindPopup('<b>'+l.name+'</b><br>'+ (l.type==='route'? l.km+' km van park' : l.km+' km afstand') );
+        .bindPopup('<b>'+l.name+'</b><br>' + (l.type === 'route' ? l.km + ' km van park' : l.km + ' km afstand'));
     });
   </script>
 
@@ -33,16 +41,24 @@
   <section>
     <h2>📋 Beschrijvingen van verborgen parels</h2>
     <ul>
-      <li><b>Otterloop-pad (~5 km):</b> Rood gemarkeerde lus over heide en zand; start bij De Wije Werelt. Rustiger dan standaard Otterlo-routes.</li>
-      <li><b>Mosselse Zand & Beekse Hoeve (~4 km):</b> Zen-zandvlaktes en dennenbos; korte route met stilte en ruimte .</li>
-      <li><b>Hoenderloo–Otterlo via Sint‑Hubertus (~10 km):</b> Kleine lanen en verstilde heide, veel rust en wit zand; niet te druk .</li>
-      <li><b>Kleinschalig vogelbos bij Hulshorst (~30 km):</b> Wandeling langs rietvelden, vogelspotplek, een lokaal natuurgebied zonder ‘promolabel’ .</li>
-      <li><b>Verstilde heidese rand bij Epe (~33 km):</b> Geen uitkijktoren, maar oneindige heide en vennen, stille routes, lokaal gebruik, geen commercie.</li>
-      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met authentieke boerderijen, kerk en landweggetjes; perfecte korte wandeling of foto‑stop.</li>
-    </ul>
+      <li><b>Otterloop-pad (~5 km):</b> Rood gemarkeerde lus over heide en zand; start bij De Wije Werelt.</li>
+      <li><b>Mosselse Zand & Beekse Hoeve (~4 km):</b> Zen-zandvlaktes en dennenbos; korte route met stilte en ruimte.</li>
+      <li><b>Hoenderloo–Otterlo via Sint‑Hubertus (~10 km):</b> Kleine lanen en verstilde heide; niet toeristisch.</li>
+      <li><b>Kleinschalig vogelbos bij Hulshorst (~30 km):</b> Rustige wandeling langs rietvelden, zonder drukte.</li>
+      <li><b>Verstilde heidese rand bij Epe (~33 km):</b> Geen uitkijktoren, maar wel weids uitzicht en stilte.</li>
+      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met authentieke boerderijen en landweggetjes.</li>
+    
+    <li><b>Dorenweertsepad (~8–13 km):</b> Stuwwal, uitzicht over de Nederrijn vanaf Duno-plateau bij Doorwerth.</li>
+    <li><b>Uddelermeerpad (~10–16 km):</b> Rond het Uddelermeer, over boerenland en door het Kroondomein.</li>
+    <li><b>Route Deelen (~12–14 km):</b> Door heide en bos, langs oude vliegbasis en kans op wild.</li>
+    <li><b>Trage Tocht Drie (~11 km):</b> Speulder- en Sprielderbos: dansende bomen, Solse Gat, zeer rustig.</li>
+    <li><b>Loenense Enkenpad (~9 km):</b> Door sprengen, essen en oude akkers rond Loenen.</li>
+    <li><b>Zandenbos – Nunspeet (~6–10 km):</b> Stille dennenbossen, wit zand en zonnedauw langs de beek.</li>
+    <li><b>Wolfheze & Heelsumse Beek (~8 km):</b> Grafheuvels, eeuwenoude eiken en stille paadjes langs het water.</li>
+</ul>
   </section>
   <footer>
-    <p>📍 Afstand in luchtlijn vanaf De Wije Werelt.</p>
+    <p>📍 Afstanden zijn in luchtlijn vanaf De Wije Werelt.</p>
   </footer>
 </body>
 </html>
