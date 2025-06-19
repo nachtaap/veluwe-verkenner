@@ -1,39 +1,38 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>Veluwe Ontdekkingen – Rond De Wije Werelt</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
   <h1>🌿 Veluwe Ontdekkingen – Dichtbij De Wije Werelt</h1>
-  <div id="map" style="height:400px"></div>
+  <div id="map" style="height: 400px;"></div>
   <script>
-    var map = L.map('map').setView([52.096,5.78],12);
+    var map = L.map('map').setView([52.096, 5.78], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     var locaties = [
-      {name:'Otterloop-pad', coords:[52.096,5.781], km:1, type:'route'},
-      {name:'Mosselse Zand & Beekse Hoeve', coords:[52.095,5.78], km:1, type:'route'},
-      {name:'Hoenderloo–Otterlo via Sint‑Hubertus', coords:[52.04,5.8], km:3, type:'route'},
-      {name:'Kleinschalig vogelbos bij Hulshorst', coords:[52.397,5.785], km:30, type:'poi'},
-      {name:'Verstilde heidese rand bij Epe', coords:[52.429,6.103], km:33, type:'route'},
-      {name:'Stille boerendorp Joppe', coords:[52.177,6.210], km:36, type:'poi'}
+      {name:"Otterloop-pad", coords:[52.096,5.781], km:1, type:"route"},
+      {name:"Mosselse Zand & Beekse Hoeve", coords:[52.095,5.78], km:1, type:"route"},
+      {name:"Hoenderloo–Otterlo via Sint‑Hubertus", coords:[52.04,5.8], km:3, type:"route"},
+      {name:"Kleinschalig vogelbos bij Hulshorst", coords:[52.397,5.785], km:30, type:"route"},
+      {name:"Verstilde heidese rand bij Epe", coords:[52.429,6.103], km:33, type:"route"},
+      {name:"Stille boerendorp Joppe", coords:[52.177,6.210], km:36, type:"route"},
       {name:"Dorenweertsepad (Klompenpad)", coords:[51.995,5.896], km:27, type:"route"},
-  {name:"Uddelermeerpad (Klompenpad)", coords:[52.207,5.726], km:35, type:"route"},
-  {name:"Route Deelen (Deelerwoud)", coords:[52.0,5.9], km:30, type:"route"},
-  {name:"Trage Tocht Drie (Speulderbos)", coords:[52.285,5.47], km:35, type:"route"},
-  {name:"Loenense Enkenpad", coords:[52.113,6.03], km:24, type:"route"},
-  {name:"Zandenbos – Nunspeet", coords:[52.378,5.808], km:29, type:"route"},
-  {name:"Wolfheze & Heelsumse beek", coords:[52.009,5.788], km:14, type:"route"},
-];
+      {name:"Uddelermeerpad (Klompenpad)", coords:[52.207,5.726], km:35, type:"route"},
+      {name:"Route Deelen (Deelerwoud)", coords:[52.000,5.900], km:30, type:"route"},
+      {name:"Trage Tocht Drie (Speulderbos)", coords:[52.285,5.470], km:35, type:"route"},
+      {name:"Loenense Enkenpad", coords:[52.113,6.030], km:24, type:"route"},
+      {name:"Zandenbos – Nunspeet", coords:[52.378,5.808], km:29, type:"route"},
+      {name:"Wolfheze & Heelsumse beek", coords:[52.009,5.788], km:14, type:"route"}
+    ];
 
     locaties.forEach(l => {
       L.marker(l.coords).addTo(map)
-        .bindPopup('<b>'+l.name+'</b><br>' + (l.type === 'route' ? l.km + ' km van park' : l.km + ' km afstand'));
+        .bindPopup('<b>' + l.name + '</b><br>' + l.km + ' km afstand');
     });
   </script>
 
@@ -46,16 +45,15 @@
       <li><b>Hoenderloo–Otterlo via Sint‑Hubertus (~10 km):</b> Kleine lanen en verstilde heide; niet toeristisch.</li>
       <li><b>Kleinschalig vogelbos bij Hulshorst (~30 km):</b> Rustige wandeling langs rietvelden, zonder drukte.</li>
       <li><b>Verstilde heidese rand bij Epe (~33 km):</b> Geen uitkijktoren, maar wel weids uitzicht en stilte.</li>
-      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met authentieke boerderijen en landweggetjes.</li>
-    
-    <li><b>Dorenweertsepad (~8–13 km):</b> Stuwwal, uitzicht over de Nederrijn vanaf Duno-plateau bij Doorwerth.</li>
-    <li><b>Uddelermeerpad (~10–16 km):</b> Rond het Uddelermeer, over boerenland en door het Kroondomein.</li>
-    <li><b>Route Deelen (~12–14 km):</b> Door heide en bos, langs oude vliegbasis en kans op wild.</li>
-    <li><b>Trage Tocht Drie (~11 km):</b> Speulder- en Sprielderbos: dansende bomen, Solse Gat, zeer rustig.</li>
-    <li><b>Loenense Enkenpad (~9 km):</b> Door sprengen, essen en oude akkers rond Loenen.</li>
-    <li><b>Zandenbos – Nunspeet (~6–10 km):</b> Stille dennenbossen, wit zand en zonnedauw langs de beek.</li>
-    <li><b>Wolfheze & Heelsumse Beek (~8 km):</b> Grafheuvels, eeuwenoude eiken en stille paadjes langs het water.</li>
-</ul>
+      <li><b>Stille boerendorp Joppe (~36 km):</b> Historisch gehucht met boerderijen en landweggetjes.</li>
+      <li><b>Dorenweertsepad (~8–13 km):</b> Stuwwal, uitzicht over de Nederrijn vanaf Duno-plateau bij Doorwerth.</li>
+      <li><b>Uddelermeerpad (~10–16 km):</b> Rond het Uddelermeer, over boerenland en door het Kroondomein.</li>
+      <li><b>Route Deelen (~12–14 km):</b> Door heide en bos, langs oude vliegbasis en kans op wild.</li>
+      <li><b>Trage Tocht Drie (~11 km):</b> Speulder- en Sprielderbos: dansende bomen, Solse Gat, zeer rustig.</li>
+      <li><b>Loenense Enkenpad (~9 km):</b> Door sprengen, essen en oude akkers rond Loenen.</li>
+      <li><b>Zandenbos – Nunspeet (~6–10 km):</b> Stille dennenbossen, wit zand en zonnedauw langs de beek.</li>
+      <li><b>Wolfheze & Heelsumse Beek (~8 km):</b> Grafheuvels, eeuwenoude eiken en stille paadjes langs het water.</li>
+    </ul>
   </section>
   <footer>
     <p>📍 Afstanden zijn in luchtlijn vanaf De Wije Werelt.</p>
