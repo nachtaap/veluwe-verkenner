@@ -115,6 +115,60 @@
     .water { background: linear-gradient(45deg, #3498db, #2980b9); }
     .viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
     
+    .filter-section {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .filter-section h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .filter-btn.active {
+        background: linear-gradient(45deg, #2c3e50, #34495e);
+        transform: scale(1.05);
+    }
+    
+    .filter-btn:not(.active) {
+        background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+    }
+    
+    .filter-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .filter-btn.nature:not(.active) { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+    .filter-btn.historic:not(.active) { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+    .filter-btn.village:not(.active) { background: linear-gradient(45deg, #f39c12, #e67e22); }
+    .filter-btn.water:not(.active) { background: linear-gradient(45deg, #3498db, #2980b9); }
+    .filter-btn.viewpoint:not(.active) { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+    
+    .card.hidden {
+        display: none;
+    }
+    
     @media (max-width: 768px) {
         .header h1 {
             font-size: 2em;
@@ -129,6 +183,36 @@
         }
     }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                
+                cards.forEach(card => {
+                    if (category === 'all') {
+                        card.classList.remove('hidden');
+                    } else {
+                        const cardCategory = card.querySelector('.category');
+                        if (cardCategory && cardCategory.classList.contains(category)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>
 ```
 
 </head>
@@ -137,9 +221,21 @@
         <div class="header">
             <h1>🌲 Verborgen Pareltjes van de Veluwe</h1>
             <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
-        </div>
 
 ```
+        <div class="filter-section">
+            <h3>Filter op categorie:</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">🌟 Alles</button>
+                <button class="filter-btn nature" data-category="nature">🌲 Natuur</button>
+                <button class="filter-btn historic" data-category="historic">🏰 Historisch</button>
+                <button class="filter-btn village" data-category="village">🏘️ Dorpjes</button>
+                <button class="filter-btn water" data-category="water">💧 Water</button>
+                <button class="filter-btn viewpoint" data-category="viewpoint">👁️ Uitzicht</button>
+            </div>
+        </div>
+    </div>
+    
     <div class="grid">
         <div class="card">
             <div class="category nature">Natuur</div>
