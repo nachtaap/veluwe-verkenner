@@ -169,6 +169,46 @@
         display: none;
     }
     
+    .location-section {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .location-btn {
+        padding: 12px 25px;
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .location-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .location-btn:disabled {
+        background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .location-status {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #7f8c8d;
+    }
+    
+    .distance.updated {
+        color: #27ae60;
+        font-weight: bold;
+    }
+    
     @media (max-width: 768px) {
         .header h1 {
             font-size: 2em;
@@ -184,15 +224,106 @@
     }
 </style>
 <script>
+    // Locaties van alle bezienswaardigheden (geschatte coördinaten)
+    const locations = {
+        'Bezoekerscentrum Schaarsbergen': { lat: 52.0038, lng: 5.9461 },
+        'Kasteel Cannenburch': { lat: 52.2931, lng: 6.0654 },
+        'Vischpoort Elburg': { lat: 52.4489, lng: 5.8413 },
+        'Veluwemeer bij Harderwijk': { lat: 52.3411, lng: 5.6197 },
+        'Sprielderbos': { lat: 52.2375, lng: 5.7845 },
+        'Ruïne Schaffelaar': { lat: 52.1367, lng: 5.5859 },
+        'Centrum Oosterbeek': { lat: 51.9886, lng: 5.8361 },
+        'Planken Wambuis': { lat: 52.0667, lng: 5.6833 },
+        'Loenermark': { lat: 52.1167, lng: 5.9167 },
+        'Grote Kerk Barneveld': { lat: 52.1376, lng: 5.5859 },
+        'De Posbank': { lat: 52.0406, lng: 6.0314 },
+        'Bussumerheide': { lat: 52.2667, lng: 5.8000 },
+        'Hattem': { lat: 52.4728, lng: 6.0689 },
+        'Uddelerbosch': { lat: 52.4167, lng: 5.7833 },
+        'Wolderwijd': { lat: 52.3667, lng: 5.4833 },
+        'Kasteel Ruurlo': { lat: 52.0831, lng: 6.4456 },
+        'Kroondomeinen': { lat: 52.2000, lng: 5.8500 },
+        'Vierhouten': { lat: 52.3381, lng: 5.8183 },
+        'Veluwezoom Nationaal Park': { lat: 52.0333, lng: 6.0000 },
+        'Nuldernauw': { lat: 52.4000, lng: 5.8167 },
+        'Oude Kerk Nunspeet': { lat: 52.3772, lng: 5.7872 },
+        'Horsterwold': { lat: 52.3333, lng: 5.5000 },
+        'Radiokootwijk': { lat: 52.1833, lng: 5.8167 },
+        'Putten': { lat: 52.2603, lng: 5.6039 },
+        'Kootwijkerzand': { lat: 52.1667, lng: 5.7500 },
+        'Randmeren bij Harderwijk': { lat: 52.3500, lng: 5.6000 },
+        'Sint Antoniuskapel Wekerom': { lat: 52.1167, lng: 5.7167 },
+        'Bosgebied Harderwijkerweg': { lat: 52.2500, lng: 5.8000 },
+        'Uitzichtpunt Leuvenum': { lat: 52.2833, lng: 5.5333 },
+        'Ermelo': { lat: 52.3000, lng: 5.6167 },
+        'Speulderbos': { lat: 52.2667, lng: 5.7333 },
+        'Veluwe Meer bij Elburg': { lat: 52.4500, lng: 5.8500 },
+        'Oude Begraafplaats Apeldoorn': { lat: 52.2103, lng: 5.9694 },
+        'Otterlose Bos': { lat: 52.3167, lng: 5.8667 },
+        'Garderen': { lat: 52.2333, lng: 5.7167 },
+        'Vennen bij Uddel': { lat: 52.2667, lng: 5.7667 },
+        'Koepelkerk Nunspeet': { lat: 52.3772, lng: 5.7872 },
+        'Bossen bij Staverden': { lat: 52.2833, lng: 5.9000 },
+        'Zuiderheide': { lat: 52.2167, lng: 5.1833 },
+        'Voorthuizen': { lat: 52.1833, lng: 5.6167 },
+        'Hulshorsterzand': { lat: 52.3833, lng: 5.6333 },
+        'Hierdensche Beek': { lat: 52.2333, lng: 5.6833 },
+        'Oude Kerk Kootwijk': { lat: 52.1667, lng: 5.7667 },
+        'Wekeromse Zand': { lat: 52.1167, lng: 5.7167 },
+        'Uddel': { lat: 52.2667, lng: 5.7667 },
+        'De Galberg': { lat: 52.0833, lng: 5.6667 },
+        'Leuvenumse Bos': { lat: 52.2833, lng: 5.5333 },
+        'Tongerense Beek': { lat: 52.2000, lng: 5.7500 },
+        'Oude Boerderij Garderen': { lat: 52.2333, lng: 5.7167 }
+    };
+    
+    // EuroParcs De Wije Werelt locatie als fallback
+    const euroParcsLocation = { lat: 52.3167, lng: 5.8833 };
+    
+    // Functie om afstand te berekenen (Haversine formule)
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+        const R = 6371; // Radius van de aarde in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+    
+    // Functie om afstanden bij te werken
+    function updateDistances(userLat, userLng) {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const titleElement = card.querySelector('h3 a');
+            const distanceElement = card.querySelector('.distance');
+            
+            if (titleElement && distanceElement) {
+                const titleText = titleElement.textContent;
+                
+                // Zoek de locatie in onze database
+                const location = locations[titleText];
+                
+                if (location) {
+                    const distance = calculateDistance(userLat, userLng, location.lat, location.lng);
+                    distanceElement.textContent = `(${Math.round(distance)} km)`;
+                    distanceElement.classList.add('updated');
+                }
+            }
+        });
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
         const filterButtons = document.querySelectorAll('.filter-btn');
         const cards = document.querySelectorAll('.card');
+        const locationBtn = document.getElementById('locationBtn');
+        const locationStatus = document.getElementById('locationStatus');
         
+        // Filter functionaliteit
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Remove active class from all buttons
                 filterButtons.forEach(btn => btn.classList.remove('active'));
-                // Add active class to clicked button
                 this.classList.add('active');
                 
                 const category = this.getAttribute('data-category');
@@ -210,6 +341,62 @@
                     }
                 });
             });
+        });
+        
+        // Locatie functionaliteit
+        locationBtn.addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                locationStatus.textContent = 'Geolocatie wordt niet ondersteund door je browser';
+                locationStatus.style.color = '#e74c3c';
+                return;
+            }
+            
+            locationBtn.disabled = true;
+            locationBtn.textContent = '📍 Locatie ophalen...';
+            locationStatus.textContent = 'Je locatie wordt opgehaald...';
+            locationStatus.style.color = '#f39c12';
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    
+                    updateDistances(userLat, userLng);
+                    
+                    locationBtn.textContent = '✅ Afstanden bijgewerkt';
+                    locationStatus.textContent = 'Afstanden zijn bijgewerkt naar je huidige locatie!';
+                    locationStatus.style.color = '#27ae60';
+                    
+                    setTimeout(() => {
+                        locationBtn.disabled = false;
+                        locationBtn.textContent = '📍 Herbereken afstanden';
+                    }, 2000);
+                },
+                function(error) {
+                    let errorMessage = 'Er ging iets mis bij het ophalen van je locatie';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Locatietoegang geweigerd. Geef toestemming in je browser.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Locatie niet beschikbaar.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Timeout bij ophalen locatie.';
+                            break;
+                    }
+                    
+                    locationStatus.textContent = errorMessage;
+                    locationStatus.style.color = '#e74c3c';
+                    locationBtn.disabled = false;
+                    locationBtn.textContent = '📍 Probeer opnieuw';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
         });
     });
 </script>
@@ -233,6 +420,11 @@
                 <button class="filter-btn water" data-category="water">💧 Water</button>
                 <button class="filter-btn viewpoint" data-category="viewpoint">👁️ Uitzicht</button>
             </div>
+        </div>
+        
+        <div class="location-section">
+            <button id="locationBtn" class="location-btn">📍 Gebruik mijn locatie voor afstanden</button>
+            <div id="locationStatus" class="location-status"></div>
         </div>
     </div>
     
