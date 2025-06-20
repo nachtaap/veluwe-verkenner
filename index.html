@@ -4,156 +4,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wandelroutes & Mystieke Legendes - De Wije Werelt</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <title>Verborgen Pareltjes van de Veluwe</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Georgia, serif; background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%); color: #2F4F4F; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { text-align: center; margin-bottom: 20px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
-        h1 { color: #228B22; font-size: 2.2em; margin-bottom: 10px; }
-        .subtitle { color: #6B8E23; font-size: 1.1em; font-style: italic; }
-        .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-bottom: 20px; }
-        .map-container { height: 500px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); border: 3px solid #90EE90; }
-        #map { height: 100%; width: 100%; }
-        .routes-sidebar { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 20px; max-height: 500px; overflow-y: auto; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
-        .routes-sidebar h3 { color: #228B22; margin-bottom: 15px; text-align: center; border-bottom: 2px solid #90EE90; padding-bottom: 10px; }
-        .route-item { padding: 10px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; background: linear-gradient(135deg, #F0FFF0, #E6FFE6); }
-        .route-item:hover { transform: translateX(5px); border-color: #32CD32; box-shadow: 0 5px 15px rgba(50, 205, 50, 0.3); }
-        .route-item.mystiek { background: linear-gradient(135deg, #2F2F2F, #4A4A4A); color: #FFD700; }
-        .route-item.mystiek:hover { border-color: #9370DB; }
-        .route-item-title { font-weight: bold; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
-        .route-item-info { font-size: 0.85em; opacity: 0.8; }
-        .route-item.active { border-color: #228B22; background: linear-gradient(135deg, #98FB98, #90EE90); transform: translateX(8px); }
-        .route-item.mystiek.active { border-color: #FFD700; background: linear-gradient(135deg, #4A4A4A, #2F2F2F); color: #FFD700; }
-        .route-details { background: rgba(255, 255, 255, 0.95); padding: 25px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); margin-top: 20px; border-left: 5px solid #32CD32; }
-        .route-title { color: #228B22; font-size: 1.6em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .route-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        .info-item { background: linear-gradient(135deg, #F0FFF0, #E6FFE6); padding: 8px 12px; border-radius: 8px; border: 1px solid #98FB98; }
-        .info-label { font-weight: bold; color: #2F4F4F; font-size: 0.9em; }
-        .info-value { color: #228B22; font-weight: bold; }
-        .route-description { color: #2F4F4F; line-height: 1.6; margin-bottom: 15px; }
-        .highlights { background: linear-gradient(135deg, #FFFACD, #F5F5DC); padding: 15px; border-radius: 10px; border-left: 4px solid #DAA520; margin-top: 15px; }
-        .highlights h4 { color: #B8860B; margin-bottom: 10px; }
-        .highlights ul { list-style: none; padding-left: 0; }
-        .highlights li { margin-bottom: 5px; padding-left: 20px; position: relative; }
-        .highlights li:before { content: "🌿"; position: absolute; left: 0; }
-        .legend-section { background: linear-gradient(135deg, #2F2F2F, #4A4A4A); color: #FFD700; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #9370DB; }
-        .legend-section h4 { color: #FFD700; margin-bottom: 8px; }
-        .legend-text { font-style: italic; line-height: 1.6; }
-        .season-badge { background: linear-gradient(45deg, #FFD700, #FFA500); color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; }
-        @media (max-width: 768px) { .main-content { grid-template-columns: 1fr; } .routes-sidebar { order: -1; max-height: 250px; } .map-container { height: 350px; } h1 { font-size: 1.8em; } }
-    </style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #2c3e50;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    .header h1 {
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header p {
+        color: #7f8c8d;
+        font-size: 1.2em;
+    }
+    
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+    
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card h3 {
+        margin-bottom: 15px;
+        font-size: 1.3em;
+    }
+    
+    .card h3 a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .card h3 a:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+    
+    .card p {
+        color: #34495e;
+        margin-bottom: 10px;
+    }
+    
+    .distance {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    
+    .category {
+        display: inline-block;
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    
+    .nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+    .historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+    .village { background: linear-gradient(45deg, #f39c12, #e67e22); }
+    .water { background: linear-gradient(45deg, #3498db, #2980b9); }
+    .viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+    
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 2em;
+        }
+        
+        .grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .container {
+            padding: 15px;
+        }
+    }
+</style>
+```
+
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🌲 Verborgen Wandelroutes & Mystieke Legendes 🌲</h1>
-            <p class="subtitle">Ontdek onbekende routes en eeuwenoude sagen rond De Wije Werelt</p>
-        </header>
+        <div class="header">
+            <h1>🌲 Verborgen Pareltjes van de Veluwe</h1>
+            <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
+        </div>
 
 ```
-    <div class="main-content">
-        <div class="map-container"><div id="map"></div></div>
-        <div class="routes-sidebar">
-            <h3>🗺️ Alle Routes</h3>
-            <div id="routes-list"></div>
+    <div class="grid">
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Schaarsbergen+Bezoekerscentrum" target="_blank">Bezoekerscentrum Schaarsbergen</a></h3>
+            <p>Prachtig startpunt voor wandelingen met informatiecentrum en mooie tuinen. Ideaal voor gezinnen.</p>
+            <div class="distance">(15 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Kasteel+Cannenburch+Vaassen" target="_blank">Kasteel Cannenburch</a></h3>
+            <p>15e-eeuws kasteel met prachtige tuinen en een interessante geschiedenis. Mooie rondleidingen mogelijk.</p>
+            <div class="distance">(12 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Elburg+Vischpoort" target="_blank">Vischpoort Elburg</a></h3>
+            <p>Historische stadspoort in het pittoreske vestingstadje Elburg. Prachtige oude binnenstad om doorheen te wandelen.</p>
+            <div class="distance">(35 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Veluwemeer+Harderwijk" target="_blank">Veluwemeer bij Harderwijk</a></h3>
+            <p>Mooie plek aan het water met wandelpromenade en mogelijkheid voor een terrasje.</p>
+            <div class="distance">(25 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Sprielderbos+wandelroute" target="_blank">Sprielderbos</a></h3>
+            <p>Prachtig bos met oude beuken en eiken. Verschillende wandelroutes door gevarieerd landschap.</p>
+            <div class="distance">(8 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Ruïne+Schaffelaar+Barneveld" target="_blank">Ruïne Schaffelaar</a></h3>
+            <p>Restanten van een middeleeuws kasteel in een bosrijke omgeving. Mooie wandeling erheen mogelijk.</p>
+            <div class="distance">(20 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Oosterbeek+Airborne+Museum" target="_blank">Centrum Oosterbeek</a></h3>
+            <p>Historisch dorpje met oorlogsverleden. Charmante straatjes en mooie villa's uit het begin van de 20e eeuw.</p>
+            <div class="distance">(18 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Planken+Wambuis+Ede" target="_blank">Planken Wambuis</a></h3>
+            <p>Uitgestrekte heide- en zandverstuivingen. Prachtig paars in de bloeitijd en mooi wandelgebied.</p>
+            <div class="distance">(22 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Loenermark+vijver" target="_blank">Loenermark</a></h3>
+            <p>Bosgebied met mooie vijvers en vennen. Ideaal voor rustige wandelingen en natuurfotografie.</p>
+            <div class="distance">(14 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Grote+Kerk+Barneveld" target="_blank">Grote Kerk Barneveld</a></h3>
+            <p>Imposante 15e-eeuwse kerk in het centrum van Barneveld. Mooie architectuur en interessante geschiedenis.</p>
+            <div class="distance">(25 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category viewpoint">Uitzicht</div>
+            <h3><a href="https://maps.google.com/maps?q=Posbank+Rheden" target="_blank">De Posbank</a></h3>
+            <p>Een van de mooiste uitzichtpunten van de Veluwe. Prachtig over de heuvels en bossen, vooral bij zonsondergang.</p>
+            <div class="distance">(28 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Bussumerheide+wandelroute" target="_blank">Bussumerheide</a></h3>
+            <p>Uitgestrekt heidegebied met schaapskuddes. Prachtige paarse bloei in augustus en september.</p>
+            <div class="distance">(16 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Hattem+centrum" target="_blank">Hattem</a></h3>
+            <p>Middeleeuws Hanzestadje met goed bewaarde stadsmuren en poorten. Gezellige binnenstad met terrassen.</p>
+            <div class="distance">(45 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Uddelerbosch+wandelroute" target="_blank">Uddelerbosch</a></h3>
+            <p>Afwisselend bosgebied met naaldbos, loofbos en open plekken. Mooie wandelpaden en mountainbikeroutes.</p>
+            <div class="distance">(32 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Wolderwijd+Zeewolde" target="_blank">Wolderwijd</a></h3>
+            <p>Groot meer met mogelijkheden voor watersport. Mooie wandel- en fietspaden langs de oevers.</p>
+            <div class="distance">(38 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Kasteel+Ruurlo" target="_blank">Kasteel Ruurlo</a></h3>
+            <p>14e-eeuws kasteel met museum en prachtige kasteeltuinen. Regelmatig culturele evenementen.</p>
+            <div class="distance">(48 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Kroondomeinen+Appel" target="_blank">Kroondomeinen</a></h3>
+            <p>Koninklijke bossen met afwisselende landschappen. Mooie wandelroutes door gevarieerd natuurgebied.</p>
+            <div class="distance">(10 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Vierhouten+centrum" target="_blank">Vierhouten</a></h3>
+            <p>Klein bosdorpje midden in de Veluwe. Gezellige dorpskern met restaurant en uitgangspunt voor wandelingen.</p>
+            <div class="distance">(6 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Veluwezoom+Nationaal+Park" target="_blank">Veluwezoom Nationaal Park</a></h3>
+            <p>Gevarieerd natuurgebied met bossen, heide en uitzichtpunten. Vele wandelroutes van verschillende lengtes.</p>
+            <div class="distance">(24 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Nuldernauw+Elburg" target="_blank">Nuldernauw</a></h3>
+            <p>Smalle zeearm tussen Elburg en Nunspeet. Mooie wandelroutes langs het water met vogelkijkmogelijkheden.</p>
+            <div class="distance">(30 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Hervormde+Kerk+Nunspeet" target="_blank">Oude Kerk Nunspeet</a></h3>
+            <p>13e-eeuwse kerk in het centrum van Nunspeet. Mooie architectuur en interessante grafstenen.</p>
+            <div class="distance">(28 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Horsterwold+Zeewolde" target="_blank">Horsterwold</a></h3>
+            <p>Grootste aangeplante loofbos van West-Europa. Prachtige wandel- en fietspaden door jong bos.</p>
+            <div class="distance">(42 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category viewpoint">Uitzicht</div>
+            <h3><a href="https://maps.google.com/maps?q=Zenderpark+Smilde" target="_blank">Radiokootwijk</a></h3>
+            <p>Voormalig zenderpark met markante zendmasten. Interessante architectuur en mooie wandelroutes in de omgeving.</p>
+            <div class="distance">(18 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Putten+centrum" target="_blank">Putten</a></h3>
+            <p>Gezellig Veluws dorpje met karakteristieke huizen en een mooie dorpskern. Goede uitgangspunt voor fietsroutes.</p>
+            <div class="distance">(35 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Kootwijkerzand+wandelroute" target="_blank">Kootwijkerzand</a></h3>
+            <p>Europa's grootste stuifzandgebied. Uniek landschap dat doet denken aan een woestijn, maar dan in Nederland.</p>
+            <div class="distance">(16 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Randmeren+Harderwijk" target="_blank">Randmeren bij Harderwijk</a></h3>
+            <p>Mooie meren met wandelpromenades en jachthavens. Ideaal voor een ontspannen wandeling langs het water.</p>
+            <div class="distance">(26 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Sint+Antoniuskapel+Wekerom" target="_blank">Sint Antoniuskapel Wekerom</a></h3>
+            <p>Kleine historische kapel in een bosrijke omgeving. Rustige plek voor bezinning en mooie wandelingen.</p>
+            <div class="distance">(12 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Harderwijkerweg+bos+wandelroute" target="_blank">Bosgebied Harderwijkerweg</a></h3>
+            <p>Uitgestrekt bosgebied met diverse wandelroutes. Mooie oude bomen en rustige boswandelpaden.</p>
+            <div class="distance">(8 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category viewpoint">Uitzicht</div>
+            <h3><a href="https://maps.google.com/maps?q=Leuvenum+uitzichtpunt" target="_blank">Uitzichtpunt Leuvenum</a></h3>
+            <p>Mooi uitzicht over de Veluwse bossen en heide. Vooral tijdens de herfst prachtige kleuren.</p>
+            <div class="distance">(22 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Ermelo+centrum" target="_blank">Ermelo</a></h3>
+            <p>Authentiek Veluws dorp met gezellige dorpskern. Mooie uitgangspunt voor fietstochten door de omgeving.</p>
+            <div class="distance">(28 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Speulderbos+wandelroute" target="_blank">Speulderbos</a></h3>
+            <p>Een van de oudste bossen van Nederland met monumentale beuken. Prachtige wandelroutes door oud bos.</p>
+            <div class="distance">(14 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Veluwe+Meer+Elburg" target="_blank">Veluwe Meer bij Elburg</a></h3>
+            <p>Groot meer met diverse recreatiemogelijkheden. Mooie wandelpaden langs de oever en vogelkijkplekken.</p>
+            <div class="distance">(35 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Oude+Begraafplaats+Apeldoorn" target="_blank">Oude Begraafplaats Apeldoorn</a></h3>
+            <p>Historische begraafplaats met monumentale graven en mooie oude bomen. Interessant voor geschiedenis en architectuur.</p>
+            <div class="distance">(7 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Otterlose+Bos+wandelroute" target="_blank">Otterlose Bos</a></h3>
+            <p>Gevarieerd bosgebied vlak bij uw verblijf. Mooie wandelpaden door afwisselend landschap met vennen en heide.</p>
+            <div class="distance">(3 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Garderen+centrum" target="_blank">Garderen</a></h3>
+            <p>Klein dorpje op de Veluwe met authentieke Veluwse architectuur. Goede uitgangspunt voor wandel- en fietsroutes.</p>
+            <div class="distance">(18 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Gooimeertje+Bussum" target="_blank">Vennen bij Uddel</a></h3>
+            <p>Kleine natuurlijke meertjes en vennen verscholen in het bos. Prachtige plekjes voor natuurfotografie.</p>
+            <div class="distance">(20 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Koepelkerk+Nunspeet" target="_blank">Koepelkerk Nunspeet</a></h3>
+            <p>Bijzondere ronde kerk met koepel uit de 19e eeuw. Unieke architectuur en mooie ligging in het dorp.</p>
+            <div class="distance">(28 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Staverden+bos+wandelroute" target="_blank">Bossen bij Staverden</a></h3>
+            <p>Uitgestrekte bossen rond het kleinste stadje van Nederland. Mooie wandelroutes en rustige natuur.</p>
+            <div class="distance">(24 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category viewpoint">Uitzicht</div>
+            <h3><a href="https://maps.google.com/maps?q=Zuiderheide+Hilversum" target="_blank">Zuiderheide</a></h3>
+            <p>Heidegebied met mooie uitzichten over de omgeving. Vooral mooi tijdens de bloeitijd in augustus.</p>
+            <div class="distance">(32 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Voorthuizen+centrum" target="_blank">Voorthuizen</a></h3>
+            <p>Gezellig dorp met authentieke bebouwing en leuke winkeltjes. Mooie basis voor verkenning van de omgeving.</p>
+            <div class="distance">(15 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Hulshorsterzand+wandelroute" target="_blank">Hulshorsterzand</a></h3>
+            <p>Groot zandverstuivingsgebied met unieke flora en fauna. Interessant natuurgebied voor een bijzondere wandeling.</p>
+            <div class="distance">(36 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Hierdensche+Beek" target="_blank">Hierdensche Beek</a></h3>
+            <p>Natuurlijke beek die door bos en heide stroomt. Mooie wandelpaden langs het water met kans op dieren spotten.</p>
+            <div class="distance">(20 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Hervormde+Kerk+Kootwijk" target="_blank">Oude Kerk Kootwijk</a></h3>
+            <p>Kleine historische kerk in het dorpje Kootwijk. Mooie ligging en interessante geschiedenis van het dorp.</p>
+            <div class="distance">(12 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Wekeromse+Zand+wandelroute" target="_blank">Wekeromse Zand</a></h3>
+            <p>Zandverstuiving met heide en sparrenbossen. Afwisselend landschap met mooie wandelroutes van verschillende lengtes.</p>
+            <div class="distance">(10 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category village">Dorpje</div>
+            <h3><a href="https://maps.google.com/maps?q=Uddel+centrum" target="_blank">Uddel</a></h3>
+            <p>Authentiek bosdorp met gezellige dorpskern. Veel mogelijkheden voor wandelingen en fietstochten in de omgeving.</p>
+            <div class="distance">(25 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category viewpoint">Uitzicht</div>
+            <h3><a href="https://maps.google.com/maps?q=Galberg+Ede" target="_blank">De Galberg</a></h3>
+            <p>Heuvel met uitzichtpunt over de Gelderse Vallei. Prachtig uitzicht en mooie wandelroutes in de omgeving.</p>
+            <div class="distance">(25 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category nature">Natuur</div>
+            <h3><a href="https://maps.google.com/maps?q=Leuvenumse+Bos+wandelroute" target="_blank">Leuvenumse Bos</a></h3>
+            <p>Rustig bosgebied met afwisselende wandelroutes. Mooie oude bomen en kans op wilde dieren zoals reeën.</p>
+            <div class="distance">(18 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category water">Water</div>
+            <h3><a href="https://maps.google.com/maps?q=Tongerense+Beek" target="_blank">Tongerense Beek</a></h3>
+            <p>Schilderachtige beek die door bos en weiland stroomt. Mooie wandelpaden langs het water en rustige natuur.</p>
+            <div class="distance">(14 km)</div>
+        </div>
+        
+        <div class="card">
+            <div class="category historic">Historisch</div>
+            <h3><a href="https://maps.google.com/maps?q=Boerderij+Museum+Garderen" target="_blank">Oude Boerderij Garderen</a></h3>
+            <p>Authentieke Veluwse boerderij met karakteristieke architectuur. Interessant voor geschiedenis van de streek.</p>
+            <div class="distance">(18 km)</div>
         </div>
     </div>
-
-    <div id="route-details" class="route-details">
-        <div class="route-title">🗺️ Selecteer een wandelroute</div>
-        <p class="route-description">Klik op een route in de lijst of een marker op de kaart. De 👻 routes bevatten mystieke legendes!</p>
-    </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-<script>
-    const wijeWereltCoords = [52.0864, 5.7769];
-    const map = L.map('map').setView(wijeWereltCoords, 11);
-    
-    // Eenvoudige kaart voor beter contrast
-    const simpleLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO'
-    }).addTo(map);
-    
-    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-    
-    L.control.layers({"Eenvoudig": simpleLayer, "Satelliet": satelliteLayer}).addTo(map);
-
-    // Betere iconen met contrast
-    const wijeWereltIcon = L.divIcon({
-        html: '<div style="background:#FF4444;color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);">🏕️</div>',
-        iconSize: [30, 30]
-    });
-    
-    const routeIcon = L.divIcon({
-        html: '<div style="background:#228B22;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🥾</div>',
-        iconSize: [26, 26]
-    });
-    
-    const mystiekIcon = L.divIcon({
-        html: '<div style="background:#9370DB;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">👻</div>',
-        iconSize: [26, 26]
-    });
-
-    L.marker(wijeWereltCoords, {icon: wijeWereltIcon}).addTo(map).bindPopup('<b>EuroParcs De Wije Werelt</b><br>Jouw uitvalsbasis!');
-
-    const routes = [
-        {name: "Het Mysterieuze Mosselse Zand", coords: [52.0920, 5.7650], distance: "6.2 km", difficulty: "Gemiddeld", duration: "2-2.5 uur", terrain: "Zandverstuiving & bos", season: "Zomer Perfect", description: "Een verborgen parel direct bij De Wije Werelt! Het Mosselse Zand is een adembenemende zandverstuiving waar je je waant in de Kalahari.", highlights: ["Mini-woestijn ervaring", "Zandhagedissen en heideblauwtjes", "Vanaf De Wije Werelt (300m!)", "Magische zonsondergang", "Oerrr natuurspeeltuin"], legend: "🌙 LEGENDE: Witte Wieven hielden hier hun jaarlijkse bijeenkomst. 's Avonds zie je mysterieuze lichtjes zweven..."},
-        {name: "Planken Wambuis Wildsafari", coords: [52.0650, 5.7800], distance: "8.5 km", difficulty: "Gemiddeld", duration: "3-4 uur", terrain: "Bos, heide & weiland", season: "Herfst Spectaculair", description: "De geheime tuin van de Veluwe! Dit uitgestrekte natuurgebied is een waar paradijs voor wilde dieren.", highlights: ["Beste wildspotting op de Veluwe", "Theeschenkerij Mossel", "Eeuwenoude beukenlanen", "New Forest pony's", "Spaanse runderen"], legend: "👻 SPOOKLEGENDE: 's Avonds zweeft een brandende dakschoof - de geest van een boer die zijn boerderij in brand stak."},
-        {name: "Het Spookachtige Solse Gat", coords: [52.2433, 5.6469], distance: "3.8 km", difficulty: "Makkelijk", duration: "1.5-2 uur", terrain: "Mysterieuze kuil & bos", season: "Halloween Perfect", description: "Nederlands meest beruchte spooklocatie! Hier verdween eeuwen geleden een heel klooster in de aarde.", highlights: ["Nederlandse spooklegende", "Mysterieuze kuil", "Blauwe gloed 's avonds", "Restaurant Boshuis Drie", "Kloostergeesten"], legend: "⛪ VERVLOEKT: Monniken verkochten hun ziel aan de duivel. Op een stormachtige kerstnacht verdween het klooster in de diepte..."},
-        {name: "Kasteel Doorwerth Spooktocht", coords: [51.9847, 5.7889], distance: "4.2 km", difficulty: "Gemiddeld", duration: "2-3 uur", terrain: "Kasteel & park", season: "Spookseizoen", description: "Nederlands bekendste spookkasteel! Drie verschillende spoken met eigen verhalen.", highlights: ["Bekendste spookkasteel", "Drie spoken", "Paranormaal onderzoek", "Kasteelpark aan Rijn", "Actieve Jachtzaal"], legend: "👻 SPOKENPARADIJS: Verhongerd meisje, moordenaar Jan Vinken en Baron Van Brakel (†1878) warten nog rond..."},
-        {name: "De Jufferboom van Hoog Soeren", coords: [52.1667, 5.9167], distance: "5.5 km", difficulty: "Gemiddeld", duration: "2.5 uur", terrain: "Grindwegen & bos", season: "Mystiek Najaar", description: "Reusachtige holle beuk waarin de 'witte juffer' woont! 's Nachts brandt er een lichtje en hoor je haar spinnen.", highlights: ["Holle beuk met bewoonster", "Nachtelijk lichtje", "Zwarte hond met vurige ogen", "Boom om in te staan", "Historische grindweg"], legend: "🌙 WITTE JUFFER: Spint elke nacht bij kaarslicht. Wandelaars horen haar spinwiel draaien door het bos..."}
-    ];
-
-    function showRouteDetails(route, fromList = false) {
-        if (fromList) {
-            document.querySelectorAll('.route-item').forEach(item => item.classList.remove('active'));
-            const activeItem = Array.from(document.querySelectorAll('.route-item')).find(item => item.textContent.includes(route.name));
-            if (activeItem) activeItem.classList.add('active');
-            map.setView(route.coords, 13);
-        }
-        
-        const legendSection = route.legend ? `<div class="legend-section"><h4>✨ Mystieke Legende</h4><div class="legend-text">${route.legend}</div></div>` : '';
-        
-        document.getElementById('route-details').innerHTML = `
-            <div class="route-title">🥾 ${route.name} <span class="season-badge">${route.season}</span></div>
-            <div class="route-info">
-                <div class="info-item"><div class="info-label">Afstand</div><div class="info-value">${route.distance}</div></div>
-                <div class="info-item"><div class="info-label">Moeilijkheid</div><div class="info-value">${route.difficulty}</div></div>
-                <div class="info-item"><div class="info-label">Duur</div><div class="info-value">${route.duration}</div></div>
-                <div class="info-item"><div class="info-label">Terrein</div><div class="info-value">${route.terrain}</div></div>
-            </div>
-            <p class="route-description">${route.description}</p>
-            <div class="highlights"><h4>✨ Hoogtepunten</h4><ul>${route.highlights.map(h => `<li>${h}</li>`).join('')}</ul></div>
-            ${legendSection}
-        `;
-    }
-
-    function createRoutesList() {
-        const list = document.getElementById('routes-list');
-        routes.forEach(route => {
-            const isMystiek = route.name.includes('Spook') || route.name.includes('Solse Gat') || route.name.includes('Doorwerth') || route.name.includes('Jufferboom');
-            const icon = isMystiek ? '👻' : '🥾';
-            const item = document.createElement('div');
-            item.className = `route-item ${isMystiek ? 'mystiek' : ''}`;
-            item.innerHTML = `<div class="route-item-title">${icon} ${route.name}</div><div class="route-item-info">${route.distance} • ${route.difficulty}</div>`;
-            item.addEventListener('click', () => showRouteDetails(route, true));
-            list.appendChild(item);
-        });
-    }
-
-    routes.forEach(route => {
-        const isMystiek = route.name.includes('Spook') || route.name.includes('Solse Gat') || route.name.includes('Doorwerth') || route.name.includes('Jufferboom');
-        const icon = isMystiek ? mystiekIcon : routeIcon;
-        const marker = L.marker(route.coords, {icon}).addTo(map);
-        marker.bindPopup(`<b>${route.name}</b><br>${route.distance} • ${route.difficulty}`);
-        marker.on('click', () => showRouteDetails(route));
-    });
-
-    createRoutesList();
-</script>
 ```
 
 </body>
