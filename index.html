@@ -35,6 +35,65 @@
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .animation-container {
+        height: 30px;
+        width: 100%;
+        position: relative;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+    
+    .car {
+        position: absolute;
+        bottom: 5px;
+        font-size: 20px;
+        animation: drive 8s linear infinite;
+        z-index: 2;
+    }
+    
+    .trees {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        z-index: 1;
+    }
+    
+    .tree {
+        font-size: 25px;
+        animation: sway 3s ease-in-out infinite;
+    }
+    
+    .tree:nth-child(2) { animation-delay: -1s; }
+    .tree:nth-child(3) { animation-delay: -2s; }
+    .tree:nth-child(4) { animation-delay: -0.5s; }
+    .tree:nth-child(5) { animation-delay: -1.5s; }
+    
+    @keyframes drive {
+        0% {
+            left: 100%;
+            transform: translateX(20px);
+        }
+        100% {
+            left: -50px;
+            transform: translateX(-20px);
+        }
+    }
+    
+    @keyframes sway {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(2deg);
+        }
     }
     
     .header h1 {
@@ -411,9 +470,21 @@
     <div class="container">
         <div class="header">
             <h1>🌲 Verborgen Pareltjes van de Veluwe</h1>
-            <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
 
 ```
+        <div class="animation-container">
+            <div class="trees">
+                <div class="tree">🌲</div>
+                <div class="tree">🌳</div>
+                <div class="tree">🌲</div>
+                <div class="tree">🌳</div>
+                <div class="tree">🌲</div>
+            </div>
+            <div class="car">🚗</div>
+        </div>
+        
+        <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
+        
         <div class="filter-section">
             <h3>Filter op categorie:</h3>
             <div class="filter-buttons">
