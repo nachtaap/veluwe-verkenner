@@ -51,11 +51,14 @@
     }
     
     .car-illustration {
-        width: 400px;
-        height: 180px;
+        max-width: 400px;
+        max-height: 180px;
+        width: auto;
+        height: auto;
         animation: slideIn 2s ease-out;
         border-radius: 15px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        object-fit: contain;
     }
     
     @keyframes slideIn {
