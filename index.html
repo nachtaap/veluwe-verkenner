@@ -40,50 +40,133 @@
     }
     
     .animation-container {
-        height: 30px;
+        height: 120px;
         width: 100%;
         position: relative;
         margin: 20px 0;
         overflow: hidden;
+        background: linear-gradient(to bottom, #f8f9fa 0%, #e8f5e8 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .car-scene {
+        position: relative;
+        width: 300px;
+        height: 100px;
+        animation: slideIn 2s ease-out;
     }
     
     .car {
         position: absolute;
-        bottom: 5px;
-        font-size: 20px;
-        animation: drive 8s linear infinite;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 60px;
+        background: #4a90e2;
+        border-radius: 15px 15px 8px 8px;
+        border: 3px solid #2c5aa0;
+        animation: carBob 3s ease-in-out infinite;
+    }
+    
+    .car::before {
+        content: '';
+        position: absolute;
+        top: -15px;
+        left: 15px;
+        width: 70px;
+        height: 30px;
+        background: #4a90e2;
+        border: 3px solid #2c5aa0;
+        border-radius: 10px 10px 0 0;
+    }
+    
+    .car::after {
+        content: '🐕';
+        position: absolute;
+        top: -12px;
+        right: 10px;
+        font-size: 16px;
         z-index: 2;
     }
     
-    .trees {
+    .wheel {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #2c3e50;
+        border-radius: 50%;
+        bottom: -10px;
+        border: 2px solid #34495e;
+    }
+    
+    .wheel.front { right: 15px; }
+    .wheel.back { left: 15px; }
+    
+    .tree-left, .tree-right {
+        position: absolute;
+        bottom: 15px;
+    }
+    
+    .tree-left {
+        left: 20px;
+        font-size: 40px;
+        color: #27ae60;
+        animation: sway 4s ease-in-out infinite;
+    }
+    
+    .tree-right {
+        right: 20px;
+        font-size: 35px;
+        color: #229954;
+        animation: sway 4s ease-in-out infinite reverse;
+    }
+    
+    .flowers {
+        position: absolute;
+        bottom: 15px;
+        font-size: 20px;
+    }
+    
+    .flower-left {
+        left: 60px;
+        animation: bloom 3s ease-in-out infinite;
+    }
+    
+    .flower-right {
+        right: 60px;
+        animation: bloom 3s ease-in-out infinite 1.5s;
+    }
+    
+    .road {
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        z-index: 1;
+        height: 20px;
+        background: linear-gradient(to right, #7f8c8d 0%, #95a5a6 50%, #7f8c8d 100%);
+        border-radius: 0 0 15px 15px;
     }
     
-    .tree {
-        font-size: 25px;
-        animation: sway 3s ease-in-out infinite;
-    }
-    
-    .tree:nth-child(2) { animation-delay: -1s; }
-    .tree:nth-child(3) { animation-delay: -2s; }
-    .tree:nth-child(4) { animation-delay: -0.5s; }
-    .tree:nth-child(5) { animation-delay: -1.5s; }
-    
-    @keyframes drive {
+    @keyframes slideIn {
         0% {
-            left: 100%;
-            transform: translateX(20px);
+            opacity: 0;
+            transform: translateY(20px);
         }
         100% {
-            left: -50px;
-            transform: translateX(-20px);
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes carBob {
+        0%, 100% {
+            transform: translateX(-50%) translateY(0px);
+        }
+        50% {
+            transform: translateX(-50%) translateY(-2px);
         }
     }
     
@@ -92,7 +175,16 @@
             transform: rotate(0deg);
         }
         50% {
-            transform: rotate(2deg);
+            transform: rotate(3deg);
+        }
+    }
+    
+    @keyframes bloom {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
         }
     }
     
@@ -230,8 +322,8 @@
     .filter-btn.village.active { background: linear-gradient(45deg, #f39c12, #e67e22); }
     .filter-btn.water.active { background: linear-gradient(45deg, #3498db, #2980b9); }
     .filter-btn.viewpoint.active { background: linear-gradient(45deg, #e74c3c, #c0392b); }
-    .filter-btn:not([data-category]):not(.nature):not(.historic):not(.village):not(.water):not(.viewpoint).active { 
-        background: linear-gradient(45deg, #2c3e50, #34495e); 
+    .filter-btn[data-category="all"].active { 
+        background: linear-gradient(45deg, #5d4e75, #7b68ee); 
     }
     
     .card.hidden {
@@ -501,14 +593,17 @@
 
 ```
         <div class="animation-container">
-            <div class="trees">
-                <div class="tree">🌲</div>
-                <div class="tree">🌳</div>
-                <div class="tree">🌲</div>
-                <div class="tree">🌳</div>
-                <div class="tree">🌲</div>
+            <div class="road"></div>
+            <div class="car-scene">
+                <div class="tree-left">🌳</div>
+                <div class="tree-right">🌲</div>
+                <div class="flowers flower-left">🌼</div>
+                <div class="flowers flower-right">🌺</div>
+                <div class="car">
+                    <div class="wheel front"></div>
+                    <div class="wheel back"></div>
+                </div>
             </div>
-            <div class="car">🚗</div>
         </div>
         
         <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
