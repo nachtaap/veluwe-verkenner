@@ -146,8 +146,9 @@
     }
     
     .filter-btn.active {
-        background: linear-gradient(45deg, #2c3e50, #34495e);
+        border: 3px solid #f1c40f;
         transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
     }
     
     .filter-btn:not(.active) {
@@ -159,11 +160,14 @@
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     }
     
-    .filter-btn.nature:not(.active) { background: linear-gradient(45deg, #27ae60, #2ecc71); }
-    .filter-btn.historic:not(.active) { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
-    .filter-btn.village:not(.active) { background: linear-gradient(45deg, #f39c12, #e67e22); }
-    .filter-btn.water:not(.active) { background: linear-gradient(45deg, #3498db, #2980b9); }
-    .filter-btn.viewpoint:not(.active) { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+    .filter-btn.nature.active { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+    .filter-btn.historic.active { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+    .filter-btn.village.active { background: linear-gradient(45deg, #f39c12, #e67e22); }
+    .filter-btn.water.active { background: linear-gradient(45deg, #3498db, #2980b9); }
+    .filter-btn.viewpoint.active { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+    .filter-btn:not([data-category]):not(.nature):not(.historic):not(.village):not(.water):not(.viewpoint).active { 
+        background: linear-gradient(45deg, #2c3e50, #34495e); 
+    }
     
     .card.hidden {
         display: none;
