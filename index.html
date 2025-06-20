@@ -210,9 +210,15 @@
         box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
     }
     
-    .filter-btn:not(.active) {
+    .filter-btn:not(.active):not(.show-colored) {
         background: linear-gradient(45deg, #bdc3c7, #95a5a6);
     }
+    
+    .filter-btn.show-colored.nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+    .filter-btn.show-colored.historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+    .filter-btn.show-colored.village { background: linear-gradient(45deg, #f39c12, #e67e22); }
+    .filter-btn.show-colored.water { background: linear-gradient(45deg, #3498db, #2980b9); }
+    .filter-btn.show-colored.viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
     
     .filter-btn:hover {
         transform: scale(1.05);
@@ -383,6 +389,13 @@
         const locationBtn = document.getElementById('locationBtn');
         const locationStatus = document.getElementById('locationStatus');
         
+        // Initialize with "all" selected - show all buttons colored
+        filterButtons.forEach(btn => {
+            if (btn.getAttribute('data-category') !== 'all') {
+                btn.classList.add('show-colored');
+            }
+        });
+        
         // Filter functionaliteit
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -390,6 +403,21 @@
                 this.classList.add('active');
                 
                 const category = this.getAttribute('data-category');
+                
+                // Update visual state of filter buttons
+                if (category === 'all') {
+                    // When "all" is selected, show all category buttons in their colored state
+                    filterButtons.forEach(btn => {
+                        if (btn !== this) {
+                            btn.classList.add('show-colored');
+                        }
+                    });
+                } else {
+                    // When specific category is selected, remove colored state from others
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('show-colored');
+                    });
+                }
                 
                 cards.forEach(card => {
                     if (category === 'all') {
