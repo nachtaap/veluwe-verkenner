@@ -40,114 +40,20 @@
     }
     
     .animation-container {
-        height: 120px;
+        height: 200px;
         width: 100%;
         position: relative;
         margin: 20px 0;
         overflow: hidden;
-        background: linear-gradient(to bottom, #f8f9fa 0%, #e8f5e8 100%);
-        border-radius: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
-    .car-scene {
-        position: relative;
-        width: 300px;
-        height: 100px;
+    .car-illustration {
+        width: 400px;
+        height: 180px;
         animation: slideIn 2s ease-out;
-    }
-    
-    .car {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 60px;
-        background: #4a90e2;
-        border-radius: 15px 15px 8px 8px;
-        border: 3px solid #2c5aa0;
-        animation: carBob 3s ease-in-out infinite;
-    }
-    
-    .car::before {
-        content: '';
-        position: absolute;
-        top: -15px;
-        left: 15px;
-        width: 70px;
-        height: 30px;
-        background: #4a90e2;
-        border: 3px solid #2c5aa0;
-        border-radius: 10px 10px 0 0;
-    }
-    
-    .car::after {
-        content: '🐕';
-        position: absolute;
-        top: -12px;
-        right: 10px;
-        font-size: 16px;
-        z-index: 2;
-    }
-    
-    .wheel {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        background: #2c3e50;
-        border-radius: 50%;
-        bottom: -10px;
-        border: 2px solid #34495e;
-    }
-    
-    .wheel.front { right: 15px; }
-    .wheel.back { left: 15px; }
-    
-    .tree-left, .tree-right {
-        position: absolute;
-        bottom: 15px;
-    }
-    
-    .tree-left {
-        left: 20px;
-        font-size: 40px;
-        color: #27ae60;
-        animation: sway 4s ease-in-out infinite;
-    }
-    
-    .tree-right {
-        right: 20px;
-        font-size: 35px;
-        color: #229954;
-        animation: sway 4s ease-in-out infinite reverse;
-    }
-    
-    .flowers {
-        position: absolute;
-        bottom: 15px;
-        font-size: 20px;
-    }
-    
-    .flower-left {
-        left: 60px;
-        animation: bloom 3s ease-in-out infinite;
-    }
-    
-    .flower-right {
-        right: 60px;
-        animation: bloom 3s ease-in-out infinite 1.5s;
-    }
-    
-    .road {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 20px;
-        background: linear-gradient(to right, #7f8c8d 0%, #95a5a6 50%, #7f8c8d 100%);
-        border-radius: 0 0 15px 15px;
     }
     
     @keyframes slideIn {
@@ -158,33 +64,6 @@
         100% {
             opacity: 1;
             transform: translateY(0);
-        }
-    }
-    
-    @keyframes carBob {
-        0%, 100% {
-            transform: translateX(-50%) translateY(0px);
-        }
-        50% {
-            transform: translateX(-50%) translateY(-2px);
-        }
-    }
-    
-    @keyframes sway {
-        0%, 100% {
-            transform: rotate(0deg);
-        }
-        50% {
-            transform: rotate(3deg);
-        }
-    }
-    
-    @keyframes bloom {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.1);
         }
     }
     
@@ -593,17 +472,80 @@
 
 ```
         <div class="animation-container">
-            <div class="road"></div>
-            <div class="car-scene">
-                <div class="tree-left">🌳</div>
-                <div class="tree-right">🌲</div>
-                <div class="flowers flower-left">🌼</div>
-                <div class="flowers flower-right">🌺</div>
-                <div class="car">
-                    <div class="wheel front"></div>
-                    <div class="wheel back"></div>
-                </div>
-            </div>
+            <svg class="car-illustration" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background -->
+                <rect x="0" y="0" width="400" height="180" fill="#f4f1eb"/>
+                
+                <!-- Road -->
+                <ellipse cx="200" cy="155" rx="180" ry="15" fill="#7a8b7a"/>
+                
+                <!-- Background trees -->
+                <circle cx="60" cy="80" r="35" fill="#5a8a5a"/>
+                <circle cx="50" cy="90" r="28" fill="#6b9b6b"/>
+                <circle cx="70" cy="95" r="25" fill="#6b9b6b"/>
+                <rect x="55" y="95" width="10" height="25" fill="#4a5a3a"/>
+                
+                <ellipse cx="340" cy="70" rx="30" ry="45" fill="#5a8a5a"/>
+                <ellipse cx="350" cy="85" rx="25" ry="35" fill="#6b9b6b"/>
+                <rect x="345" y="95" width="10" height="25" fill="#4a5a3a"/>
+                
+                <!-- Small background elements -->
+                <circle cx="160" cy="110" r="15" fill="#8fbc8f"/>
+                <circle cx="240" cy="105" r="12" fill="#8fbc8f"/>
+                
+                <!-- Car body -->
+                <path d="M120 125 L280 125 Q285 125 285 120 L285 105 Q285 100 280 100 L240 100 Q235 100 235 95 L235 85 Q235 80 230 80 L170 80 Q165 80 165 85 L165 95 Q165 100 160 100 L120 100 Q115 100 115 105 L115 120 Q115 125 120 125 Z" fill="#4a7bc8"/>
+                
+                <!-- Car outline -->
+                <path d="M120 125 L280 125 Q285 125 285 120 L285 105 Q285 100 280 100 L240 100 Q235 100 235 95 L235 85 Q235 80 230 80 L170 80 Q165 80 165 85 L165 95 Q165 100 160 100 L120 100 Q115 100 115 105 L115 120 Q115 125 120 125 Z" fill="none" stroke="#2c5aa0" stroke-width="3"/>
+                
+                <!-- Windows -->
+                <rect x="175" y="85" width="25" height="12" fill="#b8d4f0" rx="2"/>
+                <rect x="205" y="85" width="25" height="12" fill="#b8d4f0" rx="2"/>
+                
+                <!-- Window frames -->
+                <rect x="175" y="85" width="25" height="12" fill="none" stroke="#2c5aa0" stroke-width="2" rx="2"/>
+                <rect x="205" y="85" width="25" height="12" fill="none" stroke="#2c5aa0" stroke-width="2" rx="2"/>
+                
+                <!-- Dog in window -->
+                <ellipse cx="220" cy="91" rx="4" ry="3" fill="#f5e6d3"/>
+                <circle cx="218" cy="90" r="1" fill="#000"/>
+                <path d="M215 88 Q217 86 219 88" fill="none" stroke="#8b4513" stroke-width="1"/>
+                <path d="M221 88 Q223 86 225 88" fill="none" stroke="#8b4513" stroke-width="1"/>
+                
+                <!-- Car details -->
+                <rect x="125" y="110" width="8" height="4" fill="#ff6b47" rx="2"/>
+                <rect x="267" y="110" width="8" height="4" fill="#ffffff" rx="2"/>
+                <rect x="125" y="105" width="6" height="3" fill="#2c5aa0" rx="1"/>
+                <rect x="269" y="105" width="6" height="3" fill="#2c5aa0" rx="1"/>
+                
+                <!-- Wheels -->
+                <circle cx="150" cy="125" r="15" fill="#2c3e50"/>
+                <circle cx="250" cy="125" r="15" fill="#2c3e50"/>
+                <circle cx="150" cy="125" r="10" fill="#34495e"/>
+                <circle cx="250" cy="125" r="10" fill="#34495e"/>
+                <circle cx="150" cy="125" r="3" fill="#7f8c8d"/>
+                <circle cx="250" cy="125" r="3" fill="#7f8c8d"/>
+                
+                <!-- Flowers -->
+                <g transform="translate(95, 130)">
+                    <circle cx="0" cy="0" r="3" fill="#ffd700"/>
+                    <circle cx="-2" cy="-2" r="2" fill="#ff8c00"/>
+                    <circle cx="2" cy="-2" r="2" fill="#ff8c00"/>
+                    <circle cx="-2" cy="2" r="2" fill="#ff8c00"/>
+                    <circle cx="2" cy="2" r="2" fill="#ff8c00"/>
+                    <rect x="-1" y="3" width="2" height="8" fill="#228b22"/>
+                </g>
+                
+                <g transform="translate(305, 135)">
+                    <circle cx="0" cy="0" r="3" fill="#ff6347"/>
+                    <circle cx="-2" cy="-2" r="2" fill="#ff1493"/>
+                    <circle cx="2" cy="-2" r="2" fill="#ff1493"/>
+                    <circle cx="-2" cy="2" r="2" fill="#ff1493"/>
+                    <circle cx="2" cy="2" r="2" fill="#ff1493"/>
+                    <rect x="-1" y="3" width="2" height="8" fill="#228b22"/>
+                </g>
+            </svg>
         </div>
         
         <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
