@@ -4,8 +4,8 @@
 
 const STORAGE_CONFIG = {
 type: ‘jsonbin’,
-binId: ‘YOUR_BIN_ID_HERE’, // Vervang door jouw JSONBin ID
-apiKey: ‘YOUR_API_KEY_HERE’ // Vervang door jouw JSONBin API key
+binId: ‘6856feef8561e97a5028f33b‘, // Vervang door jouw JSONBin ID
+apiKey: ‘$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy’ // Vervang door jouw JSONBin API key
 };
 
 // ========================================
