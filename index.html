@@ -543,11 +543,10 @@
         
         // Verschillende paden proberen in volgorde van voorkeur
         const dataPaths = [
-            './data/',           // Directory-based approach (aanbevolen)
-            './data/index.json', // Expliciete index.json
-            './veluwe-locations.json', // Oude bestand als fallback
-            './api/locations/'   // API-style directory
-        ];
+    './data/index.json',              // ✅ jouw hoofddata
+    './data/veluwe-locations.json',   // ✅ optionele fallback in /data/
+    './veluwe-locations.json'         // ✅ fallback in root
+];
         
         for (const path of dataPaths) {
             try {
