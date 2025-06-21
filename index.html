@@ -120,3 +120,225 @@ async function loadData() {
                         {"title": "Tongerense Beek", "category": "water", "description": "Schilderachtige beek die door bos en weiland stroomt. Mooie wandelpaden langs het water en rustige natuur.", "distance": 14, "coordinates": {"lat": 52.2000, "lng": 5.7500}, "mapsUrl": "https://maps.google.com/maps?q=Tongerense+Beek"},
                         {"title": "Oude Boerderij Garderen", "category": "historic", "description": "Authentieke Veluwse boerderij met karakteristieke architectuur. Interessant voor geschiedenis van de streek.", "distance": 18, "coordinates": {"lat": 52.2333, "lng": 5.7167}, "mapsUrl": "https://maps.google.com/maps?q=Boerderij+Museum+Garderen"}
                     ]
+};
+                
+                // Zet visited status op basis van visitedPlaces array
+                appData.locations.forEach(location => {
+                    location.visited = appData.visitedPlaces.includes(location.title);
+                });
+                updateStatus('✅ Data geladen');
+                return true;
+            }
+        } catch (error) {
+            console.log('Fout bij laden:', error);
+        }
+        
+        updateStatus('❌ Fout bij laden');
+        return false;
+    }
+
+    async function saveData() {
+        if (!appData) return;
+        
+        try {
+            updateStatus('🔄 Opslaan...');
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': CONFIG.apiKey
+                },
+                body: JSON.stringify({
+                    ...appData,
+                    lastUpdated: new Date().toISOString()
+                })
+            });
+            
+            if (response.ok) {
+                updateStatus('✅ Opgeslagen');
+                return;
+            }
+        } catch (error) {
+            console.log('Fout bij opslaan:', error);
+        }
+        
+        updateStatus('⚠️ Opslaan mislukt');
+    }
+
+    // UI functies
+    function updateStatus(message) {
+        const status = document.getElementById('syncStatus');
+        if (status) status.textContent = message;
+    }
+
+    function createCard(location) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        if (location.visited) card.classList.add('visited');
+        
+        card.innerHTML = `
+            <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''} />
+            <label class="visited-label">Bezocht</label>
+            <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
+            <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
+            <p>${location.description}</p>
+            <div class="distance">(${location.distance} km)</div>
+        `;
+        return card;
+    }
+
+    function createFilterButtons() {
+        if (!appData) return;
+        
+        const filterContainer = document.getElementById('filterButtons');
+        Object.keys(appData.categoryLabels).forEach(category => {
+            const button = document.createElement('button');
+            button.className = `filter-btn ${category} show-colored`;
+            button.setAttribute('data-category', category);
+            button.textContent = appData.categoryLabels[category];
+            filterContainer.appendChild(button);
+        });
+    }
+
+    function setupEventListeners() {
+        // Filter buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const category = e.target.getAttribute('data-category');
+                const cards = document.querySelectorAll('.card');
+                
+                cards.forEach(card => {
+                    if (category === 'all') {
+                        card.classList.remove('hidden');
+                    } else {
+                        const cardCategory = card.querySelector('.category');
+                        if (cardCategory && cardCategory.classList.contains(category)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+        });
+
+        // Checkboxes
+        document.addEventListener('change', async function(e) {
+            if (e.target.classList.contains('visited-checkbox')) {
+                const card = e.target.closest('.card');
+                const placeName = e.target.getAttribute('data-place');
+                
+                // Update UI
+                if (e.target.checked) {
+                    card.classList.add('visited');
+                } else {
+                    card.classList.remove('visited');
+                }
+                
+                // Update data
+                const location = appData.locations.find(loc => loc.title === placeName);
+                if (location) {
+                    location.visited = e.target.checked;
+                    await saveData();
+                }
+            }
+        });
+
+        // Location button
+        const locationBtn = document.getElementById('locationBtn');
+        const locationStatus = document.getElementById('locationStatus');
+        
+        locationBtn.addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                locationStatus.textContent = 'Geolocatie niet ondersteund';
+                return;
+            }
+            
+            locationBtn.disabled = true;
+            locationBtn.textContent = '📍 Locatie ophalen...';
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    updateDistances(position.coords.latitude, position.coords.longitude);
+                    locationBtn.textContent = '✅ Afstanden bijgewerkt';
+                    setTimeout(() => {
+                        locationBtn.disabled = false;
+                        locationBtn.textContent = '📍 Herbereken afstanden';
+                    }, 2000);
+                },
+                function(error) {
+                    locationStatus.textContent = 'Fout bij ophalen locatie';
+                    locationBtn.disabled = false;
+                    locationBtn.textContent = '📍 Probeer opnieuw';
+                }
+            );
+        });
+    }
+
+    function updateDistances(userLat, userLng) {
+        if (!appData) return;
+        
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const titleElement = card.querySelector('h3 a');
+            const distanceElement = card.querySelector('.distance');
+            
+            if (titleElement && distanceElement) {
+                const titleText = titleElement.textContent;
+                const location = appData.locations.find(loc => loc.title === titleText);
+                
+                if (location) {
+                    const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
+                    distanceElement.textContent = `(${Math.round(distance)} km)`;
+                    distanceElement.classList.add('updated');
+                }
+            }
+        });
+    }
+
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function renderLocations() {
+        if (!appData) return;
+        
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+        
+        appData.locations.forEach(location => {
+            container.appendChild(createCard(location));
+        });
+    }
+
+    // Hoofdfunctie
+    async function initializeApp() {
+        console.log('App initialiseren...');
+        
+        setupEventListeners();
+        
+        const dataLoaded = await loadData();
+        if (dataLoaded) {
+            createFilterButtons();
+            renderLocations();
+            console.log('App geladen!');
+        } else {
+            updateStatus('❌ Kon data niet laden');
+        }
+    }
+
+    // Start de app
+    document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
