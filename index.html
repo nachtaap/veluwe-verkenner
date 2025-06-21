@@ -268,6 +268,25 @@
         font-weight: bold;
     }
     
+    .error-message {
+        text-align: center;
+        color: #e74c3c;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        border-left: 4px solid #e74c3c;
+    }
+    
+    .loading-message {
+        text-align: center;
+        color: #3498db;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+    
     @media (max-width: 768px) {
         .header h1 { font-size: 2em; }
         .grid { grid-template-columns: 1fr; }
@@ -301,7 +320,9 @@
     </div>
     
     <div class="grid" id="cardsContainer">
-        <!-- Kaarten worden hier dynamisch toegevoegd -->
+        <div class="loading-message">
+            📍 Locaties laden...
+        </div>
     </div>
 </div>
 
@@ -366,12 +387,14 @@
     }
     
     function updateDistances(userLat, userLng) {
+        if (!locationsData) return;
+        
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             const titleElement = card.querySelector('h3 a');
             const distanceElement = card.querySelector('.distance');
             
-            if (titleElement && distanceElement && locationsData) {
+            if (titleElement && distanceElement) {
                 const titleText = titleElement.textContent;
                 const location = locationsData.locations.find(loc => loc.title === titleText);
                 
@@ -514,13 +537,52 @@
         });
     }
     
-    async function loadData() {
+    // Robuuste JSON loading functie met fallbacks
+    async function loadLocationsData() {
+        const container = document.getElementById('cardsContainer');
+        
+        // Verschillende paden proberen in volgorde van voorkeur
+        const dataPaths = [
+            './data/',           // Directory-based approach (aanbevolen)
+            './data/index.json', // Expliciete index.json
+            './veluwe-locations.json', // Oude bestand als fallback
+            './api/locations/'   // API-style directory
+        ];
+        
+        for (const path of dataPaths) {
+            try {
+                console.log(`Proberen te laden: ${path}`);
+                const response = await fetch(path);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log(`✅ Succesvol geladen van: ${path}`);
+                return data;
+                
+            } catch (error) {
+                console.warn(`❌ Fout bij laden van ${path}:`, error.message);
+                continue; // Probeer volgende pad
+            }
+        }
+        
+        // Als alle paden falen, toon error
+        throw new Error('Alle datapaden gefaald');
+    }
+    
+    async function initializeApp() {
+        const container = document.getElementById('cardsContainer');
+        
         try {
-            const response = await fetch('veluwe-locations.json');
-            locationsData = await response.json();
+            // Laad data met fallback strategie
+            locationsData = await loadLocationsData();
+            
+            // Clear loading message
+            container.innerHTML = '';
             
             // Maak kaarten
-            const container = document.getElementById('cardsContainer');
             locationsData.locations.forEach(location => {
                 container.appendChild(createCard(location));
             });
@@ -534,13 +596,32 @@
             initializeLocation();
             loadVisitedPlaces();
             
+            console.log('✅ App succesvol geïnitialiseerd');
+            
         } catch (error) {
-            console.error('Fout bij laden van data:', error);
-            document.getElementById('cardsContainer').innerHTML = '<p>Fout bij laden van locaties. Zorg ervoor dat veluwe-locations.json in dezelfde map staat.</p>';
+            console.error('❌ Fout bij initialisatie:', error);
+            container.innerHTML = `
+                <div class="error-message">
+                    <h3>⚠️ Kan locatiedata niet laden</h3>
+                    <p>Er is een probleem met het laden van de locatiegegevens.</p>
+                    <details style="margin-top: 10px;">
+                        <summary style="cursor: pointer;">Technische details</summary>
+                        <p style="margin-top: 5px; font-family: monospace; font-size: 0.9em;">
+                            ${error.message}
+                        </p>
+                    </details>
+                    <p style="margin-top: 15px;">
+                        <strong>Mogelijke oplossingen:</strong><br>
+                        • Maak een <code>data/</code> map met <code>index.json</code><br>
+                        • Of plaats <code>veluwe-locations.json</code> in de hoofdmap<br>
+                        • Controleer of GitHub Pages correct is geconfigureerd
+                    </p>
+                </div>
+            `;
         }
     }
     
-    document.addEventListener('DOMContentLoaded', loadData);
+    document.addEventListener('DOMContentLoaded', initializeApp);
 </script>
 ```
 
