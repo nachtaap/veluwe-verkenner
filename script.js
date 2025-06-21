@@ -1,11 +1,11 @@
-// ========================================
+ // ========================================
 // CONFIGURATIE - VERVANG DEZE WAARDEN!
 // ========================================
 
 const STORAGE_CONFIG = {
 type: ‘jsonbin’,
-binId: ‘6856feef8561e97a5028f33b‘, // Vervang door jouw JSONBin ID
-apiKey: ‘$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy’ // Vervang door jouw JSONBin API key
+binId: ‘6856feef8561e97a5028f33b’,
+apiKey: ‘$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy’
 };
 
 // ========================================
@@ -173,6 +173,238 @@ const locationsData = {
 “distance”: 30,
 “coordinates”: { “lat”: 52.4000, “lng”: 5.8167 },
 “mapsUrl”: “https://maps.google.com/maps?q=Nuldernauw+Elburg”
+},
+{
+“title”: “Oude Kerk Nunspeet”,
+“category”: “historic”,
+“description”: “13e-eeuwse kerk in het centrum van Nunspeet. Mooie architectuur en interessante grafstenen.”,
+“distance”: 28,
+“coordinates”: { “lat”: 52.3772, “lng”: 5.7872 },
+“mapsUrl”: “https://maps.google.com/maps?q=Hervormde+Kerk+Nunspeet”
+},
+{
+“title”: “Horsterwold”,
+“category”: “nature”,
+“description”: “Grootste aangeplante loofbos van West-Europa. Prachtige wandel- en fietspaden door jong bos.”,
+“distance”: 42,
+“coordinates”: { “lat”: 52.3333, “lng”: 5.5000 },
+“mapsUrl”: “https://maps.google.com/maps?q=Horsterwold+Zeewolde”
+},
+{
+“title”: “Radiokootwijk”,
+“category”: “viewpoint”,
+“description”: “Voormalig zenderpark met markante zendmasten. Interessante architectuur en mooie wandelroutes in de omgeving.”,
+“distance”: 18,
+“coordinates”: { “lat”: 52.1833, “lng”: 5.8167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Zenderpark+Smilde”
+},
+{
+“title”: “Putten”,
+“category”: “village”,
+“description”: “Gezellig Veluws dorpje met karakteristieke huizen en een mooie dorpskern. Goede uitgangspunt voor fietsroutes.”,
+“distance”: 35,
+“coordinates”: { “lat”: 52.2603, “lng”: 5.6039 },
+“mapsUrl”: “https://maps.google.com/maps?q=Putten+centrum”
+},
+{
+“title”: “Kootwijkerzand”,
+“category”: “nature”,
+“description”: “Europa’s grootste stuifzandgebied. Uniek landschap dat doet denken aan een woestijn, maar dan in Nederland.”,
+“distance”: 16,
+“coordinates”: { “lat”: 52.1667, “lng”: 5.7500 },
+“mapsUrl”: “https://maps.google.com/maps?q=Kootwijkerzand+wandelroute”
+},
+{
+“title”: “Randmeren bij Harderwijk”,
+“category”: “water”,
+“description”: “Mooie meren met wandelpromenades en jachthavens. Ideaal voor een ontspannen wandeling langs het water.”,
+“distance”: 26,
+“coordinates”: { “lat”: 52.3500, “lng”: 5.6000 },
+“mapsUrl”: “https://maps.google.com/maps?q=Randmeren+Harderwijk”
+},
+{
+“title”: “Sint Antoniuskapel Wekerom”,
+“category”: “historic”,
+“description”: “Kleine historische kapel in een bosrijke omgeving. Rustige plek voor bezinning en mooie wandelingen.”,
+“distance”: 12,
+“coordinates”: { “lat”: 52.1167, “lng”: 5.7167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Sint+Antoniuskapel+Wekerom”
+},
+{
+“title”: “Bosgebied Harderwijkerweg”,
+“category”: “nature”,
+“description”: “Uitgestrekt bosgebied met diverse wandelroutes. Mooie oude bomen en rustige boswandelpaden.”,
+“distance”: 8,
+“coordinates”: { “lat”: 52.2500, “lng”: 5.8000 },
+“mapsUrl”: “https://maps.google.com/maps?q=Harderwijkerweg+bos+wandelroute”
+},
+{
+“title”: “Uitzichtpunt Leuvenum”,
+“category”: “viewpoint”,
+“description”: “Mooi uitzicht over de Veluwse bossen en heide. Vooral tijdens de herfst prachtige kleuren.”,
+“distance”: 22,
+“coordinates”: { “lat”: 52.2833, “lng”: 5.5333 },
+“mapsUrl”: “https://maps.google.com/maps?q=Leuvenum+uitzichtpunt”
+},
+{
+“title”: “Ermelo”,
+“category”: “village”,
+“description”: “Authentiek Veluws dorp met gezellige dorpskern. Mooie uitgangspunt voor fietstochten door de omgeving.”,
+“distance”: 28,
+“coordinates”: { “lat”: 52.3000, “lng”: 5.6167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Ermelo+centrum”
+},
+{
+“title”: “Speulderbos”,
+“category”: “nature”,
+“description”: “Een van de oudste bossen van Nederland met monumentale beuken. Prachtige wandelroutes door oud bos.”,
+“distance”: 14,
+“coordinates”: { “lat”: 52.2667, “lng”: 5.7333 },
+“mapsUrl”: “https://maps.google.com/maps?q=Speulderbos+wandelroute”
+},
+{
+“title”: “Veluwe Meer bij Elburg”,
+“category”: “water”,
+“description”: “Groot meer met diverse recreatiemogelijkheden. Mooie wandelpaden langs de oever en vogelkijkplekken.”,
+“distance”: 35,
+“coordinates”: { “lat”: 52.4500, “lng”: 5.8500 },
+“mapsUrl”: “https://maps.google.com/maps?q=Veluwe+Meer+Elburg”
+},
+{
+“title”: “Oude Begraafplaats Apeldoorn”,
+“category”: “historic”,
+“description”: “Historische begraafplaats met monumentale graven en mooie oude bomen. Interessant voor geschiedenis en architectuur.”,
+“distance”: 7,
+“coordinates”: { “lat”: 52.2103, “lng”: 5.9694 },
+“mapsUrl”: “https://maps.google.com/maps?q=Oude+Begraafplaats+Apeldoorn”
+},
+{
+“title”: “Otterlose Bos”,
+“category”: “nature”,
+“description”: “Gevarieerd bosgebied vlak bij uw verblijf. Mooie wandelpaden door afwisselend landschap met vennen en heide.”,
+“distance”: 3,
+“coordinates”: { “lat”: 52.3167, “lng”: 5.8667 },
+“mapsUrl”: “https://maps.google.com/maps?q=Otterlose+Bos+wandelroute”
+},
+{
+“title”: “Garderen”,
+“category”: “village”,
+“description”: “Klein dorpje op de Veluwe met authentieke Veluwse architectuur. Goede uitgangspunt voor wandel- en fietsroutes.”,
+“distance”: 18,
+“coordinates”: { “lat”: 52.2333, “lng”: 5.7167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Garderen+centrum”
+},
+{
+“title”: “Vennen bij Uddel”,
+“category”: “water”,
+“description”: “Kleine natuurlijke meertjes en vennen verscholen in het bos. Prachtige plekjes voor natuurfotografie.”,
+“distance”: 20,
+“coordinates”: { “lat”: 52.2667, “lng”: 5.7667 },
+“mapsUrl”: “https://maps.google.com/maps?q=Gooimeertje+Bussum”
+},
+{
+“title”: “Koepelkerk Nunspeet”,
+“category”: “historic”,
+“description”: “Bijzondere ronde kerk met koepel uit de 19e eeuw. Unieke architectuur en mooie ligging in het dorp.”,
+“distance”: 28,
+“coordinates”: { “lat”: 52.3772, “lng”: 5.7872 },
+“mapsUrl”: “https://maps.google.com/maps?q=Koepelkerk+Nunspeet”
+},
+{
+“title”: “Bossen bij Staverden”,
+“category”: “nature”,
+“description”: “Uitgestrekte bossen rond het kleinste stadje van Nederland. Mooie wandelroutes en rustige natuur.”,
+“distance”: 24,
+“coordinates”: { “lat”: 52.2833, “lng”: 5.9000 },
+“mapsUrl”: “https://maps.google.com/maps?q=Staverden+bos+wandelroute”
+},
+{
+“title”: “Zuiderheide”,
+“category”: “viewpoint”,
+“description”: “Heidegebied met mooie uitzichten over de omgeving. Vooral mooi tijdens de bloeitijd in augustus.”,
+“distance”: 32,
+“coordinates”: { “lat”: 52.2167, “lng”: 5.1833 },
+“mapsUrl”: “https://maps.google.com/maps?q=Zuiderheide+Hilversum”
+},
+{
+“title”: “Voorthuizen”,
+“category”: “village”,
+“description”: “Gezellig dorp met authentieke bebouwing en leuke winkeltjes. Mooie basis voor verkenning van de omgeving.”,
+“distance”: 15,
+“coordinates”: { “lat”: 52.1833, “lng”: 5.6167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Voorthuizen+centrum”
+},
+{
+“title”: “Hulshorsterzand”,
+“category”: “nature”,
+“description”: “Groot zandverstuivingsgebied met unieke flora en fauna. Interessant natuurgebied voor een bijzondere wandeling.”,
+“distance”: 36,
+“coordinates”: { “lat”: 52.3833, “lng”: 5.6333 },
+“mapsUrl”: “https://maps.google.com/maps?q=Hulshorsterzand+wandelroute”
+},
+{
+“title”: “Hierdensche Beek”,
+“category”: “water”,
+“description”: “Natuurlijke beek die door bos en heide stroomt. Mooie wandelpaden langs het water met kans op dieren spotten.”,
+“distance”: 20,
+“coordinates”: { “lat”: 52.2333, “lng”: 5.6833 },
+“mapsUrl”: “https://maps.google.com/maps?q=Hierdensche+Beek”
+},
+{
+“title”: “Oude Kerk Kootwijk”,
+“category”: “historic”,
+“description”: “Kleine historische kerk in het dorpje Kootwijk. Mooie ligging en interessante geschiedenis van het dorp.”,
+“distance”: 12,
+“coordinates”: { “lat”: 52.1667, “lng”: 5.7667 },
+“mapsUrl”: “https://maps.google.com/maps?q=Hervormde+Kerk+Kootwijk”
+},
+{
+“title”: “Wekeromse Zand”,
+“category”: “nature”,
+“description”: “Zandverstuiving met heide en sparrenbossen. Afwisselend landschap met mooie wandelroutes van verschillende lengtes.”,
+“distance”: 10,
+“coordinates”: { “lat”: 52.1167, “lng”: 5.7167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Wekeromse+Zand+wandelroute”
+},
+{
+“title”: “Uddel”,
+“category”: “village”,
+“description”: “Authentiek bosdorp met gezellige dorpskern. Veel mogelijkheden voor wandelingen en fietstochten in de omgeving.”,
+“distance”: 25,
+“coordinates”: { “lat”: 52.2667, “lng”: 5.7667 },
+“mapsUrl”: “https://maps.google.com/maps?q=Uddel+centrum”
+},
+{
+“title”: “De Galberg”,
+“category”: “viewpoint”,
+“description”: “Heuvel met uitzichtpunt over de Gelderse Vallei. Prachtig uitzicht en mooie wandelroutes in de omgeving.”,
+“distance”: 25,
+“coordinates”: { “lat”: 52.0833, “lng”: 5.6667 },
+“mapsUrl”: “https://maps.google.com/maps?q=Galberg+Ede”
+},
+{
+“title”: “Leuvenumse Bos”,
+“category”: “nature”,
+“description”: “Rustig bosgebied met afwisselende wandelroutes. Mooie oude bomen en kans op wilde dieren zoals reeën.”,
+“distance”: 18,
+“coordinates”: { “lat”: 52.2833, “lng”: 5.5333 },
+“mapsUrl”: “https://maps.google.com/maps?q=Leuvenumse+Bos+wandelroute”
+},
+{
+“title”: “Tongerense Beek”,
+“category”: “water”,
+“description”: “Schilderachtige beek die door bos en weiland stroomt. Mooie wandelpaden langs het water en rustige natuur.”,
+“distance”: 14,
+“coordinates”: { “lat”: 52.2000, “lng”: 5.7500 },
+“mapsUrl”: “https://maps.google.com/maps?q=Tongerense+Beek”
+},
+{
+“title”: “Oude Boerderij Garderen”,
+“category”: “historic”,
+“description”: “Authentieke Veluwse boerderij met karakteristieke architectuur. Interessant voor geschiedenis van de streek.”,
+“distance”: 18,
+“coordinates”: { “lat”: 52.2333, “lng”: 5.7167 },
+“mapsUrl”: “https://maps.google.com/maps?q=Boerderij+Museum+Garderen”
 }
 ],
 “categoryLabels”: {
@@ -218,7 +450,6 @@ async loadVisitedPlaces() {
             }
         }
         
-        // Fallback naar lokale opslag
         this.updateSyncStatus('⚠️ Gebruikt lokale opslag', 'error');
         return this.loadLocalVisitedPlaces();
         
@@ -253,7 +484,6 @@ async saveVisitedPlaces(visitedPlaces) {
             }
         }
         
-        // Fallback naar lokale opslag
         this.updateSyncStatus('⚠️ Opslaan lokaal alleen', 'error');
         this.saveLocalVisitedPlaces(visitedPlaces);
         return false;
