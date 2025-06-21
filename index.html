@@ -39,7 +39,22 @@
     </div>
 </div>
 
-<script src="script.js"></script>
+<!-- TEST SCRIPT - vervang dit door <script src="script.js"></script> als het werkt -->
+<script>
+console.log("Inline script werkt!");
+document.addEventListener('DOMContentLoaded', function() {
+    const status = document.getElementById('syncStatus');
+    if (status) {
+        status.textContent = "✅ Test werkt!";
+    }
+    
+    // Test of we kaarten kunnen maken
+    const container = document.getElementById('cardsContainer');
+    if (container) {
+        container.innerHTML = '<div style="padding: 20px; background: white; margin: 10px; border-radius: 10px;">🎉 JavaScript werkt en kan kaarten maken!</div>';
+    }
+});
+</script>
 ```
 
 </body>
