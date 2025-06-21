@@ -12,260 +12,296 @@
             box-sizing: border-box;
         }
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.6;
-        color: #2c3e50;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
+```
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.animation-container {
+    height: 200px;
+    width: 100%;
+    position: relative;
+    margin: 20px 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.car-illustration {
+    max-width: 400px;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    animation: slideIn 2s ease-out;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
     }
-    
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .header {
-        text-align: center;
-        margin-bottom: 40px;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .animation-container {
-        height: 200px;
-        width: 100%;
-        position: relative;
-        margin: 20px 0;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .car-illustration {
-        max-width: 400px;
-        max-height: 180px;
-        width: auto;
-        height: auto;
-        animation: slideIn 2s ease-out;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        object-fit: contain;
-    }
-    
-    @keyframes slideIn {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
+}
+
+.header h1 {
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header p {
+    color: #7f8c8d;
+    font-size: 1.2em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.card.visited {
+    background: rgba(200, 255, 200, 0.95);
+    border-left: 4px solid #27ae60;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.card h3 a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.card h3 a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.card p {
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+.distance {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.category {
+    display: inline-block;
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+.historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+.village { background: linear-gradient(45deg, #f39c12, #e67e22); }
+.water { background: linear-gradient(45deg, #3498db, #2980b9); }
+.viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+
+.filter-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.filter-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filter-btn.active {
+    border: 3px solid #f1c40f;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+}
+
+.filter-btn:not(.active):not(.show-colored) {
+    background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+}
+
+.filter-btn.show-colored.nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+.filter-btn.show-colored.historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+.filter-btn.show-colored.village { background: linear-gradient(45deg, #f39c12, #e67e22); }
+.filter-btn.show-colored.water { background: linear-gradient(45deg, #3498db, #2980b9); }
+.filter-btn.show-colored.viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+
+.filter-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.filter-btn.nature.active { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+.filter-btn.historic.active { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
+.filter-btn.village.active { background: linear-gradient(45deg, #f39c12, #e67e22); }
+.filter-btn.water.active { background: linear-gradient(45deg, #3498db, #2980b9); }
+.filter-btn.viewpoint.active { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+.filter-btn[data-category="all"].active { 
+    background: linear-gradient(45deg, #5d4e75, #7b68ee); 
+}
+
+.card.hidden {
+    display: none;
+}
+
+.location-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.location-btn {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.location-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.location-btn:disabled {
+    background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.location-status {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+.distance.updated {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.visited-checkbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #27ae60;
+    transform: scale(1.2);
+}
+
+.visited-label {
+    position: absolute;
+    top: 12px;
+    right: 40px;
+    font-size: 0.8em;
+    color: #7f8c8d;
+    font-weight: 500;
+    user-select: none;
+    cursor: pointer;
+}
+
+.card.visited .visited-label {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
     .header h1 {
-        color: #2c3e50;
-        font-size: 2.5em;
-        margin-bottom: 10px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .header p {
-        color: #7f8c8d;
-        font-size: 1.2em;
+        font-size: 2em;
     }
     
     .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 25px;
-        margin-top: 30px;
+        grid-template-columns: 1fr;
     }
     
-    .card {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+    .container {
+        padding: 15px;
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-    }
-    
-    .card h3 {
-        margin-bottom: 15px;
-        font-size: 1.3em;
-    }
-    
-    .card h3 a {
-        color: #3498db;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-    
-    .card h3 a:hover {
-        color: #2980b9;
-        text-decoration: underline;
-    }
-    
-    .card p {
-        color: #34495e;
-        margin-bottom: 10px;
-    }
-    
-    .distance {
-        color: #e74c3c;
-        font-weight: bold;
-        font-size: 0.9em;
-    }
-    
-    .category {
-        display: inline-block;
-        background: linear-gradient(45deg, #3498db, #2980b9);
-        color: white;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8em;
-        margin-bottom: 10px;
-        font-weight: 500;
-    }
-    
-    .nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
-    .historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
-    .village { background: linear-gradient(45deg, #f39c12, #e67e22); }
-    .water { background: linear-gradient(45deg, #3498db, #2980b9); }
-    .viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
-    
-    .filter-section {
-        margin-top: 20px;
-        text-align: center;
-    }
-    
-    .filter-section h3 {
-        color: #2c3e50;
-        margin-bottom: 15px;
-        font-size: 1.2em;
-    }
-    
-    .filter-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-    
-    .filter-btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 0.9em;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        color: white;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .filter-btn.active {
-        border: 3px solid #f1c40f;
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
-    }
-    
-    .filter-btn:not(.active):not(.show-colored) {
-        background: linear-gradient(45deg, #bdc3c7, #95a5a6);
-    }
-    
-    .filter-btn.show-colored.nature { background: linear-gradient(45deg, #27ae60, #2ecc71); }
-    .filter-btn.show-colored.historic { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
-    .filter-btn.show-colored.village { background: linear-gradient(45deg, #f39c12, #e67e22); }
-    .filter-btn.show-colored.water { background: linear-gradient(45deg, #3498db, #2980b9); }
-    .filter-btn.show-colored.viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
-    
-    .filter-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .filter-btn.nature.active { background: linear-gradient(45deg, #27ae60, #2ecc71); }
-    .filter-btn.historic.active { background: linear-gradient(45deg, #8e44ad, #9b59b6); }
-    .filter-btn.village.active { background: linear-gradient(45deg, #f39c12, #e67e22); }
-    .filter-btn.water.active { background: linear-gradient(45deg, #3498db, #2980b9); }
-    .filter-btn.viewpoint.active { background: linear-gradient(45deg, #e74c3c, #c0392b); }
-    .filter-btn[data-category="all"].active { 
-        background: linear-gradient(45deg, #5d4e75, #7b68ee); 
-    }
-    
-    .card.hidden {
-        display: none;
-    }
-    
-    .location-section {
-        margin-top: 20px;
-        text-align: center;
-    }
-    
-    .location-btn {
-        padding: 12px 25px;
-        background: linear-gradient(45deg, #27ae60, #2ecc71);
-        color: white;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .location-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .location-btn:disabled {
-        background: linear-gradient(45deg, #bdc3c7, #95a5a6);
-        cursor: not-allowed;
-        transform: none;
-    }
-    
-    .location-status {
-        margin-top: 10px;
-        font-size: 0.9em;
-        color: #7f8c8d;
-    }
-    
-    .distance.updated {
-        color: #27ae60;
-        font-weight: bold;
-    }
-    
-    @media (max-width: 768px) {
-        .header h1 {
-            font-size: 2em;
-        }
-        
-        .grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .container {
-            padding: 15px;
-        }
-    }
+}
+```
+
 </style>
 <script>
     // Locaties van alle bezienswaardigheden (geschatte coördinaten)
@@ -305,545 +341,4 @@
         'Oude Begraafplaats Apeldoorn': { lat: 52.2103, lng: 5.9694 },
         'Otterlose Bos': { lat: 52.3167, lng: 5.8667 },
         'Garderen': { lat: 52.2333, lng: 5.7167 },
-        'Vennen bij Uddel': { lat: 52.2667, lng: 5.7667 },
-        'Koepelkerk Nunspeet': { lat: 52.3772, lng: 5.7872 },
-        'Bossen bij Staverden': { lat: 52.2833, lng: 5.9000 },
-        'Zuiderheide': { lat: 52.2167, lng: 5.1833 },
-        'Voorthuizen': { lat: 52.1833, lng: 5.6167 },
-        'Hulshorsterzand': { lat: 52.3833, lng: 5.6333 },
-        'Hierdensche Beek': { lat: 52.2333, lng: 5.6833 },
-        'Oude Kerk Kootwijk': { lat: 52.1667, lng: 5.7667 },
-        'Wekeromse Zand': { lat: 52.1167, lng: 5.7167 },
-        'Uddel': { lat: 52.2667, lng: 5.7667 },
-        'De Galberg': { lat: 52.0833, lng: 5.6667 },
-        'Leuvenumse Bos': { lat: 52.2833, lng: 5.5333 },
-        'Tongerense Beek': { lat: 52.2000, lng: 5.7500 },
-        'Oude Boerderij Garderen': { lat: 52.2333, lng: 5.7167 }
-    };
-    
-    // EuroParcs De Wije Werelt locatie als fallback
-    const euroParcsLocation = { lat: 52.3167, lng: 5.8833 };
-    
-    // Functie om afstand te berekenen (Haversine formule)
-    function calculateDistance(lat1, lng1, lat2, lng2) {
-        const R = 6371; // Radius van de aarde in km
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLng = (lng2 - lng1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLng/2) * Math.sin(dLng/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-    
-    // Functie om afstanden bij te werken
-    function updateDistances(userLat, userLng) {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            const titleElement = card.querySelector('h3 a');
-            const distanceElement = card.querySelector('.distance');
-            
-            if (titleElement && distanceElement) {
-                const titleText = titleElement.textContent;
-                
-                // Zoek de locatie in onze database
-                const location = locations[titleText];
-                
-                if (location) {
-                    const distance = calculateDistance(userLat, userLng, location.lat, location.lng);
-                    distanceElement.textContent = `(${Math.round(distance)} km)`;
-                    distanceElement.classList.add('updated');
-                }
-            }
-        });
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const cards = document.querySelectorAll('.card');
-        const locationBtn = document.getElementById('locationBtn');
-        const locationStatus = document.getElementById('locationStatus');
-        
-        // Initialize with "all" selected - show all buttons colored
-        filterButtons.forEach(btn => {
-            if (btn.getAttribute('data-category') !== 'all') {
-                btn.classList.add('show-colored');
-            }
-        });
-        
-        // Filter functionaliteit
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                const category = this.getAttribute('data-category');
-                
-                // Update visual state of filter buttons
-                if (category === 'all') {
-                    // When "all" is selected, show all category buttons in their colored state
-                    filterButtons.forEach(btn => {
-                        if (btn !== this) {
-                            btn.classList.add('show-colored');
-                        }
-                    });
-                } else {
-                    // When specific category is selected, remove colored state from others
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('show-colored');
-                    });
-                }
-                
-                cards.forEach(card => {
-                    if (category === 'all') {
-                        card.classList.remove('hidden');
-                    } else {
-                        const cardCategory = card.querySelector('.category');
-                        if (cardCategory && cardCategory.classList.contains(category)) {
-                            card.classList.remove('hidden');
-                        } else {
-                            card.classList.add('hidden');
-                        }
-                    }
-                });
-            });
-        });
-        
-        // Locatie functionaliteit
-        locationBtn.addEventListener('click', function() {
-            if (!navigator.geolocation) {
-                locationStatus.textContent = 'Geolocatie wordt niet ondersteund door je browser';
-                locationStatus.style.color = '#e74c3c';
-                return;
-            }
-            
-            locationBtn.disabled = true;
-            locationBtn.textContent = '📍 Locatie ophalen...';
-            locationStatus.textContent = 'Je locatie wordt opgehaald...';
-            locationStatus.style.color = '#f39c12';
-            
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const userLat = position.coords.latitude;
-                    const userLng = position.coords.longitude;
-                    
-                    updateDistances(userLat, userLng);
-                    
-                    locationBtn.textContent = '✅ Afstanden bijgewerkt';
-                    locationStatus.textContent = 'Afstanden zijn bijgewerkt naar je huidige locatie!';
-                    locationStatus.style.color = '#27ae60';
-                    
-                    setTimeout(() => {
-                        locationBtn.disabled = false;
-                        locationBtn.textContent = '📍 Herbereken afstanden';
-                    }, 2000);
-                },
-                function(error) {
-                    let errorMessage = 'Er ging iets mis bij het ophalen van je locatie';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage = 'Locatietoegang geweigerd. Geef toestemming in je browser.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage = 'Locatie niet beschikbaar.';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage = 'Timeout bij ophalen locatie.';
-                            break;
-                    }
-                    
-                    locationStatus.textContent = errorMessage;
-                    locationStatus.style.color = '#e74c3c';
-                    locationBtn.disabled = false;
-                    locationBtn.textContent = '📍 Probeer opnieuw';
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 300000
-                }
-            );
-        });
-    });
-</script>
-```
-
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🌲 Verborgen Pareltjes van de Veluwe</h1>
-
-        <div class="animation-container">
-            <img src="62645C44-E0B2-46A1-9CF4-45FF6CE253DE.png" alt="Auto met hondje rijdt door de Veluwe" class="car-illustration" />
-        </div>
-        
-        <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
-        
-        <div class="filter-section">
-            <h3>Filter op categorie:</h3>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-category="all">🌟 Alles</button>
-                <button class="filter-btn nature" data-category="nature">🌲 Natuur</button>
-                <button class="filter-btn historic" data-category="historic">🏰 Historisch</button>
-                <button class="filter-btn village" data-category="village">🏘️ Dorpjes</button>
-                <button class="filter-btn water" data-category="water">💧 Water</button>
-                <button class="filter-btn viewpoint" data-category="viewpoint">👁️ Uitzicht</button>
-            </div>
-        </div>
-        
-        <div class="location-section">
-            <button id="locationBtn" class="location-btn">📍 Gebruik mijn locatie voor afstanden</button>
-            <div id="locationStatus" class="location-status"></div>
-        </div>
-    </div>
-    
-    <div class="grid">
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Schaarsbergen+Bezoekerscentrum" target="_blank">Bezoekerscentrum Schaarsbergen</a></h3>
-            <p>Prachtig startpunt voor wandelingen met informatiecentrum en mooie tuinen. Ideaal voor gezinnen.</p>
-            <div class="distance">(15 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Kasteel+Cannenburch+Vaassen" target="_blank">Kasteel Cannenburch</a></h3>
-            <p>15e-eeuws kasteel met prachtige tuinen en een interessante geschiedenis. Mooie rondleidingen mogelijk.</p>
-            <div class="distance">(12 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Elburg+Vischpoort" target="_blank">Vischpoort Elburg</a></h3>
-            <p>Historische stadspoort in het pittoreske vestingstadje Elburg. Prachtige oude binnenstad om doorheen te wandelen.</p>
-            <div class="distance">(35 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Veluwemeer+Harderwijk" target="_blank">Veluwemeer bij Harderwijk</a></h3>
-            <p>Mooie plek aan het water met wandelpromenade en mogelijkheid voor een terrasje.</p>
-            <div class="distance">(25 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Sprielderbos+wandelroute" target="_blank">Sprielderbos</a></h3>
-            <p>Prachtig bos met oude beuken en eiken. Verschillende wandelroutes door gevarieerd landschap.</p>
-            <div class="distance">(8 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Ruïne+Schaffelaar+Barneveld" target="_blank">Ruïne Schaffelaar</a></h3>
-            <p>Restanten van een middeleeuws kasteel in een bosrijke omgeving. Mooie wandeling erheen mogelijk.</p>
-            <div class="distance">(20 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Oosterbeek+Airborne+Museum" target="_blank">Centrum Oosterbeek</a></h3>
-            <p>Historisch dorpje met oorlogsverleden. Charmante straatjes en mooie villa's uit het begin van de 20e eeuw.</p>
-            <div class="distance">(18 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Planken+Wambuis+Ede" target="_blank">Planken Wambuis</a></h3>
-            <p>Uitgestrekte heide- en zandverstuivingen. Prachtig paars in de bloeitijd en mooi wandelgebied.</p>
-            <div class="distance">(22 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Loenermark+vijver" target="_blank">Loenermark</a></h3>
-            <p>Bosgebied met mooie vijvers en vennen. Ideaal voor rustige wandelingen en natuurfotografie.</p>
-            <div class="distance">(14 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Grote+Kerk+Barneveld" target="_blank">Grote Kerk Barneveld</a></h3>
-            <p>Imposante 15e-eeuwse kerk in het centrum van Barneveld. Mooie architectuur en interessante geschiedenis.</p>
-            <div class="distance">(25 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category viewpoint">Uitzicht</div>
-            <h3><a href="https://maps.google.com/maps?q=Posbank+Rheden" target="_blank">De Posbank</a></h3>
-            <p>Een van de mooiste uitzichtpunten van de Veluwe. Prachtig over de heuvels en bossen, vooral bij zonsondergang.</p>
-            <div class="distance">(28 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Bussumerheide+wandelroute" target="_blank">Bussumerheide</a></h3>
-            <p>Uitgestrekt heidegebied met schaapskuddes. Prachtige paarse bloei in augustus en september.</p>
-            <div class="distance">(16 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Hattem+centrum" target="_blank">Hattem</a></h3>
-            <p>Middeleeuws Hanzestadje met goed bewaarde stadsmuren en poorten. Gezellige binnenstad met terrassen.</p>
-            <div class="distance">(45 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Uddelerbosch+wandelroute" target="_blank">Uddelerbosch</a></h3>
-            <p>Afwisselend bosgebied met naaldbos, loofbos en open plekken. Mooie wandelpaden en mountainbikeroutes.</p>
-            <div class="distance">(32 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Wolderwijd+Zeewolde" target="_blank">Wolderwijd</a></h3>
-            <p>Groot meer met mogelijkheden voor watersport. Mooie wandel- en fietspaden langs de oevers.</p>
-            <div class="distance">(38 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Kasteel+Ruurlo" target="_blank">Kasteel Ruurlo</a></h3>
-            <p>14e-eeuws kasteel met museum en prachtige kasteeltuinen. Regelmatig culturele evenementen.</p>
-            <div class="distance">(48 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Kroondomeinen+Appel" target="_blank">Kroondomeinen</a></h3>
-            <p>Koninklijke bossen met afwisselende landschappen. Mooie wandelroutes door gevarieerd natuurgebied.</p>
-            <div class="distance">(10 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Vierhouten+centrum" target="_blank">Vierhouten</a></h3>
-            <p>Klein bosdorpje midden in de Veluwe. Gezellige dorpskern met restaurant en uitgangspunt voor wandelingen.</p>
-            <div class="distance">(6 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Veluwezoom+Nationaal+Park" target="_blank">Veluwezoom Nationaal Park</a></h3>
-            <p>Gevarieerd natuurgebied met bossen, heide en uitzichtpunten. Vele wandelroutes van verschillende lengtes.</p>
-            <div class="distance">(24 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Nuldernauw+Elburg" target="_blank">Nuldernauw</a></h3>
-            <p>Smalle zeearm tussen Elburg en Nunspeet. Mooie wandelroutes langs het water met vogelkijkmogelijkheden.</p>
-            <div class="distance">(30 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Hervormde+Kerk+Nunspeet" target="_blank">Oude Kerk Nunspeet</a></h3>
-            <p>13e-eeuwse kerk in het centrum van Nunspeet. Mooie architectuur en interessante grafstenen.</p>
-            <div class="distance">(28 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Horsterwold+Zeewolde" target="_blank">Horsterwold</a></h3>
-            <p>Grootste aangeplante loofbos van West-Europa. Prachtige wandel- en fietspaden door jong bos.</p>
-            <div class="distance">(42 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category viewpoint">Uitzicht</div>
-            <h3><a href="https://maps.google.com/maps?q=Zenderpark+Smilde" target="_blank">Radiokootwijk</a></h3>
-            <p>Voormalig zenderpark met markante zendmasten. Interessante architectuur en mooie wandelroutes in de omgeving.</p>
-            <div class="distance">(18 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Putten+centrum" target="_blank">Putten</a></h3>
-            <p>Gezellig Veluws dorpje met karakteristieke huizen en een mooie dorpskern. Goede uitgangspunt voor fietsroutes.</p>
-            <div class="distance">(35 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Kootwijkerzand+wandelroute" target="_blank">Kootwijkerzand</a></h3>
-            <p>Europa's grootste stuifzandgebied. Uniek landschap dat doet denken aan een woestijn, maar dan in Nederland.</p>
-            <div class="distance">(16 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Randmeren+Harderwijk" target="_blank">Randmeren bij Harderwijk</a></h3>
-            <p>Mooie meren met wandelpromenades en jachthavens. Ideaal voor een ontspannen wandeling langs het water.</p>
-            <div class="distance">(26 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Sint+Antoniuskapel+Wekerom" target="_blank">Sint Antoniuskapel Wekerom</a></h3>
-            <p>Kleine historische kapel in een bosrijke omgeving. Rustige plek voor bezinning en mooie wandelingen.</p>
-            <div class="distance">(12 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Harderwijkerweg+bos+wandelroute" target="_blank">Bosgebied Harderwijkerweg</a></h3>
-            <p>Uitgestrekt bosgebied met diverse wandelroutes. Mooie oude bomen en rustige boswandelpaden.</p>
-            <div class="distance">(8 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category viewpoint">Uitzicht</div>
-            <h3><a href="https://maps.google.com/maps?q=Leuvenum+uitzichtpunt" target="_blank">Uitzichtpunt Leuvenum</a></h3>
-            <p>Mooi uitzicht over de Veluwse bossen en heide. Vooral tijdens de herfst prachtige kleuren.</p>
-            <div class="distance">(22 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Ermelo+centrum" target="_blank">Ermelo</a></h3>
-            <p>Authentiek Veluws dorp met gezellige dorpskern. Mooie uitgangspunt voor fietstochten door de omgeving.</p>
-            <div class="distance">(28 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Speulderbos+wandelroute" target="_blank">Speulderbos</a></h3>
-            <p>Een van de oudste bossen van Nederland met monumentale beuken. Prachtige wandelroutes door oud bos.</p>
-            <div class="distance">(14 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Veluwe+Meer+Elburg" target="_blank">Veluwe Meer bij Elburg</a></h3>
-            <p>Groot meer met diverse recreatiemogelijkheden. Mooie wandelpaden langs de oever en vogelkijkplekken.</p>
-            <div class="distance">(35 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Oude+Begraafplaats+Apeldoorn" target="_blank">Oude Begraafplaats Apeldoorn</a></h3>
-            <p>Historische begraafplaats met monumentale graven en mooie oude bomen. Interessant voor geschiedenis en architectuur.</p>
-            <div class="distance">(7 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Otterlose+Bos+wandelroute" target="_blank">Otterlose Bos</a></h3>
-            <p>Gevarieerd bosgebied vlak bij uw verblijf. Mooie wandelpaden door afwisselend landschap met vennen en heide.</p>
-            <div class="distance">(3 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Garderen+centrum" target="_blank">Garderen</a></h3>
-            <p>Klein dorpje op de Veluwe met authentieke Veluwse architectuur. Goede uitgangspunt voor wandel- en fietsroutes.</p>
-            <div class="distance">(18 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Gooimeertje+Bussum" target="_blank">Vennen bij Uddel</a></h3>
-            <p>Kleine natuurlijke meertjes en vennen verscholen in het bos. Prachtige plekjes voor natuurfotografie.</p>
-            <div class="distance">(20 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Koepelkerk+Nunspeet" target="_blank">Koepelkerk Nunspeet</a></h3>
-            <p>Bijzondere ronde kerk met koepel uit de 19e eeuw. Unieke architectuur en mooie ligging in het dorp.</p>
-            <div class="distance">(28 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Staverden+bos+wandelroute" target="_blank">Bossen bij Staverden</a></h3>
-            <p>Uitgestrekte bossen rond het kleinste stadje van Nederland. Mooie wandelroutes en rustige natuur.</p>
-            <div class="distance">(24 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category viewpoint">Uitzicht</div>
-            <h3><a href="https://maps.google.com/maps?q=Zuiderheide+Hilversum" target="_blank">Zuiderheide</a></h3>
-            <p>Heidegebied met mooie uitzichten over de omgeving. Vooral mooi tijdens de bloeitijd in augustus.</p>
-            <div class="distance">(32 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Voorthuizen+centrum" target="_blank">Voorthuizen</a></h3>
-            <p>Gezellig dorp met authentieke bebouwing en leuke winkeltjes. Mooie basis voor verkenning van de omgeving.</p>
-            <div class="distance">(15 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Hulshorsterzand+wandelroute" target="_blank">Hulshorsterzand</a></h3>
-            <p>Groot zandverstuivingsgebied met unieke flora en fauna. Interessant natuurgebied voor een bijzondere wandeling.</p>
-            <div class="distance">(36 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Hierdensche+Beek" target="_blank">Hierdensche Beek</a></h3>
-            <p>Natuurlijke beek die door bos en heide stroomt. Mooie wandelpaden langs het water met kans op dieren spotten.</p>
-            <div class="distance">(20 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Hervormde+Kerk+Kootwijk" target="_blank">Oude Kerk Kootwijk</a></h3>
-            <p>Kleine historische kerk in het dorpje Kootwijk. Mooie ligging en interessante geschiedenis van het dorp.</p>
-            <div class="distance">(12 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Wekeromse+Zand+wandelroute" target="_blank">Wekeromse Zand</a></h3>
-            <p>Zandverstuiving met heide en sparrenbossen. Afwisselend landschap met mooie wandelroutes van verschillende lengtes.</p>
-            <div class="distance">(10 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category village">Dorpje</div>
-            <h3><a href="https://maps.google.com/maps?q=Uddel+centrum" target="_blank">Uddel</a></h3>
-            <p>Authentiek bosdorp met gezellige dorpskern. Veel mogelijkheden voor wandelingen en fietstochten in de omgeving.</p>
-            <div class="distance">(25 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category viewpoint">Uitzicht</div>
-            <h3><a href="https://maps.google.com/maps?q=Galberg+Ede" target="_blank">De Galberg</a></h3>
-            <p>Heuvel met uitzichtpunt over de Gelderse Vallei. Prachtig uitzicht en mooie wandelroutes in de omgeving.</p>
-            <div class="distance">(25 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category nature">Natuur</div>
-            <h3><a href="https://maps.google.com/maps?q=Leuvenumse+Bos+wandelroute" target="_blank">Leuvenumse Bos</a></h3>
-            <p>Rustig bosgebied met afwisselende wandelroutes. Mooie oude bomen en kans op wilde dieren zoals reeën.</p>
-            <div class="distance">(18 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category water">Water</div>
-            <h3><a href="https://maps.google.com/maps?q=Tongerense+Beek" target="_blank">Tongerense Beek</a></h3>
-            <p>Schilderachtige beek die door bos en weiland stroomt. Mooie wandelpaden langs het water en rustige natuur.</p>
-            <div class="distance">(14 km)</div>
-        </div>
-        
-        <div class="card">
-            <div class="category historic">Historisch</div>
-            <h3><a href="https://maps.google.com/maps?q=Boerderij+Museum+Garderen" target="_blank">Oude Boerderij Garderen</a></h3>
-            <p>Authentieke Veluwse boerderij met karakteristieke architectuur. Interessant voor geschiedenis van de streek.</p>
-            <div class="distance">(18 km)</div>
-        </div>
-    </div>
-</div>
-```
-
-</body>
-</html>
+        'Vennen
