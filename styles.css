@@ -207,7 +207,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   cursor: pointer;
-  overflow: hidden;
 }
 
 .card.visited::after {
@@ -303,13 +302,4 @@ html, body {
   overflow-x: hidden;
   touch-action: pan-y; /* voorkomt horizontale swipe */
   overscroll-behavior-x: none;
-}
-
-* {
-  outline: 1px solid red; /* toont de grenzen van elk element */
-}
-
-body {
-  position: relative;
-  overflow-x: hidden !important;
 }
