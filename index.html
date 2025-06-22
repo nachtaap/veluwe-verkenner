@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verborgen Pareltjes van de Veluwe</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
@@ -120,19 +120,13 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-        <div class="card-header">
-          <div class="category ${location.category}">
-            ${appData.categoryLabels[location.category]}
-          </div>
-          <div class="visited-badge-slot">
-            ${location.visited ? '<div class="visited-badge" title="Bezocht">&#10003;</div>' : ''}
-          </div>
-        </div>
+        <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''} />
+        <label class="visited-label">Bezocht</label>
+        <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
         <div class="distance">(${location.distance} km)</div>
       `;
-
       return card;
     }
 
@@ -150,7 +144,6 @@
     }
 
     function setupEventListeners() {
-      // Filters
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -160,51 +153,51 @@
           const cards = document.querySelectorAll('.card');
 
           cards.forEach(card => {
-            const cardCategory = card.querySelector('.category');
-            if (category === 'all' || (cardCategory && cardCategory.classList.contains(category))) {
+            if (category === 'all') {
               card.classList.remove('hidden');
             } else {
-              card.classList.add('hidden');
+              const cardCategory = card.querySelector('.category');
+              if (cardCategory && cardCategory.classList.contains(category)) {
+                card.classList.remove('hidden');
+              } else {
+                card.classList.add('hidden');
+              }
             }
           });
         }
       });
 
-      // Toggle visited status via card click
-      document.addEventListener('click', async function (e) {
-        if (e.target.tagName === 'A') return;
+      document.addEventListener('change', async function (e) {
+        if (e.target.classList.contains('visited-checkbox')) {
+          const card = e.target.closest('.card');
+          const placeName = e.target.getAttribute('data-place');
 
-        const card = e.target.closest('.card');
-        if (!card) return;
+          if (e.target.checked) {
+            card.classList.add('visited');
+          } else {
+            card.classList.remove('visited');
+          }
 
-        const titleEl = card.querySelector('h3 a');
-        if (!titleEl) return;
+          const location = appData.locations.find(loc => loc.title === placeName);
+          if (location) {
+            location.visited = e.target.checked;
 
-        const placeName = titleEl.textContent;
-        const location = appData.locations.find(loc => loc.title === placeName);
-        if (!location) return;
+            if (e.target.checked) {
+              if (!appData.visitedPlaces.includes(placeName)) {
+                appData.visitedPlaces.push(placeName);
+              }
+            } else {
+              const index = appData.visitedPlaces.indexOf(placeName);
+              if (index > -1) {
+                appData.visitedPlaces.splice(index, 1);
+              }
+            }
 
-        location.visited = !location.visited;
-        card.classList.toggle('visited', location.visited);
-
-        const badgeSlot = card.querySelector('.visited-badge-slot');
-        if (badgeSlot) {
-          badgeSlot.innerHTML = location.visited
-            ? '<div class="visited-badge" title="Bezocht">&#10003;</div>'
-            : '';
+            await saveData();
+          }
         }
-
-        if (location.visited && !appData.visitedPlaces.includes(placeName)) {
-          appData.visitedPlaces.push(placeName);
-        } else if (!location.visited) {
-          const index = appData.visitedPlaces.indexOf(placeName);
-          if (index > -1) appData.visitedPlaces.splice(index, 1);
-        }
-
-        await saveData();
       });
 
-      // Locatieknop
       const locationBtn = document.getElementById('locationBtn');
       const locationStatus = document.getElementById('locationStatus');
 
@@ -226,7 +219,7 @@
               locationBtn.textContent = '📍 Herbereken afstanden';
             }, 2000);
           },
-          function () {
+          function (error) {
             locationStatus.textContent = 'Fout bij ophalen locatie';
             locationBtn.disabled = false;
             locationBtn.textContent = '📍 Probeer opnieuw';
@@ -260,9 +253,9 @@
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLng = (lng2 - lng1) * Math.PI / 180;
-      const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLng / 2) ** 2;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     }
@@ -279,12 +272,14 @@
     }
 
     async function initializeApp() {
+      console.log('App initialiseren...');
       setupEventListeners();
 
       const dataLoaded = await loadData();
       if (dataLoaded) {
         createFilterButtons();
         renderLocations();
+        console.log('App geladen!');
       } else {
         updateStatus('❌ Kon data niet laden');
       }
