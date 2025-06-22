@@ -127,7 +127,7 @@ body {
 }
 
 .filter-btn.active {
-  box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+  box-shadow: none;
 }
 
 .filter-btn:not(.active):not(.show-colored) {
@@ -138,6 +138,9 @@ body {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
+.filter-btn[data-category="all"] {
+  background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+}
 .filter-btn[data-category="all"].active {
   background: linear-gradient(45deg, #a18cd1, #fbc2eb);
   color: white;
