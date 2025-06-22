@@ -120,15 +120,16 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-        <div class="card-header">
-          <div class="category ${location.category}">
-            ${appData.categoryLabels[location.category]}
-          </div>
-        </div>
-        <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
-        <p>${location.description}</p>
-        <div class="distance">(${location.distance} km)</div>
-      `;
+  <div class="card-header">
+    <div class="category ${location.category}">
+      ${appData.categoryLabels[location.category]}
+    </div>
+    ${location.visited ? '<div class="visited-badge">✔ Bezocht</div>' : ''}
+  </div>
+  <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
+  <p>${location.description}</p>
+  <div class="distance">(${location.distance} km)</div>
+`;
 
       return card;
     }
