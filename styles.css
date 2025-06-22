@@ -63,7 +63,7 @@ object-fit: contain;
 
 .card.visited {
   background: rgba(200, 255, 200, 0.95);
-  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.25);
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.2);
 }
 
 .card:hover {
@@ -71,8 +71,3 @@ transform: translateY(-5px);
 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes togglePop {
-0%   { transform: scale(1); }
-50%  { transform: scale(1.015); }
-100% { transform: scale(1); }
-}
