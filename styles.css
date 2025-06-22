@@ -304,3 +304,12 @@ html, body {
   touch-action: pan-y; /* voorkomt horizontale swipe */
   overscroll-behavior-x: none;
 }
+
+* {
+  outline: 1px solid red; /* toont de grenzen van elk element */
+}
+
+body {
+  position: relative;
+  overflow-x: hidden !important;
+}
