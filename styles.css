@@ -209,11 +209,14 @@ body {
   box-shadow: 0 0 0 2px #27ae60 inset;
 }
 
-.card.visited::after {
-  content: "✔ Bezocht";
-  position: absolute;
-  top: 20px;
-  right: 20px;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.visited-badge {
   background: #27ae60;
   color: white;
   font-size: 0.8em;
