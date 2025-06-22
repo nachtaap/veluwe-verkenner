@@ -234,7 +234,7 @@ body {
 
 .card.visited {
   background: linear-gradient(135deg, #d4f8d4 0%, #eaffea 100%);
-  border-left: 5px solid #27ae60;
+  /* border-left: 5px solid #27ae60; */
   box-shadow: 0 0 15px rgba(39, 174, 96, 0.2);
 }
 
