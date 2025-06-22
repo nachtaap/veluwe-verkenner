@@ -224,10 +224,10 @@ async function loadData() {
         });
 
         // Checkboxes
-document.addEventListener(‘change’, async function(e) {
-if (e.target.classList.contains(‘visited-checkbox’)) {
-const card = e.target.closest(’.card’);
-const placeName = e.target.getAttribute(‘data-place’);
+        document.addEventListener(‘change’, async function(e) {
+        if (e.target.classList.contains(‘visited-checkbox’)) {
+        const card = e.target.closest(’.card’);
+        const placeName = e.target.getAttribute(‘data-place’);
 
             // Update UI
             if (e.target.checked) {
