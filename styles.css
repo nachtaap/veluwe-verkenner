@@ -285,6 +285,39 @@ color: #27ae60;
 font-weight: bold;
 }
 
+/* Kaart klikbaar maken */
+.card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* Geactiveerde kaart (bezocht) */
+.card.visited {
+  background: rgba(200, 255, 200, 0.95);
+  border-left: 4px solid #27ae60;
+}
+
+/* Optioneel: extra visited-badge rechtsboven */
+.card.visited::after {
+  content: "✔ Bezocht";
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #27ae60;
+  color: white;
+  font-size: 0.7em;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+
 @media (max-width: 768px) {
 .header h1 { font-size: 2em; }
 .grid { grid-template-columns: 1fr; }
