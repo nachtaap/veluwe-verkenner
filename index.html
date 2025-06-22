@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verborgen Pareltjes van de Veluwe</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
@@ -120,16 +120,18 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-  <div class="card-header">
-    <div class="category ${location.category}">
-      ${appData.categoryLabels[location.category]}
-    </div>
-    ${location.visited ? '<div class="visited-badge">✔ Bezocht</div>' : ''}
-  </div>
-  <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
-  <p>${location.description}</p>
-  <div class="distance">(${location.distance} km)</div>
-`;
+        <div class="card-header">
+          <div class="category ${location.category}">
+            ${appData.categoryLabels[location.category]}
+          </div>
+          <div class="visited-badge-slot">
+            ${location.visited ? '<div class="visited-badge" title="Bezocht">&#10003;</div>' : ''}
+          </div>
+        </div>
+        <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
+        <p>${location.description}</p>
+        <div class="distance">(${location.distance} km)</div>
+      `;
 
       return card;
     }
@@ -148,7 +150,7 @@
     }
 
     function setupEventListeners() {
-      // Filter buttons
+      // Filters
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -168,13 +170,13 @@
         }
       });
 
-      // Card click = toggle visited
+      // Toggle visited status via card click
       document.addEventListener('click', async function (e) {
-      // Klik op link? → niks toggelen
-      if (e.target.tagName === 'A') return;
+        if (e.target.tagName === 'A') return;
 
-      const card = e.target.closest('.card');
-      if (!card || card.classList.contains('no-toggle')) return;
+        const card = e.target.closest('.card');
+        if (!card) return;
+
         const titleEl = card.querySelector('h3 a');
         if (!titleEl) return;
 
@@ -185,11 +187,16 @@
         location.visited = !location.visited;
         card.classList.toggle('visited', location.visited);
 
-        if (location.visited) {
-          if (!appData.visitedPlaces.includes(placeName)) {
-            appData.visitedPlaces.push(placeName);
-          }
-        } else {
+        const badgeSlot = card.querySelector('.visited-badge-slot');
+        if (badgeSlot) {
+          badgeSlot.innerHTML = location.visited
+            ? '<div class="visited-badge" title="Bezocht">&#10003;</div>'
+            : '';
+        }
+
+        if (location.visited && !appData.visitedPlaces.includes(placeName)) {
+          appData.visitedPlaces.push(placeName);
+        } else if (!location.visited) {
           const index = appData.visitedPlaces.indexOf(placeName);
           if (index > -1) appData.visitedPlaces.splice(index, 1);
         }
@@ -272,14 +279,12 @@
     }
 
     async function initializeApp() {
-      console.log('App initialiseren...');
       setupEventListeners();
 
       const dataLoaded = await loadData();
       if (dataLoaded) {
         createFilterButtons();
         renderLocations();
-        console.log('App geladen!');
       } else {
         updateStatus('❌ Kon data niet laden');
       }
