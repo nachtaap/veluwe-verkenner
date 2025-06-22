@@ -220,20 +220,6 @@ body {
   box-shadow: 0 0 15px rgba(39, 174, 96, 0.2);
 }
 
-.card.visited::after {
-  content: "✅ Bezocht";
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 0.8em;
-  color: #27ae60;
-  font-weight: bold;
-  background: white;
-  padding: 4px 8px;
-  border-radius: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .card.hidden {
   display: none;
 }
