@@ -46,40 +46,44 @@
     let appData = null;
 
     async function loadData() {
-      try {
-        updateStatus('🔄 Laden gedeelde data...');
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}/latest`, {
-          headers: { 'X-Master-Key': CONFIG.apiKey }
-        });
+  try {
+    updateStatus('🔄 Laden gedeelde data...');
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}/latest`, {
+      headers: { 'X-Master-Key': CONFIG.apiKey }
+    });
 
-        if (response.ok) {
-          const data = await response.json();
-          appData = {
-            visitedPlaces: data.record.visitedPlaces || [],
-            categoryLabels: {
-              "nature": "🌲 Natuur",
-              "historic": "🏰 Historisch",
-              "village": "🏘️ Dorpjes",
-              "water": "💧 Water",
-              "viewpoint": "👁️ Uitzicht"
-            },
-            locations: data.record.locations || []
-          };
+    if (response.ok) {
+      const data = await response.json();
+      appData = {
+        visitedPlaces: data.record.visitedPlaces || [],
+        categoryLabels: {
+          "nature": "🌲 Natuur",
+          "historic": "🏰 Historisch",
+          "village": "🏘️ Dorpjes",
+          "water": "💧 Water",
+          "viewpoint": "👁️ Uitzicht"
+        },
+        locations: data.record.locations || []
+      };
 
-          appData.locations.forEach(location => {
-            location.visited = appData.visitedPlaces.includes(location.title);
-          });
+      // Markeer bezochte locaties
+      appData.locations.forEach(location => {
+        location.visited = appData.visitedPlaces.includes(location.title);
+      });
 
-          updateStatus('✅ Data geladen');
-          return true;
-        }
-      } catch (error) {
-        console.error('Fout bij laden van JSONBin:', error);
-      }
+      // Sorteer standaard op naam (A-Z)
+      appData.locations.sort((a, b) => a.title.localeCompare(b.title));
 
-      updateStatus('❌ Fout bij laden');
-      return false;
+      updateStatus('✅ Data geladen');
+      return true;
     }
+  } catch (error) {
+    console.error('Fout bij laden van JSONBin:', error);
+  }
+
+  updateStatus('❌ Fout bij laden');
+  return false;
+}
 
     async function saveData() {
       if (!appData) return;
@@ -223,25 +227,21 @@
     }
 
     function updateDistances(userLat, userLng) {
-      if (!appData) return;
+  if (!appData) return;
 
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => {
-        const titleElement = card.querySelector('h3 a');
-        const distanceElement = card.querySelector('.distance');
+  // Voeg afstand toe aan elk locatie-object
+  appData.locations.forEach(location => {
+    const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
+    location.distance = Math.round(distance);      // afgerond voor weergave
+    location.distanceValue = distance;             // exact voor sorteren
+  });
 
-        if (titleElement && distanceElement) {
-          const titleText = titleElement.textContent;
-          const location = appData.locations.find(loc => loc.title === titleText);
+  // Sorteer op afstand (laag → hoog)
+  appData.locations.sort((a, b) => a.distanceValue - b.distanceValue);
 
-          if (location) {
-            const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
-            distanceElement.textContent = `(${Math.round(distance)} km)`;
-            distanceElement.classList.add('updated');
-          }
-        }
-      });
-    }
+  // Herbouw de kaarten in nieuwe volgorde
+  renderLocations();
+}
 
     function calculateDistance(lat1, lng1, lat2, lng2) {
       const R = 6371;
