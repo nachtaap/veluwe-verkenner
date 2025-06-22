@@ -255,26 +255,29 @@ font-weight: 500;
 .water { background: linear-gradient(45deg, #3498db, #2980b9); }
 .viewpoint { background: linear-gradient(45deg, #e74c3c, #c0392b); }
 
+.visited-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .visited-checkbox {
-position: absolute;
-top: 15px;
-right: 15px;
-width: 20px;
-height: 20px;
-cursor: pointer;
-accent-color: #27ae60;
-transform: scale(1.2);
+  margin-right: 8px;
+  accent-color: #27ae60;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 .visited-label {
-position: absolute;
-top: 12px;
-right: 40px;
-font-size: 0.8em;
-color: #7f8c8d;
-font-weight: 500;
-user-select: none;
-cursor: pointer;
+  font-size: 0.85em;
+  color: #7f8c8d;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.card.visited .visited-label {
+  color: #27ae60;
+  font-weight: bold;
 }
 
 .card.visited .visited-label {
