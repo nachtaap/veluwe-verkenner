@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verborgen Pareltjes van de Veluwe</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
@@ -59,7 +59,7 @@
             categoryLabels: {
               "nature": "🌲 Natuur",
               "historic": "🏰 Historisch",
-              "village": "🏘️ Dorpjes", 
+              "village": "🏘️ Dorpjes",
               "water": "💧 Water",
               "viewpoint": "👁️ Uitzicht"
             },
@@ -120,8 +120,6 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-        <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''} />
-        <label class="visited-label">Bezocht</label>
         <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
@@ -144,6 +142,7 @@
     }
 
     function setupEventListeners() {
+      // Filterknoppen
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -153,51 +152,46 @@
           const cards = document.querySelectorAll('.card');
 
           cards.forEach(card => {
-            if (category === 'all') {
+            const cardCategory = card.querySelector('.category');
+            if (category === 'all' || (cardCategory && cardCategory.classList.contains(category))) {
               card.classList.remove('hidden');
             } else {
-              const cardCategory = card.querySelector('.category');
-              if (cardCategory && cardCategory.classList.contains(category)) {
-                card.classList.remove('hidden');
-              } else {
-                card.classList.add('hidden');
-              }
+              card.classList.add('hidden');
             }
           });
         }
       });
 
-      document.addEventListener('change', async function (e) {
-        if (e.target.classList.contains('visited-checkbox')) {
-          const card = e.target.closest('.card');
-          const placeName = e.target.getAttribute('data-place');
+      // Kaart-toggles
+      document.addEventListener('click', async function (e) {
+        const card = e.target.closest('.card');
+        if (card && !e.target.classList.contains('filter-btn')) {
+          const titleElement = card.querySelector('h3 a');
+          if (!titleElement) return;
 
-          if (e.target.checked) {
-            card.classList.add('visited');
-          } else {
-            card.classList.remove('visited');
-          }
-
+          const placeName = titleElement.textContent;
           const location = appData.locations.find(loc => loc.title === placeName);
-          if (location) {
-            location.visited = e.target.checked;
+          if (!location) return;
 
-            if (e.target.checked) {
-              if (!appData.visitedPlaces.includes(placeName)) {
-                appData.visitedPlaces.push(placeName);
-              }
-            } else {
-              const index = appData.visitedPlaces.indexOf(placeName);
-              if (index > -1) {
-                appData.visitedPlaces.splice(index, 1);
-              }
+          location.visited = !location.visited;
+          card.classList.toggle('visited');
+
+          if (location.visited) {
+            if (!appData.visitedPlaces.includes(placeName)) {
+              appData.visitedPlaces.push(placeName);
             }
-
-            await saveData();
+          } else {
+            const index = appData.visitedPlaces.indexOf(placeName);
+            if (index > -1) {
+              appData.visitedPlaces.splice(index, 1);
+            }
           }
+
+          await saveData();
         }
       });
 
+      // Locatie ophalen
       const locationBtn = document.getElementById('locationBtn');
       const locationStatus = document.getElementById('locationStatus');
 
