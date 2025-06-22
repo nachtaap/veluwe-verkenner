@@ -124,9 +124,6 @@
           <div class="category ${location.category}">
             ${appData.categoryLabels[location.category]}
           </div>
-          <div class="visited-badge-slot">
-            ${location.visited ? '<div class="visited-badge" title="Bezocht">&#10003;</div>' : ''}
-          </div>
         </div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
@@ -186,13 +183,6 @@
 
         location.visited = !location.visited;
         card.classList.toggle('visited', location.visited);
-
-        const badgeSlot = card.querySelector('.visited-badge-slot');
-        if (badgeSlot) {
-          badgeSlot.innerHTML = location.visited
-            ? '<div class="visited-badge" title="Bezocht">&#10003;</div>'
-            : '';
-        }
 
         if (location.visited && !appData.visitedPlaces.includes(placeName)) {
           appData.visitedPlaces.push(placeName);
