@@ -120,8 +120,10 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-        <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''} />
+        <div class="visited-wrapper">
+        <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''}>
         <label class="visited-label">Bezocht</label>
+        </div>
         <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
