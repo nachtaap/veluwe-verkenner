@@ -216,16 +216,6 @@ body {
   margin-bottom: 10px;
 }
 
-.visited-badge {
-  background: #27ae60;
-  color: white;
-  font-size: 0.8em;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -285,20 +275,6 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-}
-
-.visited-badge {
-  background: #27ae60;
-  color: white;
-  font-size: 1em;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: opacity 0.3s ease;
 }
 
 .nature    { background: linear-gradient(45deg, #27ae60, #2ecc71); }
