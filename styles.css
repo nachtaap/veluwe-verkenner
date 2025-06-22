@@ -1,11 +1,4 @@
-<!DOCTYPE html>
 
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Styling Fix</title>
-    <style>
         * {
             margin: 0;
             padding: 0;
@@ -313,57 +306,3 @@
         .grid { grid-template-columns: 1fr; }
         .container { padding: 15px; }
     }
-</style>
-```
-
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Voorbeeld met Gefixte CSS</h1>
-            <p>Alle filterknoppen hebben nu hun eigen kleuren</p>
-
-```
-        <div class="filter-section">
-            <h3>Filter op categorie</h3>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-category="all">Alles</button>
-                <button class="filter-btn" data-category="nature">Natuur</button>
-                <button class="filter-btn" data-category="historic">Historisch</button>
-                <button class="filter-btn" data-category="village">Dorpen</button>
-                <button class="filter-btn" data-category="water">Water</button>
-                <button class="filter-btn" data-category="viewpoint">Uitzichtpunten</button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="grid">
-        <div class="card">
-            <span class="category nature">Natuur</span>
-            <h3><a href="#">Voorbeeld Locatie</a></h3>
-            <p>Dit is een voorbeeld van hoe de kaarten eruit zien met de gefixte styling.</p>
-            <div class="distance">5.2 km afstand</div>
-        </div>
-        
-        <div class="card">
-            <span class="category historic">Historisch</span>
-            <h3><a href="#">Andere Locatie</a></h3>
-            <p>Een andere voorbeeldkaart om de stijl te tonen.</p>
-            <div class="distance">3.8 km afstand</div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Eenvoudige demo functionaliteit voor de filterknoppen
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-</script>
-```
-
-</body>
-</html>
