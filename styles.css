@@ -301,4 +301,6 @@ body {
 html, body {
   max-width: 100%;
   overflow-x: hidden;
+  touch-action: pan-y; /* voorkomt horizontale swipe */
+  overscroll-behavior-x: none;
 }
