@@ -193,8 +193,8 @@ position: relative;
 }
 
 .card.visited {
-background: rgba(200, 255, 200, 0.95);
-border-left: 4px solid #27ae60;
+  background: rgba(200, 255, 200, 0.95);
+  box-shadow: 0 0 0 2px #27ae60 inset;
 }
 
 .card:hover {
