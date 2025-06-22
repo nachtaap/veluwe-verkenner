@@ -226,26 +226,42 @@ async function loadData() {
         });
 
         // Checkboxes
-        document.addEventListener('change', async function(e) {
-            if (e.target.classList.contains('visited-checkbox')) {
-                const card = e.target.closest('.card');
-                const placeName = e.target.getAttribute('data-place');
-                
-                // Update UI
-                if (e.target.checked) {
-                    card.classList.add('visited');
-                } else {
-                    card.classList.remove('visited');
-                }
-                
-                // Update data
-                const location = appData.locations.find(loc => loc.title === placeName);
-                if (location) {
-                    location.visited = e.target.checked;
-                    await saveData();
-                }
+document.addEventListener(‘change’, async function(e) {
+if (e.target.classList.contains(‘visited-checkbox’)) {
+const card = e.target.closest(’.card’);
+const placeName = e.target.getAttribute(‘data-place’);
+
+```
+            // Update UI
+            if (e.target.checked) {
+                card.classList.add('visited');
+            } else {
+                card.classList.remove('visited');
             }
-        });
+            
+            // Update data - BELANGRIJK: ook visitedPlaces array bijwerken!
+            const location = appData.locations.find(loc => loc.title === placeName);
+            if (location) {
+                location.visited = e.target.checked;
+                
+                // Update visitedPlaces array
+                if (e.target.checked) {
+                    // Voeg toe als nog niet aanwezig
+                    if (!appData.visitedPlaces.includes(placeName)) {
+                        appData.visitedPlaces.push(placeName);
+                    }
+                } else {
+                    // Verwijder uit array
+                    const index = appData.visitedPlaces.indexOf(placeName);
+                    if (index > -1) {
+                        appData.visitedPlaces.splice(index, 1);
+                    }
+                }
+                
+                await saveData();
+            }
+        }
+    });
 
         // Location button
         const locationBtn = document.getElementById('locationBtn');
