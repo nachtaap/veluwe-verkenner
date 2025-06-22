@@ -120,15 +120,16 @@
       if (location.visited) card.classList.add('visited');
 
       card.innerHTML = `
-        <div class="visited-wrapper">
-        <input type="checkbox" class="visited-checkbox" data-place="${location.title}" ${location.visited ? 'checked' : ''}>
-        <label class="visited-label">Bezocht</label>
+        <div class="card-header">
+          <div class="category ${location.category}">
+            ${appData.categoryLabels[location.category]}
+          </div>
         </div>
-        <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
         <div class="distance">(${location.distance} km)</div>
       `;
+
       return card;
     }
 
@@ -146,6 +147,7 @@
     }
 
     function setupEventListeners() {
+      // Filter buttons
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -155,51 +157,44 @@
           const cards = document.querySelectorAll('.card');
 
           cards.forEach(card => {
-            if (category === 'all') {
+            const cardCategory = card.querySelector('.category');
+            if (category === 'all' || (cardCategory && cardCategory.classList.contains(category))) {
               card.classList.remove('hidden');
             } else {
-              const cardCategory = card.querySelector('.category');
-              if (cardCategory && cardCategory.classList.contains(category)) {
-                card.classList.remove('hidden');
-              } else {
-                card.classList.add('hidden');
-              }
+              card.classList.add('hidden');
             }
           });
         }
       });
 
-      document.addEventListener('change', async function (e) {
-        if (e.target.classList.contains('visited-checkbox')) {
-          const card = e.target.closest('.card');
-          const placeName = e.target.getAttribute('data-place');
+      // Card click = toggle visited
+      document.addEventListener('click', async function (e) {
+        const card = e.target.closest('.card');
+        if (!card || card.classList.contains('no-toggle')) return;
 
-          if (e.target.checked) {
-            card.classList.add('visited');
-          } else {
-            card.classList.remove('visited');
+        const titleEl = card.querySelector('h3 a');
+        if (!titleEl) return;
+
+        const placeName = titleEl.textContent;
+        const location = appData.locations.find(loc => loc.title === placeName);
+        if (!location) return;
+
+        location.visited = !location.visited;
+        card.classList.toggle('visited', location.visited);
+
+        if (location.visited) {
+          if (!appData.visitedPlaces.includes(placeName)) {
+            appData.visitedPlaces.push(placeName);
           }
-
-          const location = appData.locations.find(loc => loc.title === placeName);
-          if (location) {
-            location.visited = e.target.checked;
-
-            if (e.target.checked) {
-              if (!appData.visitedPlaces.includes(placeName)) {
-                appData.visitedPlaces.push(placeName);
-              }
-            } else {
-              const index = appData.visitedPlaces.indexOf(placeName);
-              if (index > -1) {
-                appData.visitedPlaces.splice(index, 1);
-              }
-            }
-
-            await saveData();
-          }
+        } else {
+          const index = appData.visitedPlaces.indexOf(placeName);
+          if (index > -1) appData.visitedPlaces.splice(index, 1);
         }
+
+        await saveData();
       });
 
+      // Locatieknop
       const locationBtn = document.getElementById('locationBtn');
       const locationStatus = document.getElementById('locationStatus');
 
@@ -221,7 +216,7 @@
               locationBtn.textContent = '📍 Herbereken afstanden';
             }, 2000);
           },
-          function (error) {
+          function () {
             locationStatus.textContent = 'Fout bij ophalen locatie';
             locationBtn.disabled = false;
             locationBtn.textContent = '📍 Probeer opnieuw';
@@ -255,9 +250,9 @@
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLng = (lng2 - lng1) * Math.PI / 180;
-      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng / 2) ** 2;
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     }
