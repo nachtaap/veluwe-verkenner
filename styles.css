@@ -50,26 +50,25 @@ object-fit: contain;
 }
 
 .card {
-background: rgba(255, 255, 255, 0.95);
-padding: 25px;
-border-radius: 15px;
-box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-transition: background-color 0.4s ease, box-shadow 0.3s ease, transform 0.2s ease;
-backdrop-filter: blur(10px);
-border: 1px solid rgba(255, 255, 255, 0.2);
-position: relative;
-cursor: pointer;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(10px);
+  border: none;
+  position: relative;
+  cursor: pointer;
+}
+
+.card.visited {
+  background: rgba(200, 255, 200, 0.95);
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.25);
 }
 
 .card:hover {
 transform: translateY(-5px);
 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.card.visited {
-background: rgba(200, 255, 200, 0.95);
-box-shadow: 0 0 0 2px #27ae60 inset;
-animation: togglePop 0.2s ease-out;
 }
 
 @keyframes togglePop {
