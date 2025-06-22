@@ -296,3 +296,8 @@ body {
   .grid { grid-template-columns: 1fr; }
   .container { padding: 15px; }
 }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
