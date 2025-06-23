@@ -32,7 +32,7 @@
     <button id="locationBtn" class="location-btn">📍 Gebruik mijn locatie voor afstanden</button>
     <div id="locationStatus" class="location-status"></div>
     <div class="distance-info">
-      <small>💡 Tip: Klik op een afstand om de exacte rijafstand via Waze te krijgen</small>
+      <small>💡 Tip: Afstanden worden automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute via Waze.</small>
     </div>
   </div>
 </div>
@@ -251,6 +251,22 @@
     }
 
     function setupEventListeners() {
+      // Scroll listener voor automatische afstand updates
+      let scrollTimeout;
+      let hasLocationAccess = false;
+      
+      window.addEventListener('scroll', function() {
+        if (!hasLocationAccess || !userLocation) return;
+        
+        // Debounce scroll events - update na 500ms inactiviteit
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          if (userLocation) {
+            updateDistances(userLocation.lat, userLocation.lng);
+          }
+        }, 500);
+      });
+
       // Filterknoppen
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn')) {
@@ -345,9 +361,11 @@
               lng: position.coords.longitude
             };
             
+            hasLocationAccess = true; // Enable scroll updates
+            
             updateDistances(position.coords.latitude, position.coords.longitude);
             locationBtn.textContent = '✅ Afstanden bijgewerkt';
-            locationStatus.textContent = 'Klik nu op een afstand voor exacte rijroute via Waze';
+            locationStatus.textContent = 'Afstanden worden nu automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute via Waze.';
             
             setTimeout(() => {
               locationBtn.disabled = false;
@@ -359,6 +377,7 @@
             locationBtn.disabled = false;
             locationBtn.textContent = '📍 Probeer opnieuw';
             userLocation = null;
+            hasLocationAccess = false;
           }
         );
       });
