@@ -73,7 +73,11 @@
     };
 
     let appData = null;
-    let userLocation = null; // Bewaar gebruikerslocatie voor Waze calls
+    let userLocation = null;
+    let locationUpdateInterval = null;
+    let visibilityObserver = null;
+    let visibleCards = new Set();
+    let wazeCalculationTimeout = null;
 
     async function loadData() {
       try {
@@ -254,10 +258,10 @@
       card.className = 'card';
       if (location.visited) card.classList.add('visited');
 
-      // Bepaal welke afstand te tonen (zonder emoticons)
+      // Bepaal welke afstand te tonen (zonder emoticons, niet meer klikbaar)
       let distanceContent;
-      let distanceClass = 'clickable';
-      let distanceTitle = 'Klik om rijafstand via Waze op te halen';
+      let distanceClass = '';
+      let distanceTitle = '';
 
       if (location.hasWazeData) {
         // Toon Waze data
@@ -267,10 +271,7 @@
       } else {
         // Toon hemelsbreede afstand (standaard)
         distanceContent = `${location.distance} km`;
-        if (!userLocation) {
-          distanceClass = '';
-          distanceTitle = 'Hemelsbreede afstand - gebruik eerst je locatie voor rijafstanden';
-        }
+        distanceTitle = 'Hemelsbreede afstand';
       }
 
       // Beoordeling sterren
@@ -320,21 +321,81 @@
     }
 
     function setupEventListeners() {
-      // Scroll listener voor automatische afstand updates
-      let scrollTimeout;
-      let hasLocationAccess = false;
-      
-      window.addEventListener('scroll', function() {
-        if (!hasLocationAccess || !userLocation) return;
+      // Setup Intersection Observer voor zichtbare kaarten
+      if ('IntersectionObserver' in window) {
+        visibilityObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const locationTitle = entry.target.getAttribute('data-location');
+            if (!locationTitle) return;
+
+            if (entry.isIntersecting) {
+              // Kaart komt in beeld
+              visibleCards.add(locationTitle);
+              scheduleWazeCalculation();
+            } else {
+              // Kaart verdwijnt uit beeld
+              visibleCards.delete(locationTitle);
+            }
+          });
+        }, {
+          threshold: 0.5, // 50% van kaart moet zichtbaar zijn
+          rootMargin: '50px' // Extra marge voor betere UX
+        });
+      }
+
+      // Locatie update interval (elke 3 minuten)
+      function startLocationUpdates() {
+        if (locationUpdateInterval) clearInterval(locationUpdateInterval);
         
-        // Debounce scroll events - update na 500ms inactiviteit
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
+        locationUpdateInterval = setInterval(() => {
           if (userLocation) {
-            updateDistances(userLocation.lat, userLocation.lng);
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const newLat = position.coords.latitude;
+                const newLng = position.coords.longitude;
+                
+                // Check of we significant zijn verplaatst (meer dan ~100m)
+                const distanceMoved = calculateDistance(
+                  userLocation.lat, userLocation.lng, 
+                  newLat, newLng
+                ) * 1000; // naar meters
+                
+                if (distanceMoved > 100) {
+                  console.log(`Locatie update: ${distanceMoved.toFixed(0)}m verplaatst`);
+                  userLocation = { lat: newLat, lng: newLng };
+                  updateDistances(newLat, newLng);
+                  scheduleWazeCalculation(); // Herbereken Waze voor zichtbare kaarten
+                }
+              },
+              function (error) {
+                console.log('Locatie update gefaald:', error);
+              }
+            );
           }
-        }, 500);
-      });
+        }, 3 * 60 * 1000); // Elke 3 minuten
+      }
+
+      // Schedule Waze berekening voor zichtbare kaarten (met 3 seconden delay)
+      function scheduleWazeCalculation() {
+        if (!userLocation || visibleCards.size === 0) return;
+        
+        // Clear vorige timeout
+        if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
+        
+        // Schedule nieuwe berekening na 3 seconden
+        wazeCalculationTimeout = setTimeout(async () => {
+          console.log(`Bereken Waze voor ${visibleCards.size} zichtbare kaarten`);
+          
+          for (const locationTitle of visibleCards) {
+            const location = appData.locations.find(loc => loc.title === locationTitle);
+            if (location && userLocation) {
+              await updateSingleLocationWithWaze(locationTitle);
+              // Kleine pauze tussen calls om niet te spammen
+              await new Promise(resolve => setTimeout(resolve, 500));
+            }
+          }
+        }, 3000); // 3 seconden wachten
+      }
 
       // Location popup event listeners
       const locationPopup = document.getElementById('locationPopup');
@@ -398,9 +459,8 @@
               lng: position.coords.longitude
             };
             
-            hasLocationAccess = true; // Enable scroll updates
-            
             updateDistances(position.coords.latitude, position.coords.longitude);
+            startLocationUpdates(); // Start 3-minuten interval
             locationStatus.textContent = '';
           },
           function (error) {
@@ -446,35 +506,14 @@
         }
       });
 
-      // Kaart-toggles, afstand-clicks en rating-clicks
+      // Kaart-toggles en rating-clicks (geen afstand clicks meer)
       document.addEventListener('click', async function (e) {
-        // Check voor afstand-click (onderste rand)
-        if (e.target.classList.contains('distance-pill') && e.target.classList.contains('clickable')) {
-          e.stopPropagation();
-          const locationTitle = e.target.getAttribute('data-location');
-          if (locationTitle && userLocation) {
-            await updateSingleLocationWithWaze(locationTitle);
-          }
-          return;
-        }
-
         // Check voor sterren rating click
         if (e.target.classList.contains('rating-stars')) {
           e.stopPropagation();
           const locationTitle = e.target.getAttribute('data-location');
           if (locationTitle) {
             await handleRatingClick(e.target, locationTitle);
-          }
-          return;
-        }
-
-        // Check voor retry click
-        if (e.target.classList.contains('retry')) {
-          e.stopPropagation();
-          const distanceElement = e.target.closest('.distance-pill');
-          const locationTitle = distanceElement.getAttribute('data-location');
-          if (locationTitle && userLocation) {
-            await updateSingleLocationWithWaze(locationTitle);
           }
           return;
         }
@@ -561,7 +600,16 @@
       container.innerHTML = '';
 
       appData.locations.forEach(location => {
-        container.appendChild(createCard(location));
+        const card = createCard(location);
+        container.appendChild(card);
+        
+        // Observeer kaart voor zichtbaarheid (als IntersectionObserver beschikbaar is)
+        if (visibilityObserver) {
+          const cardBody = card.querySelector('.card-body');
+          if (cardBody) {
+            visibilityObserver.observe(cardBody);
+          }
+        }
       });
     }
 
@@ -782,42 +830,10 @@
       transition: all 0.2s ease;
     }
 
-    .distance-pill.clickable {
-      cursor: pointer;
-    }
-
-    .distance-pill.clickable:hover {
-      background: rgba(0, 123, 255, 0.2);
-      transform: scale(1.02);
-    }
-
-    .distance-pill.loading {
-      color: #ffa500;
-      cursor: wait;
-      animation: pulse 1.5s infinite;
-    }
-
     .distance-pill.waze-result {
       background: rgba(40, 167, 69, 0.1);
       color: #28a745;
       border-color: rgba(40, 167, 69, 0.2);
-    }
-
-    .distance-pill.error {
-      background: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
-      border-color: rgba(220, 53, 69, 0.2);
-    }
-
-    .distance-pill .retry {
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 0.8em;
-      margin-left: 5px;
-    }
-
-    .distance-pill .retry:hover {
-      color: #007bff;
     }
 
     .rating-stars {
