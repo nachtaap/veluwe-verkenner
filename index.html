@@ -508,9 +508,10 @@
         );
       }
 
-      // Filterknoppen
+      // Filterknoppen (alleen in filter section, niet op kaarten)
       document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('filter-btn')) {
+        // Alleen reageren op filter buttons in de filter section
+        if (e.target.classList.contains('filter-btn') && e.target.closest('.filter-section')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
           e.target.classList.add('active');
 
@@ -801,6 +802,8 @@
     .card-header .category {
       flex-shrink: 0;
       margin: 0;
+      cursor: default; /* Geen pointer cursor */
+      user-select: none; /* Niet selecteerbaar */
     }
 
     .card-header h3 {
