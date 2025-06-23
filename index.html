@@ -14,35 +14,35 @@
       <div class="animation-container">
         <img src="62645C44-E0B2-46A1-9CF4-45FF6CE253DE.png" alt="Auto met hondje rijdt door Nederland" class="car-illustration" />
       </div>
+    </div>
 
 ```
-  <!-- Region Selector -->
-  <div class="region-selector">
-    <label for="regionSelect">Kies een regio:</label>
-    <select id="regionSelect" class="region-dropdown">
-      <option value="veluwe">🌲 De Veluwe</option>
-      <option value="twente">🌾 Twente</option>
-    </select>
+<!-- Region Selector -->
+<div class="region-selector">
+  <label for="regionSelect">Kies een regio:</label>
+  <select id="regionSelect" class="region-dropdown">
+    <option value="veluwe">🌲 De Veluwe</option>
+    <option value="twente">🌾 Twente</option>
+  </select>
+</div>
+
+<p id="regionDescription">Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
+
+<div class="sync-status" id="syncStatus">
+  🔄 Laden...
+</div>
+
+<div class="filter-section">
+  <h3>Filter op categorie:</h3>
+  <div class="filter-buttons" id="filterButtons">
+    <button class="filter-btn active" data-category="all">🌟 Alles</button>
   </div>
+</div>
 
-  <p id="regionDescription">Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
-
-  <div class="sync-status" id="syncStatus">
-    🔄 Laden...
-  </div>
-
-  <div class="filter-section">
-    <h3>Filter op categorie:</h3>
-    <div class="filter-buttons" id="filterButtons">
-      <button class="filter-btn active" data-category="all">🌟 Alles</button>
-    </div>
-  </div>
-
-  <div class="location-info">
-    <div id="locationStatus" class="location-status"></div>
-    <div class="distance-info">
-      <small>💡 Tip: Afstanden worden automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute via Waze.</small>
-    </div>
+<div class="location-info">
+  <div id="locationStatus" class="location-status"></div>
+  <div class="distance-info">
+    <small>💡 Tip: Afstanden worden automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute via Waze.</small>
   </div>
 </div>
 
@@ -232,7 +232,7 @@
 
     // Nieuwe functie: rating click handler
     async function handleRatingClick(starsElement, locationTitle) {
-      const location = appData.locations.find(loc => loc.title === locationTitle);
+      const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
       if (!location) return;
 
       // Simpele rating cyclus: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
@@ -260,7 +260,7 @@
     async function updateSingleLocationWithWaze(locationTitle) {
       if (!userLocation || !appData) return;
 
-      const location = appData.locations.find(loc => loc.title === locationTitle);
+      const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
       if (!location) return;
 
       // Vind de kaart voor deze locatie
@@ -376,6 +376,9 @@
       if (!appData) return;
 
       const filterContainer = document.getElementById('filterButtons');
+      // Reset buttons maar laat "Alles" button staan
+      filterContainer.innerHTML = '<button class="filter-btn active" data-category="all">🌟 Alles</button>';
+      
       Object.keys(appData.categoryLabels).forEach(category => {
         const button = document.createElement('button');
         button.className = `filter-btn ${category} show-colored`;
@@ -386,6 +389,12 @@
     }
 
     function setupEventListeners() {
+      // Region selector event listener
+      document.getElementById('regionSelect').addEventListener('change', function(e) {
+        const newRegion = e.target.value;
+        switchRegion(newRegion);
+      });
+
       // Setup Intersection Observer voor zichtbare kaarten
       if ('IntersectionObserver' in window) {
         visibilityObserver = new IntersectionObserver((entries) => {
@@ -451,7 +460,7 @@
         wazeCalculationTimeout = setTimeout(async () => {
           // Filter alleen kaarten die nog geen Waze data hebben
           const cardsNeedingWaze = Array.from(visibleCards).filter(locationTitle => {
-            const location = appData.locations.find(loc => loc.title === locationTitle);
+            const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             return location && !location.hasWazeData;
           });
           
@@ -463,7 +472,7 @@
           console.log(`Bereken Waze voor ${cardsNeedingWaze.length} nieuwe kaarten (van ${visibleCards.size} zichtbaar)`);
           
           for (const locationTitle of cardsNeedingWaze) {
-            const location = appData.locations.find(loc => loc.title === locationTitle);
+            const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             if (location && userLocation) {
               await updateSingleLocationWithWaze(locationTitle);
               // Kleine pauze tussen calls om niet te spammen
@@ -603,7 +612,7 @@
           const cardBody = e.target.closest('.card-body');
           if (cardBody) {
             const locationTitle = cardBody.getAttribute('data-location');
-            const location = appData.locations.find(loc => loc.title === locationTitle);
+            const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             if (!location) return;
 
             const card = cardBody.closest('.card');
@@ -612,13 +621,13 @@
             card.classList.toggle('visited');
 
             if (location.visited) {
-              if (!appData.visitedPlaces.includes(locationTitle)) {
-                appData.visitedPlaces.push(locationTitle);
+              if (!appData[currentRegion].visitedPlaces.includes(locationTitle)) {
+                appData[currentRegion].visitedPlaces.push(locationTitle);
               }
             } else {
-              const index = appData.visitedPlaces.indexOf(locationTitle);
+              const index = appData[currentRegion].visitedPlaces.indexOf(locationTitle);
               if (index > -1) {
-                appData.visitedPlaces.splice(index, 1);
+                appData[currentRegion].visitedPlaces.splice(index, 1);
               }
             }
 
@@ -630,11 +639,11 @@
 
     // Update van hemelsbreede afstanden (behoudt Waze data, nieuwe sortering)
     function updateDistances(userLat, userLng) {
-      if (!appData) return;
+      if (!appData || !appData[currentRegion]) return;
 
       updateStatus('🔄 Berekenen hemelsbreede afstanden...');
 
-      appData.locations.forEach(location => {
+      appData[currentRegion].locations.forEach(location => {
         const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
         
         // Bewaar Waze data als die er is, update alleen hemelsbreede afstand
@@ -650,7 +659,7 @@
       });
 
       // Sorteer: eerst alfabetisch op titel, dan op hemelsbreede afstand
-      appData.locations.sort((a, b) => {
+      appData[currentRegion].locations.sort((a, b) => {
         // Eerst vergelijk op titel (alfabetisch)
         const titleComparison = a.title.localeCompare(b.title);
         if (titleComparison !== 0) {
@@ -679,12 +688,12 @@
     }
 
     function renderLocations() {
-      if (!appData) return;
+      if (!appData || !appData[currentRegion]) return;
 
       const container = document.getElementById('cardsContainer');
       container.innerHTML = '';
 
-      appData.locations.forEach(location => {
+      appData[currentRegion].locations.forEach(location => {
         const card = createCard(location);
         container.appendChild(card);
         
@@ -787,289 +796,3 @@
     }
 
     .popup-benefits {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 20px 0;
-    }
-
-    .benefit {
-      margin: 8px 0;
-      font-size: 0.95em;
-      color: #28a745;
-      text-align: left;
-    }
-
-    .popup-actions {
-      padding: 0 25px 25px 25px;
-      display: flex;
-      gap: 12px;
-      flex-direction: column;
-    }
-
-    .btn-primary {
-      background: linear-gradient(45deg, #28a745, #20c997);
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-      font-size: 1em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: #6c757d;
-      border: 2px solid #dee2e6;
-      padding: 12px 20px;
-      border-radius: 25px;
-      font-weight: 500;
-      font-size: 0.95em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-secondary:hover {
-      background: #f8f9fa;
-      border-color: #adb5bd;
-    }
-
-    /* Styling voor 3-delige kaart - originele layout behouden */
-    .card {
-      /* Behoud originele card styling */
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding-bottom: 8px;
-      margin-bottom: 12px;
-    }
-
-    .card-header .category-pill {
-      flex-shrink: 0;
-      margin: 0;
-      cursor: default;
-      user-select: none;
-      pointer-events: none;
-      /* Pill styling */
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      font-weight: 500;
-      text-align: center;
-      color: white;
-    }
-
-    /* Category colors for pills (same as filter buttons) */
-    .category-pill.nature { background: #28a745; }
-    .category-pill.historic { background: #795548; }
-    .category-pill.village { background: #ff9800; }
-    .category-pill.water { background: #2196f3; }
-    .category-pill.viewpoint { background: #9c27b0; }
-
-    .card-header h3 {
-      margin: 0;
-      flex-grow: 1;
-      font-size: 1.1em;
-    }
-
-    .card-header h3 a {
-      color: #333;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .card-header h3 a:hover {
-      color: #007bff;
-      text-decoration: underline;
-    }
-
-    .card-body {
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-    }
-
-    .card-body:hover {
-      background-color: rgba(0,123,255,0.05);
-      margin: 0 -20px 12px -20px;
-      padding: 0 20px 12px 20px;
-      border-radius: 4px;
-    }
-
-    .card-body p {
-      margin: 0;
-      line-height: 1.5;
-      color: #555;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .distance-pill-link {
-      text-decoration: none;
-      display: inline-block;
-      transition: transform 0.2s ease;
-    }
-
-    .distance-pill-link:hover {
-      transform: scale(1.05);
-    }
-
-    .distance-pill {
-      background: rgba(0, 123, 255, 0.1);
-      color: #007bff;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.9em;
-      font-weight: 500;
-      border: 1px solid rgba(0, 123, 255, 0.2);
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .distance-pill.waze-result {
-      background: rgba(40, 167, 69, 0.1);
-      color: #28a745;
-      border-color: rgba(40, 167, 69, 0.2);
-    }
-
-    .rating-stars {
-      cursor: pointer;
-      user-select: none;
-      font-size: 1.1em;
-      transition: transform 0.2s ease;
-    }
-
-    .rating-stars:hover {
-      transform: scale(1.1);
-    }
-
-    .location-info {
-      margin-top: 15px;
-    }
-
-    /* Scroll to top button */
-    .scroll-to-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      background: rgba(0, 123, 255, 0.8);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-
-    .scroll-to-top.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .scroll-to-top:hover {
-      background: rgba(0, 123, 255, 0.95);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
-    }
-
-    .scroll-to-top:active {
-      transform: translateY(0);
-    }
-
-    .scroll-to-top svg {
-      transition: transform 0.2s ease;
-    }
-
-    .scroll-to-top:hover svg {
-      transform: translateY(-1px);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .scroll-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-      }
-    }
-
-    .distance.clickable {
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-radius: 4px;
-      padding: 2px 4px;
-    }
-
-    .distance.clickable:hover {
-      background-color: rgba(0, 123, 255, 0.1);
-      transform: scale(1.02);
-    }
-
-    .distance.loading {
-      color: #ffa500;
-      cursor: wait;
-      animation: pulse 1.5s infinite;
-    }
-
-    .distance.waze-result {
-      color: #28a745;
-      font-weight: bold;
-    }
-
-    .distance.error {
-      color: #dc3545;
-    }
-
-    .distance .retry {
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-
-    .distance .retry:hover {
-      color: #007bff;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .location-status {
-      margin-top: 10px;
-      font-size: 0.9em;
-      color: #666;
-    }
-  </style>
-
-</body>
-</html>
