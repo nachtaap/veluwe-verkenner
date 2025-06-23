@@ -657,7 +657,7 @@
       border-color: #adb5bd;
     }
 
-    /* Styling voor nieuwe kaart structuur */
+    /* Styling voor nieuwe kaart structuur - volledige breedte */
     .card {
       display: flex;
       flex-direction: column;
@@ -671,9 +671,10 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 15px 20px 10px 20px;
+      padding: 15px 20px;
       background: rgba(0,0,0,0.02);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      margin: 0;
     }
 
     .card-header .category {
@@ -703,7 +704,8 @@
       flex-grow: 1;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      margin: 0;
     }
 
     .card-body:hover {
@@ -722,6 +724,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      margin: 0;
     }
 
     .card-footer .distance {
@@ -730,6 +733,10 @@
       padding: 6px 12px;
       border-radius: 20px;
       transition: all 0.2s ease;
+    }
+
+    .location-info {
+      margin-top: 15px;
     }
 
     .distance.clickable {
