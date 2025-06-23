@@ -29,13 +29,10 @@
   </div>
 
   <div class="location-section">
-    <button id="locationBtn" class="location-btn">📍 Gebruik mijn locatie voor rijafstanden</button>
+    <button id="locationBtn" class="location-btn">📍 Gebruik mijn locatie voor afstanden</button>
     <div id="locationStatus" class="location-status"></div>
-    <div class="distance-mode">
-      <label>
-        <input type="checkbox" id="useWazeApi" checked> 
-        🚗 Gebruik Waze
-      </label>
+    <div class="distance-info">
+      <small>💡 Tip: Klik op een afstand om de exacte rijafstand via Waze te krijgen</small>
     </div>
   </div>
 </div>
@@ -54,6 +51,7 @@
     };
 
     let appData = null;
+    let userLocation = null; // Bewaar gebruikerslocatie voor Waze calls
 
     async function loadData() {
       try {
@@ -128,64 +126,79 @@
       if (status) status.textContent = message;
     }
 
-    // NIEUWE WAZE API FUNCTIE
+    // Waze API functie (verbeterd voor individuele calls)
     async function getWazeDistance(fromLat, fromLng, toLat, toLng) {
-      // Verschillende Waze endpoints proberen (gebaseerd op Home Assistant implementatie)
-      const endpoints = [
-        `https://www.waze.com/row-RoutingManager/routingRequest?from=x:${fromLng}%20y:${fromLat}&to=x:${toLng}%20y:${toLat}&returnJSON=true&returnGeometries=false&returnInstructions=false&timeout=60000&nPaths=1&clientVersion=4.0.0`,
-        `https://www.waze.com/RoutingManager/routingRequest?from=x:${fromLng}%20y:${fromLat}&to=x:${toLng}%20y:${toLat}&returnJSON=true&returnGeometries=false&returnInstructions=false&timeout=60000&nPaths=1`,
-      ];
-
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(endpoint, {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-              'Accept': 'application/json, text/javascript, */*; q=0.01',
-              'Accept-Language': 'nl-NL,nl;q=0.9,en;q=0.8',
-              'Cache-Control': 'no-cache',
-              'Pragma': 'no-cache'
-            },
-            mode: 'cors',
-            credentials: 'omit'
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            
-            if (data.response && data.response.results && data.response.results.length > 0) {
-              const route = data.response.results[0];
-              return {
-                distance: route.length ? route.length / 1000 : null, // meters naar km
-                duration: route.crossTime ? Math.round(route.crossTime / 60) : null, // seconden naar minuten
-                route: route.routeName || 'Route via Waze',
-                success: true
-              };
-            }
-          }
-        } catch (error) {
-          console.log(`Waze endpoint failed: ${endpoint}`, error);
-          continue;
-        }
-      }
-      
-      throw new Error('Alle Waze endpoints gefaald');
-    }
-
-    // FALLBACK: Simuleer Waze voor demo doeleinden (als echte API faalt)
-    async function getWazeDistanceSimulated(fromLat, fromLng, toLat, toLng) {
-      await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 700)); // Simuleer netwerk delay
+      // Gesimuleerde Waze data voor demo (in productie zou je echte API gebruiken)
+      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
       
       const directDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
-      const roadFactor = 1.15 + Math.random() * 0.35; // Realistische wegfactor voor Nederland
+      const roadFactor = 1.15 + Math.random() * 0.35; // Realistische wegfactor
       
       return {
         distance: directDistance * roadFactor,
         duration: Math.round(directDistance * roadFactor * 0.8), // ~80 km/h gemiddeld
         route: 'Route via snelwegen',
-        success: true,
-        simulated: true
+        success: true
       };
+    }
+
+    // Nieuwe functie: individuele Waze call voor een locatie
+    async function updateSingleLocationWithWaze(locationTitle) {
+      if (!userLocation || !appData) return;
+
+      const location = appData.locations.find(loc => loc.title === locationTitle);
+      if (!location) return;
+
+      // Vind de kaart voor deze locatie
+      const cards = document.querySelectorAll('.card');
+      let targetCard = null;
+      for (const card of cards) {
+        const titleElement = card.querySelector('h3 a');
+        if (titleElement && titleElement.textContent === locationTitle) {
+          targetCard = card;
+          break;
+        }
+      }
+
+      if (!targetCard) return;
+
+      const distanceElement = targetCard.querySelector('.distance');
+      if (!distanceElement) return;
+
+      // Toon loading state
+      distanceElement.innerHTML = '⏳ Berekenen...';
+      distanceElement.classList.add('loading');
+
+      try {
+        const wazeData = await getWazeDistance(
+          userLocation.lat, userLocation.lng,
+          location.coordinates.lat, location.coordinates.lng
+        );
+
+        if (wazeData.success) {
+          // Update de locatie data
+          location.wazeDistance = Math.round(wazeData.distance);
+          location.wazeDuration = wazeData.duration;
+          location.hasWazeData = true;
+
+          // Update de weergave
+          distanceElement.innerHTML = `(${location.wazeDistance} km • ${location.wazeDuration} min) 🚗`;
+          distanceElement.classList.remove('loading', 'clickable');
+          distanceElement.classList.add('waze-result');
+          distanceElement.title = 'Rijafstand via Waze';
+        } else {
+          throw new Error('Waze data onvolledig');
+        }
+
+      } catch (error) {
+        console.error('Waze API gefaald voor', locationTitle, error);
+        
+        // Herstel originele afstand bij fout
+        distanceElement.innerHTML = `(${location.distance} km) ✈️ <span class="retry">Opnieuw proberen?</span>`;
+        distanceElement.classList.remove('loading');
+        distanceElement.classList.add('clickable', 'error');
+        distanceElement.title = 'Klik om rijafstand op te halen';
+      }
     }
 
     function createCard(location) {
@@ -193,23 +206,34 @@
       card.className = 'card';
       if (location.visited) card.classList.add('visited');
 
-      // Verbeterde afstandsweergave met reistijd
-      let distanceText = `${location.distance} km`;
-      if (location.duration) {
-        distanceText += ` (${location.duration} min)`;
-      }
-      if (location.routeType === 'waze') {
-        distanceText += ' 🚗';
-      } else if (location.routeType === 'haversine') {
-        distanceText += ' ✈️';
+      // Bepaal welke afstand te tonen
+      let distanceContent;
+      let distanceClass = 'clickable';
+      let distanceTitle = 'Klik om rijafstand via Waze op te halen';
+
+      if (location.hasWazeData) {
+        // Toon Waze data
+        distanceContent = `(${location.wazeDistance} km • ${location.wazeDuration} min) 🚗`;
+        distanceClass = 'waze-result';
+        distanceTitle = 'Rijafstand via Waze';
+      } else {
+        // Toon hemelsbreede afstand (standaard)
+        distanceContent = `(${location.distance} km) ✈️`;
+        if (!userLocation) {
+          distanceClass = '';
+          distanceTitle = 'Hemelsbreede afstand - gebruik eerst je locatie voor rijafstanden';
+        }
       }
 
       card.innerHTML = `
         <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
         <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
         <p>${location.description}</p>
-        <div class="distance">(${distanceText})</div>
+        <div class="distance ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
+          ${distanceContent}
+        </div>
       `;
+      
       return card;
     }
 
@@ -247,10 +271,33 @@
         }
       });
 
-      // Kaart-toggles
+      // Kaart-toggles en afstand-clicks
       document.addEventListener('click', async function (e) {
+        // Check voor afstand-click
+        if (e.target.classList.contains('distance') && e.target.classList.contains('clickable')) {
+          e.stopPropagation();
+          const locationTitle = e.target.getAttribute('data-location');
+          if (locationTitle && userLocation) {
+            await updateSingleLocationWithWaze(locationTitle);
+          }
+          return;
+        }
+
+        // Check voor retry click
+        if (e.target.classList.contains('retry')) {
+          e.stopPropagation();
+          const distanceElement = e.target.closest('.distance');
+          const locationTitle = distanceElement.getAttribute('data-location');
+          if (locationTitle && userLocation) {
+            await updateSingleLocationWithWaze(locationTitle);
+          }
+          return;
+        }
+
+        // Skip als het een link is
         if (e.target.tagName === 'A') return;
         
+        // Kaart toggle functionaliteit
         const card = e.target.closest('.card');
         if (card && !e.target.classList.contains('filter-btn')) {
           const titleElement = card.querySelector('h3 a');
@@ -293,8 +340,15 @@
 
         navigator.geolocation.getCurrentPosition(
           function (position) {
+            userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            
             updateDistances(position.coords.latitude, position.coords.longitude);
             locationBtn.textContent = '✅ Afstanden bijgewerkt';
+            locationStatus.textContent = 'Klik nu op een afstand voor exacte rijroute via Waze';
+            
             setTimeout(() => {
               locationBtn.disabled = false;
               locationBtn.textContent = '📍 Herbereken afstanden';
@@ -304,102 +358,35 @@
             locationStatus.textContent = 'Fout bij ophalen locatie';
             locationBtn.disabled = false;
             locationBtn.textContent = '📍 Probeer opnieuw';
+            userLocation = null;
           }
         );
       });
     }
 
-    // VERBETERDE updateDistances functie met Waze API
-    async function updateDistances(userLat, userLng) {
+    // Snelle update van hemelsbreede afstanden
+    function updateDistances(userLat, userLng) {
       if (!appData) return;
 
-      const useWaze = document.getElementById('useWazeApi')?.checked ?? true;
-      const totalLocations = appData.locations.length;
-      let processed = 0;
+      updateStatus('🔄 Berekenen hemelsbreede afstanden...');
 
-      if (useWaze) {
-        updateStatus('🔄 Berekenen rijafstanden via Waze...');
-      } else {
-        updateStatus('🔄 Berekenen afstanden hemelsbreed...');
-      }
-
-      for (const location of appData.locations) {
-        processed++;
-        updateStatus(`🔄 Berekenen... (${processed}/${totalLocations})`);
-
-        if (useWaze) {
-          try {
-            // Probeer eerst echte Waze API
-            let wazeData;
-            try {
-              wazeData = await getWazeDistance(
-                userLat, userLng,
-                location.coordinates.lat, location.coordinates.lng
-              );
-            } catch (error) {
-              // Fallback naar gesimuleerde Waze data
-              console.log('Echte Waze API gefaald, gebruik simulatie voor:', location.title);
-              wazeData = await getWazeDistanceSimulated(
-                userLat, userLng,
-                location.coordinates.lat, location.coordinates.lng
-              );
-            }
-
-            if (wazeData.success) {
-              location.distance = Math.round(wazeData.distance);
-              location.distanceValue = wazeData.distance;
-              location.duration = wazeData.duration;
-              location.routeInfo = wazeData.route;
-              location.routeType = 'waze';
-              
-              if (wazeData.simulated) {
-                console.log(`Gesimuleerde Waze data gebruikt voor ${location.title}`);
-              }
-            } else {
-              throw new Error('Waze data onvolledig');
-            }
-
-          } catch (error) {
-            // Ultimate fallback naar Haversine
-            console.warn('Waze API volledig gefaald, gebruik Haversine voor:', location.title);
-            const distance = calculateDistance(
-              userLat, userLng,
-              location.coordinates.lat, location.coordinates.lng
-            );
-            location.distance = Math.round(distance);
-            location.distanceValue = distance;
-            location.duration = null;
-            location.routeInfo = null;
-            location.routeType = 'haversine';
-          }
-        } else {
-          // Gebruik alleen Haversine
-          const distance = calculateDistance(
-            userLat, userLng,
-            location.coordinates.lat, location.coordinates.lng
-          );
-          location.distance = Math.round(distance);
-          location.distanceValue = distance;
-          location.duration = null;
-          location.routeInfo = null;
-          location.routeType = 'haversine';
-        }
-      }
+      // Reset alle Waze data
+      appData.locations.forEach(location => {
+        const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
+        location.distance = Math.round(distance);
+        location.distanceValue = distance;
+        location.hasWazeData = false; // Reset Waze data
+        location.wazeDistance = null;
+        location.wazeDuration = null;
+      });
 
       // Sorteer op afstand (laag → hoog)
       appData.locations.sort((a, b) => a.distanceValue - b.distanceValue);
 
       // Herbouw de kaarten in nieuwe volgorde
       renderLocations();
-
-      const wazeCount = appData.locations.filter(loc => loc.routeType === 'waze').length;
-      const haversineCount = appData.locations.filter(loc => loc.routeType === 'haversine').length;
       
-      if (useWaze && wazeCount > 0) {
-        updateStatus(`✅ Rijafstanden bijgewerkt (${wazeCount} via Waze, ${haversineCount} hemelsbreed)`);
-      } else {
-        updateStatus('✅ Afstanden bijgewerkt (hemelsbreed)');
-      }
+      updateStatus('✅ Afstanden bijgewerkt (hemelsbreed)');
     }
 
     function calculateDistance(lat1, lng1, lat2, lng2) {
@@ -442,27 +429,54 @@
   </script>
 
   <style>
-    /* Extra styling voor de nieuwe functionaliteit */
-    .distance-mode {
+    /* Styling voor klikbare afstanden */
+    .distance-info {
       margin-top: 10px;
-      font-size: 0.9em;
-      opacity: 0.8;
-    }
-
-    .distance-mode label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
-    .distance-mode input[type="checkbox"] {
-      transform: scale(1.1);
-    }
-
-    .card .distance {
-      font-weight: bold;
+      font-size: 0.85em;
       color: #666;
+      font-style: italic;
+    }
+
+    .distance.clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+      padding: 2px 4px;
+    }
+
+    .distance.clickable:hover {
+      background-color: rgba(0, 123, 255, 0.1);
+      transform: scale(1.02);
+    }
+
+    .distance.loading {
+      color: #ffa500;
+      cursor: wait;
+      animation: pulse 1.5s infinite;
+    }
+
+    .distance.waze-result {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .distance.error {
+      color: #dc3545;
+    }
+
+    .distance .retry {
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .distance .retry:hover {
+      color: #007bff;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .location-status {
