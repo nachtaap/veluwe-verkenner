@@ -164,7 +164,33 @@
       };
     }
 
-    // Nieuwe functie: individuele Waze call voor een locatie
+    // Nieuwe functie: rating click handler
+    async function handleRatingClick(starsElement, locationTitle) {
+      const location = appData.locations.find(loc => loc.title === locationTitle);
+      if (!location) return;
+
+      // Simpele rating cyclus: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
+      const currentRating = location.rating || 0;
+      const newRating = currentRating >= 5 ? 0 : currentRating + 1;
+      
+      location.rating = newRating;
+
+      // Update sterren weergave
+      let starsContent = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= newRating) {
+          starsContent += '⭐';
+        } else {
+          starsContent += '☆';
+        }
+      }
+      starsElement.innerHTML = starsContent;
+
+      // Sla op naar JSONBin
+      await saveData();
+    }
+
+    // Nieuwe functie: individuele Waze call voor een locatie (updated voor nieuwe class)
     async function updateSingleLocationWithWaze(locationTitle) {
       if (!userLocation || !appData) return;
 
@@ -184,11 +210,11 @@
 
       if (!targetCard) return;
 
-      const distanceElement = targetCard.querySelector('.distance');
+      const distanceElement = targetCard.querySelector('.distance-pill');
       if (!distanceElement) return;
 
       // Toon loading state
-      distanceElement.innerHTML = '⏳ Berekenen...';
+      distanceElement.innerHTML = 'Berekenen...';
       distanceElement.classList.add('loading');
 
       try {
@@ -204,7 +230,7 @@
           location.hasWazeData = true;
 
           // Update de weergave
-          distanceElement.innerHTML = `(${location.wazeDistance} km • ${location.wazeDuration} min) 🚗`;
+          distanceElement.innerHTML = `${location.wazeDistance} km • ${location.wazeDuration} min`;
           distanceElement.classList.remove('loading', 'clickable');
           distanceElement.classList.add('waze-result');
           distanceElement.title = 'Rijafstand via Waze';
@@ -216,7 +242,7 @@
         console.error('Waze API gefaald voor', locationTitle, error);
         
         // Herstel originele afstand bij fout
-        distanceElement.innerHTML = `(${location.distance} km) ✈️ <span class="retry">Opnieuw proberen?</span>`;
+        distanceElement.innerHTML = `${location.distance} km <span class="retry">Opnieuw?</span>`;
         distanceElement.classList.remove('loading');
         distanceElement.classList.add('clickable', 'error');
         distanceElement.title = 'Klik om rijafstand op te halen';
@@ -228,22 +254,34 @@
       card.className = 'card';
       if (location.visited) card.classList.add('visited');
 
-      // Bepaal welke afstand te tonen
+      // Bepaal welke afstand te tonen (zonder emoticons)
       let distanceContent;
       let distanceClass = 'clickable';
       let distanceTitle = 'Klik om rijafstand via Waze op te halen';
 
       if (location.hasWazeData) {
         // Toon Waze data
-        distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min 🚗`;
+        distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min`;
         distanceClass = 'waze-result';
         distanceTitle = 'Rijafstand via Waze';
       } else {
         // Toon hemelsbreede afstand (standaard)
-        distanceContent = `${location.distance} km ✈️`;
+        distanceContent = `${location.distance} km`;
         if (!userLocation) {
           distanceClass = '';
           distanceTitle = 'Hemelsbreede afstand - gebruik eerst je locatie voor rijafstanden';
+        }
+      }
+
+      // Beoordeling sterren
+      const rating = location.rating || 0;
+      const maxStars = 5;
+      let starsContent = '';
+      for (let i = 1; i <= maxStars; i++) {
+        if (i <= rating) {
+          starsContent += '⭐';
+        } else {
+          starsContent += '☆';
         }
       }
 
@@ -256,8 +294,11 @@
           <p>${location.description}</p>
         </div>
         <div class="card-footer">
-          <div class="distance ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
+          <div class="distance-pill ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
             ${distanceContent}
+          </div>
+          <div class="rating-stars" data-location="${location.title}" title="Klik om beoordeling te geven">
+            ${starsContent}
           </div>
         </div>
       `;
@@ -405,10 +446,10 @@
         }
       });
 
-      // Kaart-toggles en afstand-clicks
+      // Kaart-toggles, afstand-clicks en rating-clicks
       document.addEventListener('click', async function (e) {
         // Check voor afstand-click (onderste rand)
-        if (e.target.classList.contains('distance') && e.target.classList.contains('clickable')) {
+        if (e.target.classList.contains('distance-pill') && e.target.classList.contains('clickable')) {
           e.stopPropagation();
           const locationTitle = e.target.getAttribute('data-location');
           if (locationTitle && userLocation) {
@@ -417,10 +458,20 @@
           return;
         }
 
+        // Check voor sterren rating click
+        if (e.target.classList.contains('rating-stars')) {
+          e.stopPropagation();
+          const locationTitle = e.target.getAttribute('data-location');
+          if (locationTitle) {
+            await handleRatingClick(e.target, locationTitle);
+          }
+          return;
+        }
+
         // Check voor retry click
         if (e.target.classList.contains('retry')) {
           e.stopPropagation();
-          const distanceElement = e.target.closest('.distance');
+          const distanceElement = e.target.closest('.distance-pill');
           const locationTitle = distanceElement.getAttribute('data-location');
           if (locationTitle && userLocation) {
             await updateSingleLocationWithWaze(locationTitle);
@@ -716,16 +767,68 @@
 
     .card-footer {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
     }
 
-    .card-footer .distance {
-      font-weight: 500;
-      font-size: 0.95em;
+    .distance-pill {
+      background: rgba(0, 123, 255, 0.1);
+      color: #007bff;
       padding: 6px 12px;
       border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 500;
+      border: 1px solid rgba(0, 123, 255, 0.2);
       transition: all 0.2s ease;
+    }
+
+    .distance-pill.clickable {
+      cursor: pointer;
+    }
+
+    .distance-pill.clickable:hover {
+      background: rgba(0, 123, 255, 0.2);
+      transform: scale(1.02);
+    }
+
+    .distance-pill.loading {
+      color: #ffa500;
+      cursor: wait;
+      animation: pulse 1.5s infinite;
+    }
+
+    .distance-pill.waze-result {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+      border-color: rgba(40, 167, 69, 0.2);
+    }
+
+    .distance-pill.error {
+      background: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+      border-color: rgba(220, 53, 69, 0.2);
+    }
+
+    .distance-pill .retry {
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.8em;
+      margin-left: 5px;
+    }
+
+    .distance-pill .retry:hover {
+      color: #007bff;
+    }
+
+    .rating-stars {
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.1em;
+      transition: transform 0.2s ease;
+    }
+
+    .rating-stars:hover {
+      transform: scale(1.1);
     }
 
     .location-info {
