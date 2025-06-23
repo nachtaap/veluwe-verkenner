@@ -529,7 +529,7 @@
         }
       });
 
-      // Kaart-toggles en rating-clicks (geen afstand clicks meer)
+      // Kaart-toggles en rating-clicks
       document.addEventListener('click', async function (e) {
         // Check voor sterren rating click
         if (e.target.classList.contains('rating-stars')) {
@@ -544,30 +544,32 @@
         // Skip als het een link is (titel clicks)
         if (e.target.tagName === 'A') return;
         
-        // Kaart toggle functionaliteit (alleen via card-body)
-        const cardBody = e.target.closest('.card-body');
-        if (cardBody && !e.target.classList.contains('filter-btn')) {
-          const locationTitle = cardBody.getAttribute('data-location');
-          const location = appData.locations.find(loc => loc.title === locationTitle);
-          if (!location) return;
+        // Kaart toggle functionaliteit (ALLEEN via card-body click)
+        if (e.target.closest('.card-body') === e.target || e.target.parentElement?.classList.contains('card-body')) {
+          const cardBody = e.target.closest('.card-body');
+          if (cardBody) {
+            const locationTitle = cardBody.getAttribute('data-location');
+            const location = appData.locations.find(loc => loc.title === locationTitle);
+            if (!location) return;
 
-          const card = cardBody.closest('.card');
-          
-          location.visited = !location.visited;
-          card.classList.toggle('visited');
+            const card = cardBody.closest('.card');
+            
+            location.visited = !location.visited;
+            card.classList.toggle('visited');
 
-          if (location.visited) {
-            if (!appData.visitedPlaces.includes(locationTitle)) {
-              appData.visitedPlaces.push(locationTitle);
+            if (location.visited) {
+              if (!appData.visitedPlaces.includes(locationTitle)) {
+                appData.visitedPlaces.push(locationTitle);
+              }
+            } else {
+              const index = appData.visitedPlaces.indexOf(locationTitle);
+              if (index > -1) {
+                appData.visitedPlaces.splice(index, 1);
+              }
             }
-          } else {
-            const index = appData.visitedPlaces.indexOf(locationTitle);
-            if (index > -1) {
-              appData.visitedPlaces.splice(index, 1);
-            }
+
+            await saveData();
           }
-
-          await saveData();
         }
       });
     }
