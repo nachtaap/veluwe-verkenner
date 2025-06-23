@@ -10,13 +10,23 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>🌲 Verborgen Pareltjes van de Veluwe</h1>
+      <h1>🌲 Verborgen Pareltjes van Nederland</h1>
       <div class="animation-container">
-        <img src="62645C44-E0B2-46A1-9CF4-45FF6CE253DE.png" alt="Auto met hondje rijdt door de Veluwe" class="car-illustration" />
+        <img src="62645C44-E0B2-46A1-9CF4-45FF6CE253DE.png" alt="Auto met hondje rijdt door Nederland" class="car-illustration" />
       </div>
-      <p>Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
 
 ```
+  <!-- Region Selector -->
+  <div class="region-selector">
+    <label for="regionSelect">Kies een regio:</label>
+    <select id="regionSelect" class="region-dropdown">
+      <option value="veluwe">🌲 De Veluwe</option>
+      <option value="twente">🌾 Twente</option>
+    </select>
+  </div>
+
+  <p id="regionDescription">Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
+
   <div class="sync-status" id="syncStatus">
     🔄 Laden...
   </div>
@@ -77,7 +87,17 @@
   <script>
     const CONFIG = {
       binId: '68570efa8a456b7966b2d73a',
-      apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy'
+      apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy',
+      regions: {
+        veluwe: {
+          title: '🌲 Verborgen Pareltjes van de Veluwe',
+          description: 'Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto'
+        },
+        twente: {
+          title: '🌾 Verborgen Pareltjes van Twente', 
+          description: 'Ontdek de mooiste, minder bekende plekken in Twente - allemaal gemakkelijk bereikbaar met de auto'
+        }
+      }
     };
 
     let appData = null;
@@ -86,6 +106,7 @@
     let visibilityObserver = null;
     let visibleCards = new Set();
     let wazeCalculationTimeout = null;
+    let currentRegion = 'veluwe';
 
     async function loadData() {
       try {
@@ -97,24 +118,25 @@
         if (response.ok) {
           const data = await response.json();
           appData = {
-            visitedPlaces: data.record.visitedPlaces || [],
+            veluwe: {
+              visitedPlaces: data.record.veluwe?.visitedPlaces || data.record.visitedPlaces || [],
+              locations: data.record.veluwe?.locations || data.record.locations || []
+            },
+            twente: {
+              visitedPlaces: data.record.twente?.visitedPlaces || [],
+              locations: data.record.twente?.locations || []
+            },
             categoryLabels: {
               "nature": "🌲 Natuur",
-              "historic": "🏰 Historisch",
+              "historic": "🏰 Historisch", 
               "village": "🏘️ Dorpjes",
               "water": "💧 Water",
               "viewpoint": "👁️ Uitzicht"
-            },
-            locations: data.record.locations || []
+            }
           };
 
-          // Markeer bezochte locaties
-          appData.locations.forEach(location => {
-            location.visited = appData.visitedPlaces.includes(location.title);
-          });
-
-          // Sorteer standaard op naam (A-Z)
-          appData.locations.sort((a, b) => a.title.localeCompare(b.title));
+          // Markeer bezochte locaties voor huidige regio
+          updateVisitedStatus();
 
           updateStatus('✅ Data geladen');
           return true;
@@ -139,7 +161,8 @@
             'X-Master-Key': CONFIG.apiKey
           },
           body: JSON.stringify({
-            ...appData,
+            veluwe: appData.veluwe,
+            twente: appData.twente,
             lastUpdated: new Date().toISOString()
           })
         });
@@ -153,6 +176,37 @@
       }
 
       updateStatus('⚠️ Opslaan mislukt');
+    }
+
+    function updateVisitedStatus() {
+      const regionData = appData[currentRegion];
+      if (!regionData) return;
+
+      regionData.locations.forEach(location => {
+        location.visited = regionData.visitedPlaces.includes(location.title);
+      });
+
+      // Sorteer standaard op naam (A-Z)
+      regionData.locations.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    function switchRegion(newRegion) {
+      currentRegion = newRegion;
+      
+      // Update header
+      const title = document.querySelector('h1');
+      const description = document.getElementById('regionDescription');
+      title.textContent = CONFIG.regions[newRegion].title;
+      description.textContent = CONFIG.regions[newRegion].description;
+      
+      // Update visited status en render
+      updateVisitedStatus();
+      createFilterButtons();
+      renderLocations();
+      
+      // Reset locatie-gerelateerde data
+      visibleCards.clear();
+      if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
     }
 
     function updateStatus(message) {
