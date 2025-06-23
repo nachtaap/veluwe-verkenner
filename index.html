@@ -235,12 +235,12 @@
 
       if (location.hasWazeData) {
         // Toon Waze data
-        distanceContent = `(${location.wazeDistance} km • ${location.wazeDuration} min) 🚗`;
+        distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min 🚗`;
         distanceClass = 'waze-result';
         distanceTitle = 'Rijafstand via Waze';
       } else {
         // Toon hemelsbreede afstand (standaard)
-        distanceContent = `(${location.distance} km) 🗺️`;
+        distanceContent = `${location.distance} km ✈️`;
         if (!userLocation) {
           distanceClass = '';
           distanceTitle = 'Hemelsbreede afstand - gebruik eerst je locatie voor rijafstanden';
@@ -248,11 +248,17 @@
       }
 
       card.innerHTML = `
-        <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
-        <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
-        <p>${location.description}</p>
-        <div class="distance ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
-          ${distanceContent}
+        <div class="card-header">
+          <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
+          <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
+        </div>
+        <div class="card-body" data-location="${location.title}">
+          <p>${location.description}</p>
+        </div>
+        <div class="card-footer">
+          <div class="distance ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
+            ${distanceContent}
+          </div>
         </div>
       `;
       
@@ -401,7 +407,7 @@
 
       // Kaart-toggles en afstand-clicks
       document.addEventListener('click', async function (e) {
-        // Check voor afstand-click
+        // Check voor afstand-click (onderste rand)
         if (e.target.classList.contains('distance') && e.target.classList.contains('clickable')) {
           e.stopPropagation();
           const locationTitle = e.target.getAttribute('data-location');
@@ -422,28 +428,27 @@
           return;
         }
 
-        // Skip als het een link is
+        // Skip als het een link is (titel clicks)
         if (e.target.tagName === 'A') return;
         
-        // Kaart toggle functionaliteit
-        const card = e.target.closest('.card');
-        if (card && !e.target.classList.contains('filter-btn')) {
-          const titleElement = card.querySelector('h3 a');
-          if (!titleElement) return;
-
-          const placeName = titleElement.textContent;
-          const location = appData.locations.find(loc => loc.title === placeName);
+        // Kaart toggle functionaliteit (alleen via card-body)
+        const cardBody = e.target.closest('.card-body');
+        if (cardBody && !e.target.classList.contains('filter-btn')) {
+          const locationTitle = cardBody.getAttribute('data-location');
+          const location = appData.locations.find(loc => loc.title === locationTitle);
           if (!location) return;
 
+          const card = cardBody.closest('.card');
+          
           location.visited = !location.visited;
           card.classList.toggle('visited');
 
           if (location.visited) {
-            if (!appData.visitedPlaces.includes(placeName)) {
-              appData.visitedPlaces.push(placeName);
+            if (!appData.visitedPlaces.includes(locationTitle)) {
+              appData.visitedPlaces.push(locationTitle);
             }
           } else {
-            const index = appData.visitedPlaces.indexOf(placeName);
+            const index = appData.visitedPlaces.indexOf(locationTitle);
             if (index > -1) {
               appData.visitedPlaces.splice(index, 1);
             }
@@ -652,8 +657,79 @@
       border-color: #adb5bd;
     }
 
-    .location-info {
-      margin-top: 15px;
+    /* Styling voor nieuwe kaart structuur */
+    .card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px 10px 20px;
+      background: rgba(0,0,0,0.02);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .card-header .category {
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      flex-grow: 1;
+      font-size: 1.1em;
+    }
+
+    .card-header h3 a {
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .card-header h3 a:hover {
+      color: #007bff;
+      text-decoration: underline;
+    }
+
+    .card-body {
+      padding: 15px 20px;
+      flex-grow: 1;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .card-body:hover {
+      background-color: rgba(0,123,255,0.05);
+    }
+
+    .card-body p {
+      margin: 0;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .card-footer {
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.02);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-footer .distance {
+      font-weight: 500;
+      font-size: 0.95em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
     }
 
     .distance.clickable {
