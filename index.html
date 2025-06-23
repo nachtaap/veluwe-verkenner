@@ -240,7 +240,7 @@
         distanceTitle = 'Rijafstand via Waze';
       } else {
         // Toon hemelsbreede afstand (standaard)
-        distanceContent = `(${location.distance} km) ✈️`;
+        distanceContent = `(${location.distance} km) 🗺️`;
         if (!userLocation) {
           distanceClass = '';
           distanceTitle = 'Hemelsbreede afstand - gebruik eerst je locatie voor rijafstanden';
@@ -454,20 +454,28 @@
       });
     }
 
-    // Snelle update van hemelsbreede afstanden
+    // Snelle update van hemelsbreede afstanden (behoudt Waze data)
     function updateDistances(userLat, userLng) {
       if (!appData) return;
 
       updateStatus('🔄 Berekenen hemelsbreede afstanden...');
 
-      // Reset alle Waze data
       appData.locations.forEach(location => {
         const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
-        location.distance = Math.round(distance);
-        location.distanceValue = distance;
-        location.hasWazeData = false; // Reset Waze data
-        location.wazeDistance = null;
-        location.wazeDuration = null;
+        
+        // Bewaar Waze data als die er is, update alleen hemelsbreede afstand
+        if (!location.hasWazeData) {
+          location.distance = Math.round(distance);
+        }
+        
+        // Voor sortering gebruiken we altijd de hemelsbreede afstand als basis
+        // (tenzij Waze afstand beschikbaar is, dan die voor sortering)
+        if (location.hasWazeData && location.wazeDistance) {
+          location.distanceValue = location.wazeDistance;
+        } else {
+          location.distanceValue = distance;
+          location.distance = Math.round(distance);
+        }
       });
 
       // Sorteer op afstand (laag → hoog)
@@ -476,7 +484,7 @@
       // Herbouw de kaarten in nieuwe volgorde
       renderLocations();
       
-      updateStatus('✅ Afstanden bijgewerkt (hemelsbreed)');
+      updateStatus('✅ Afstanden bijgewerkt');
     }
 
     function calculateDistance(lat1, lng1, lat2, lng2) {
