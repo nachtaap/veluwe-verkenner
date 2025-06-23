@@ -384,9 +384,20 @@
         
         // Schedule nieuwe berekening na 3 seconden
         wazeCalculationTimeout = setTimeout(async () => {
-          console.log(`Bereken Waze voor ${visibleCards.size} zichtbare kaarten`);
+          // Filter alleen kaarten die nog geen Waze data hebben
+          const cardsNeedingWaze = Array.from(visibleCards).filter(locationTitle => {
+            const location = appData.locations.find(loc => loc.title === locationTitle);
+            return location && !location.hasWazeData;
+          });
           
-          for (const locationTitle of visibleCards) {
+          if (cardsNeedingWaze.length === 0) {
+            console.log('Alle zichtbare kaarten hebben al Waze data');
+            return;
+          }
+          
+          console.log(`Bereken Waze voor ${cardsNeedingWaze.length} nieuwe kaarten (van ${visibleCards.size} zichtbaar)`);
+          
+          for (const locationTitle of cardsNeedingWaze) {
             const location = appData.locations.find(loc => loc.title === locationTitle);
             if (location && userLocation) {
               await updateSingleLocationWithWaze(locationTitle);
