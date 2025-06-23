@@ -354,7 +354,7 @@
             hasLocationAccess = true; // Enable scroll updates
             
             updateDistances(position.coords.latitude, position.coords.longitude);
-            locationStatus.textContent = '✅ Locatie geactiveerd! Afstanden worden automatisch bijgewerkt bij scrollen.';
+            locationStatus.textContent = '';
           },
           function (error) {
             let errorMessage = 'Fout bij ophalen locatie: ';
