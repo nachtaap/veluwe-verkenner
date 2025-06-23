@@ -549,7 +549,7 @@
       });
     }
 
-    // Snelle update van hemelsbreede afstanden (behoudt Waze data)
+    // Update van hemelsbreede afstanden (behoudt Waze data, nieuwe sortering)
     function updateDistances(userLat, userLng) {
       if (!appData) return;
 
@@ -563,18 +563,24 @@
           location.distance = Math.round(distance);
         }
         
-        // Voor sortering gebruiken we altijd de hemelsbreede afstand als basis
-        // (tenzij Waze afstand beschikbaar is, dan die voor sortering)
-        if (location.hasWazeData && location.wazeDistance) {
-          location.distanceValue = location.wazeDistance;
-        } else {
-          location.distanceValue = distance;
+        // Voor sortering gebruiken we altijd de hemelsbreede afstand
+        location.distanceValue = distance;
+        if (!location.distance) {
           location.distance = Math.round(distance);
         }
       });
 
-      // Sorteer op afstand (laag → hoog)
-      appData.locations.sort((a, b) => a.distanceValue - b.distanceValue);
+      // Sorteer: eerst alfabetisch op titel, dan op hemelsbreede afstand
+      appData.locations.sort((a, b) => {
+        // Eerst vergelijk op titel (alfabetisch)
+        const titleComparison = a.title.localeCompare(b.title);
+        if (titleComparison !== 0) {
+          return titleComparison;
+        }
+        
+        // Als titels gelijk zijn, sorteer op hemelsbreede afstand
+        return a.distanceValue - b.distanceValue;
+      });
 
       // Herbouw de kaarten in nieuwe volgorde
       renderLocations();
