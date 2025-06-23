@@ -198,6 +198,53 @@ text-align: center;
 color: white;
 }
 
+/* Voeg dit toe aan je styles.css - ontbrekende card basis styling */
+
+.card {
+background: rgba(255, 255, 255, 0.95);
+padding: 25px;
+border-radius: 15px;
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease;
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 255, 255, 0.2);
+position: relative;
+cursor: pointer;
+margin-bottom: 20px;
+}
+
+.card:hover {
+transform: translateY(-6px);
+box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card.visited {
+background: linear-gradient(135deg, #d4f8d4 0%, #eaffea 100%);
+box-shadow: 0 0 15px rgba(39, 174, 96, 0.2);
+}
+
+.card.visited::after {
+content: “BEZOCHT”;
+position: absolute;
+top: 15px;
+right: -35px;
+transform: rotate(45deg);
+background: #27ae60;
+color: white;
+padding: 5px 20px;
+font-size: 0.75rem;
+font-weight: bold;
+letter-spacing: 1px;
+box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+pointer-events: none;
+opacity: 0.8;
+z-index: 1;
+}
+
+.card.hidden {
+display: none;
+}
+
 /* Category colors for pills */
 .category-pill.nature { background: #28a745; }
 .category-pill.historic { background: #795548; }
