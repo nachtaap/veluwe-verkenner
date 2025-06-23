@@ -12,6 +12,381 @@ body {
   min-height: 100vh;
 }
 
+/* Region Selector Styling */
+.region-selector {
+margin: 20px 0;
+text-align: center;
+}
+
+.region-selector label {
+display: block;
+margin-bottom: 8px;
+font-weight: 500;
+color: #555;
+}
+
+.region-dropdown {
+padding: 10px 16px;
+border: 2px solid #ddd;
+border-radius: 25px;
+background: white;
+font-size: 1em;
+font-weight: 500;
+color: #333;
+cursor: pointer;
+transition: all 0.2s ease;
+outline: none;
+min-width: 200px;
+}
+
+.region-dropdown:hover {
+border-color: #007bff;
+background: #f8f9fa;
+}
+
+.region-dropdown:focus {
+border-color: #007bff;
+box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Location popup styling */
+.location-popup {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0.7);
+background: white;
+border-radius: 15px;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+z-index: 1001;
+max-width: 400px;
+width: 90%;
+display: none;
+opacity: 0;
+transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.location-popup.show {
+opacity: 1;
+transform: translate(-50%, -50%) scale(1);
+}
+
+.popup-overlay {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0, 0, 0, 0.5);
+z-index: 1000;
+display: none;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+
+.popup-overlay.show {
+opacity: 1;
+}
+
+.popup-content {
+padding: 0;
+color: #333;
+}
+
+.popup-header {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+padding: 20px;
+border-radius: 15px 15px 0 0;
+text-align: center;
+}
+
+.popup-header h3 {
+margin: 0;
+font-size: 1.3em;
+font-weight: 600;
+}
+
+.popup-body {
+padding: 25px;
+text-align: center;
+}
+
+.popup-body p {
+margin: 0 0 20px 0;
+font-size: 1.1em;
+line-height: 1.5;
+color: #555;
+}
+
+.popup-benefits {
+background: #f8f9fa;
+border-radius: 10px;
+padding: 15px;
+margin: 20px 0;
+}
+
+.benefit {
+margin: 8px 0;
+font-size: 0.95em;
+color: #28a745;
+text-align: left;
+}
+
+.popup-actions {
+padding: 0 25px 25px 25px;
+display: flex;
+gap: 12px;
+flex-direction: column;
+}
+
+.btn-primary {
+background: linear-gradient(45deg, #28a745, #20c997);
+color: white;
+border: none;
+padding: 14px 20px;
+border-radius: 25px;
+font-weight: 600;
+font-size: 1em;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn-secondary {
+background: transparent;
+color: #6c757d;
+border: 2px solid #dee2e6;
+padding: 12px 20px;
+border-radius: 25px;
+font-weight: 500;
+font-size: 0.95em;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+background: #f8f9fa;
+border-color: #adb5bd;
+}
+
+/* Card styling */
+.card-header {
+display: flex;
+align-items: center;
+gap: 10px;
+border-bottom: 1px solid rgba(0,0,0,0.1);
+padding-bottom: 8px;
+margin-bottom: 12px;
+}
+
+.card-header .category-pill {
+flex-shrink: 0;
+margin: 0;
+cursor: default;
+user-select: none;
+pointer-events: none;
+padding: 4px 10px;
+border-radius: 12px;
+font-size: 0.8em;
+font-weight: 500;
+text-align: center;
+color: white;
+}
+
+/* Category colors for pills */
+.category-pill.nature { background: #28a745; }
+.category-pill.historic { background: #795548; }
+.category-pill.village { background: #ff9800; }
+.category-pill.water { background: #2196f3; }
+.category-pill.viewpoint { background: #9c27b0; }
+
+.card-header h3 {
+margin: 0;
+flex-grow: 1;
+font-size: 1.1em;
+}
+
+.card-header h3 a {
+color: #333;
+text-decoration: none;
+transition: color 0.2s ease;
+}
+
+.card-header h3 a:hover {
+color: #007bff;
+text-decoration: underline;
+}
+
+.card-body {
+cursor: pointer;
+transition: background-color 0.2s ease;
+border-bottom: 1px solid rgba(0,0,0,0.1);
+padding-bottom: 12px;
+margin-bottom: 12px;
+}
+
+.card-body:hover {
+background-color: rgba(0,123,255,0.05);
+margin: 0 -20px 12px -20px;
+padding: 0 20px 12px 20px;
+border-radius: 4px;
+}
+
+.card-body p {
+margin: 0;
+line-height: 1.5;
+color: #555;
+}
+
+.card-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.distance-pill-link {
+text-decoration: none;
+display: inline-block;
+transition: transform 0.2s ease;
+}
+
+.distance-pill-link:hover {
+transform: scale(1.05);
+}
+
+.distance-pill {
+background: rgba(0, 123, 255, 0.1);
+color: #007bff;
+padding: 6px 12px;
+border-radius: 20px;
+font-size: 0.9em;
+font-weight: 500;
+border: 1px solid rgba(0, 123, 255, 0.2);
+transition: all 0.2s ease;
+cursor: pointer;
+}
+
+.distance-pill.loading {
+color: #ffa500;
+cursor: wait;
+animation: pulse 1.5s infinite;
+}
+
+.distance-pill.waze-result {
+background: rgba(40, 167, 69, 0.1);
+color: #28a745;
+border-color: rgba(40, 167, 69, 0.2);
+}
+
+.rating-stars {
+cursor: pointer;
+user-select: none;
+font-size: 1.1em;
+transition: transform 0.2s ease;
+}
+
+.rating-stars:hover {
+transform: scale(1.1);
+}
+
+.location-info {
+margin-top: 15px;
+}
+
+.location-status {
+margin-top: 10px;
+font-size: 0.9em;
+color: #666;
+}
+
+.distance-info {
+margin-top: 10px;
+font-size: 0.85em;
+color: #666;
+font-style: italic;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+position: fixed;
+bottom: 30px;
+right: 30px;
+width: 50px;
+height: 50px;
+background: rgba(0, 123, 255, 0.8);
+color: white;
+border: none;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+opacity: 0;
+visibility: hidden;
+transform: translateY(20px);
+z-index: 100;
+backdrop-filter: blur(10px);
+}
+
+.scroll-to-top.visible {
+opacity: 1;
+visibility: visible;
+transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+background: rgba(0, 123, 255, 0.95);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.scroll-to-top:active {
+transform: translateY(0);
+}
+
+.scroll-to-top svg {
+transition: transform 0.2s ease;
+}
+
+.scroll-to-top:hover svg {
+transform: translateY(-1px);
+}
+
+/* Animations */
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.5; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+.scroll-to-top {
+bottom: 20px;
+right: 20px;
+width: 45px;
+height: 45px;
+}
+
+.card-body:hover {
+margin: 0 -15px 12px -15px;
+padding: 0 15px 12px 15px;
+}
+
+.popup-actions {
+flex-direction: column;
+}
+
+.region-dropdown {
+min-width: 180px;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
