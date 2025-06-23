@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verborgen Pareltjes van de Veluwe</title>
+  <title>Verborgen Pareltjes van Nederland</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -14,35 +14,35 @@
       <div class="animation-container">
         <img src="62645C44-E0B2-46A1-9CF4-45FF6CE253DE.png" alt="Auto met hondje rijdt door Nederland" class="car-illustration" />
       </div>
-    </div>
 
 ```
-<!-- Region Selector -->
-<div class="region-selector">
-  <label for="regionSelect">Kies een regio:</label>
-  <select id="regionSelect" class="region-dropdown">
-    <option value="veluwe">🌲 De Veluwe</option>
-    <option value="twente">🌾 Twente</option>
-  </select>
-</div>
-
-<p id="regionDescription">Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
-
-<div class="sync-status" id="syncStatus">
-  🔄 Laden...
-</div>
-
-<div class="filter-section">
-  <h3>Filter op categorie:</h3>
-  <div class="filter-buttons" id="filterButtons">
-    <button class="filter-btn active" data-category="all">🌟 Alles</button>
+  <!-- Region Selector -->
+  <div class="region-selector">
+    <label for="regionSelect">Kies een regio:</label>
+    <select id="regionSelect" class="region-dropdown">
+      <option value="veluwe">🌲 De Veluwe</option>
+      <option value="twente">🌾 Twente</option>
+    </select>
   </div>
-</div>
 
-<div class="location-info">
-  <div id="locationStatus" class="location-status"></div>
-  <div class="distance-info">
-    <small>💡 Tip: Afstanden worden automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute via Waze.</small>
+  <p id="regionDescription">Ontdek de mooiste, minder bekende plekken in de Veluwe - allemaal gemakkelijk bereikbaar met de auto</p>
+
+  <div class="sync-status" id="syncStatus">
+    🔄 Laden...
+  </div>
+
+  <div class="filter-section">
+    <h3>Filter op categorie:</h3>
+    <div class="filter-buttons" id="filterButtons">
+      <button class="filter-btn active" data-category="all">🌟 Alles</button>
+    </div>
+  </div>
+
+  <div class="location-info">
+    <div id="locationStatus" class="location-status"></div>
+    <div class="distance-info">
+      <small>💡 Tip: Afstanden worden automatisch bijgewerkt bij scrollen. Klik op een afstand voor exacte rijroute.</small>
+    </div>
   </div>
 </div>
 
@@ -61,7 +61,7 @@
         <h3>📍 Locatie gebruiken</h3>
       </div>
       <div class="popup-body">
-        <p>Wil je je huidige locatie gebruiken om afstanden naar de Veluwe pareltjes te berekenen?</p>
+        <p>Wil je je huidige locatie gebruiken om afstanden naar de pareltjes te berekenen?</p>
         <div class="popup-benefits">
           <div class="benefit">✅ Afstanden automatisch gesorteerd op nabijheid</div>
           <div class="benefit">✅ Updates bij scrollen naar nieuwe gebieden</div>
@@ -119,8 +119,8 @@
           const data = await response.json();
           appData = {
             veluwe: {
-              visitedPlaces: data.record.veluwe?.visitedPlaces || data.record.visitedPlaces || [],
-              locations: data.record.veluwe?.locations || data.record.locations || []
+              visitedPlaces: data.record.veluwe?.visitedPlaces || [],
+              locations: data.record.veluwe?.locations || []
             },
             twente: {
               visitedPlaces: data.record.twente?.visitedPlaces || [],
@@ -135,9 +135,7 @@
             }
           };
 
-          // Markeer bezochte locaties voor huidige regio
           updateVisitedStatus();
-
           updateStatus('✅ Data geladen');
           return true;
         }
@@ -186,25 +184,21 @@
         location.visited = regionData.visitedPlaces.includes(location.title);
       });
 
-      // Sorteer standaard op naam (A-Z)
       regionData.locations.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     function switchRegion(newRegion) {
       currentRegion = newRegion;
       
-      // Update header
       const title = document.querySelector('h1');
       const description = document.getElementById('regionDescription');
       title.textContent = CONFIG.regions[newRegion].title;
       description.textContent = CONFIG.regions[newRegion].description;
       
-      // Update visited status en render
       updateVisitedStatus();
       createFilterButtons();
       renderLocations();
       
-      // Reset locatie-gerelateerde data
       visibleCards.clear();
       if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
     }
@@ -214,34 +208,29 @@
       if (status) status.textContent = message;
     }
 
-    // Waze API functie (verbeterd voor individuele calls)
     async function getWazeDistance(fromLat, fromLng, toLat, toLng) {
-      // Gesimuleerde Waze data voor demo (in productie zou je echte API gebruiken)
       await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
       
       const directDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
-      const roadFactor = 1.15 + Math.random() * 0.35; // Realistische wegfactor
+      const roadFactor = 1.15 + Math.random() * 0.35;
       
       return {
         distance: directDistance * roadFactor,
-        duration: Math.round(directDistance * roadFactor * 0.8), // ~80 km/h gemiddeld
+        duration: Math.round(directDistance * roadFactor * 0.8),
         route: 'Route via snelwegen',
         success: true
       };
     }
 
-    // Nieuwe functie: rating click handler
     async function handleRatingClick(starsElement, locationTitle) {
       const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
       if (!location) return;
 
-      // Simpele rating cyclus: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
       const currentRating = location.rating || 0;
       const newRating = currentRating >= 5 ? 0 : currentRating + 1;
       
       location.rating = newRating;
 
-      // Update sterren weergave
       let starsContent = '';
       for (let i = 1; i <= 5; i++) {
         if (i <= newRating) {
@@ -252,18 +241,15 @@
       }
       starsElement.innerHTML = starsContent;
 
-      // Sla op naar JSONBin
       await saveData();
     }
 
-    // Nieuwe functie: individuele Waze call voor een locatie (updated voor nieuwe class)
     async function updateSingleLocationWithWaze(locationTitle) {
       if (!userLocation || !appData) return;
 
       const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
       if (!location) return;
 
-      // Vind de kaart voor deze locatie
       const cards = document.querySelectorAll('.card');
       let targetCard = null;
       for (const card of cards) {
@@ -279,7 +265,6 @@
       const distanceElement = targetCard.querySelector('.distance-pill');
       if (!distanceElement) return;
 
-      // Toon loading state
       distanceElement.innerHTML = 'Berekenen...';
       distanceElement.classList.add('loading');
 
@@ -290,28 +275,22 @@
         );
 
         if (wazeData.success) {
-          // Update de locatie data
           location.wazeDistance = Math.round(wazeData.distance);
           location.wazeDuration = wazeData.duration;
           location.hasWazeData = true;
 
-          // Update de weergave
           distanceElement.innerHTML = `${location.wazeDistance} km • ${location.wazeDuration} min`;
-          distanceElement.classList.remove('loading', 'clickable');
+          distanceElement.classList.remove('loading');
           distanceElement.classList.add('waze-result');
           distanceElement.title = 'Rijafstand via Waze';
-        } else {
-          throw new Error('Waze data onvolledig');
         }
 
       } catch (error) {
         console.error('Waze API gefaald voor', locationTitle, error);
         
-        // Herstel originele afstand bij fout
-        distanceElement.innerHTML = `${location.distance} km <span class="retry">Opnieuw?</span>`;
+        distanceElement.innerHTML = `${location.distance} km`;
         distanceElement.classList.remove('loading');
-        distanceElement.classList.add('clickable', 'error');
-        distanceElement.title = 'Klik om rijafstand op te halen';
+        distanceElement.title = 'Hemelsbreede afstand';
       }
     }
 
@@ -320,25 +299,20 @@
       card.className = 'card';
       if (location.visited) card.classList.add('visited');
 
-      // Bepaal welke afstand te tonen (zonder emoticons, niet meer klikbaar)
       let distanceContent;
       let distanceClass = '';
       let distanceTitle = 'Klik voor route in Google Maps';
 
       if (location.hasWazeData) {
-        // Toon Waze data
         distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min`;
         distanceClass = 'waze-result';
       } else {
-        // Toon hemelsbreede afstand (standaard)
         distanceContent = `${location.distance} km`;
       }
 
-      // Beoordeling sterren
       const rating = location.rating || 0;
-      const maxStars = 5;
       let starsContent = '';
-      for (let i = 1; i <= maxStars; i++) {
+      for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
           starsContent += '⭐';
         } else {
@@ -346,7 +320,6 @@
         }
       }
 
-      // Maak een info URL (bijvoorbeeld Wikipedia of eigen info pagina)
       const infoUrl = location.infoUrl || `https://nl.wikipedia.org/wiki/${encodeURIComponent(location.title)}`;
 
       card.innerHTML = `
@@ -376,7 +349,6 @@
       if (!appData) return;
 
       const filterContainer = document.getElementById('filterButtons');
-      // Reset buttons maar laat "Alles" button staan
       filterContainer.innerHTML = '<button class="filter-btn active" data-category="all">🌟 Alles</button>';
       
       Object.keys(appData.categoryLabels).forEach(category => {
@@ -389,13 +361,30 @@
     }
 
     function setupEventListeners() {
-      // Region selector event listener
+      // Region selector
       document.getElementById('regionSelect').addEventListener('change', function(e) {
-        const newRegion = e.target.value;
-        switchRegion(newRegion);
+        switchRegion(e.target.value);
       });
 
-      // Setup Intersection Observer voor zichtbare kaarten
+      // Scroll to top
+      const scrollToTopBtn = document.getElementById('scrollToTop');
+      
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      });
+
+      scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Intersection Observer
       if ('IntersectionObserver' in window) {
         visibilityObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -403,21 +392,18 @@
             if (!locationTitle) return;
 
             if (entry.isIntersecting) {
-              // Kaart komt in beeld
               visibleCards.add(locationTitle);
               scheduleWazeCalculation();
             } else {
-              // Kaart verdwijnt uit beeld
               visibleCards.delete(locationTitle);
             }
           });
         }, {
-          threshold: 0.5, // 50% van kaart moet zichtbaar zijn
-          rootMargin: '50px' // Extra marge voor betere UX
+          threshold: 0.5,
+          rootMargin: '50px'
         });
       }
 
-      // Locatie update interval (elke 3 minuten)
       function startLocationUpdates() {
         if (locationUpdateInterval) clearInterval(locationUpdateInterval);
         
@@ -428,17 +414,16 @@
                 const newLat = position.coords.latitude;
                 const newLng = position.coords.longitude;
                 
-                // Check of we significant zijn verplaatst (meer dan ~100m)
                 const distanceMoved = calculateDistance(
                   userLocation.lat, userLocation.lng, 
                   newLat, newLng
-                ) * 1000; // naar meters
+                ) * 1000;
                 
                 if (distanceMoved > 100) {
                   console.log(`Locatie update: ${distanceMoved.toFixed(0)}m verplaatst`);
                   userLocation = { lat: newLat, lng: newLng };
                   updateDistances(newLat, newLng);
-                  scheduleWazeCalculation(); // Herbereken Waze voor zichtbare kaarten
+                  scheduleWazeCalculation();
                 }
               },
               function (error) {
@@ -446,50 +431,39 @@
               }
             );
           }
-        }, 3 * 60 * 1000); // Elke 3 minuten
+        }, 3 * 60 * 1000);
       }
 
-      // Schedule Waze berekening voor zichtbare kaarten (met 3 seconden delay)
       function scheduleWazeCalculation() {
         if (!userLocation || visibleCards.size === 0) return;
         
-        // Clear vorige timeout
         if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
         
-        // Schedule nieuwe berekening na 3 seconden
         wazeCalculationTimeout = setTimeout(async () => {
-          // Filter alleen kaarten die nog geen Waze data hebben
           const cardsNeedingWaze = Array.from(visibleCards).filter(locationTitle => {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             return location && !location.hasWazeData;
           });
           
-          if (cardsNeedingWaze.length === 0) {
-            console.log('Alle zichtbare kaarten hebben al Waze data');
-            return;
-          }
-          
-          console.log(`Bereken Waze voor ${cardsNeedingWaze.length} nieuwe kaarten (van ${visibleCards.size} zichtbaar)`);
+          if (cardsNeedingWaze.length === 0) return;
           
           for (const locationTitle of cardsNeedingWaze) {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             if (location && userLocation) {
               await updateSingleLocationWithWaze(locationTitle);
-              // Kleine pauze tussen calls om niet te spammen
               await new Promise(resolve => setTimeout(resolve, 500));
             }
           }
-        }, 3000); // 3 seconden wachten
+        }, 3000);
       }
 
-      // Location popup event listeners
+      // Location popup
       const locationPopup = document.getElementById('locationPopup');
       const popupOverlay = document.getElementById('popupOverlay');
       const allowLocationBtn = document.getElementById('allowLocationBtn');
       const denyLocationBtn = document.getElementById('denyLocationBtn');
       const locationStatus = document.getElementById('locationStatus');
 
-      // Show popup on load (with small delay for better UX)
       setTimeout(() => {
         showLocationPopup();
       }, 1000);
@@ -501,10 +475,9 @@
 
       denyLocationBtn.addEventListener('click', function() {
         hideLocationPopup();
-        locationStatus.textContent = 'Afstanden worden getoond als hemelsbreede afstand. Je kunt later nog locatie activeren via de instellingen van je browser.';
+        locationStatus.textContent = 'Afstanden worden getoond als hemelsbreede afstand.';
       });
 
-      // Close popup when clicking overlay
       popupOverlay.addEventListener('click', function() {
         hideLocationPopup();
         locationStatus.textContent = 'Afstanden worden getoond als hemelsbreede afstand.';
@@ -513,7 +486,6 @@
       function showLocationPopup() {
         locationPopup.style.display = 'block';
         popupOverlay.style.display = 'block';
-        // Trigger animation
         setTimeout(() => {
           locationPopup.classList.add('show');
           popupOverlay.classList.add('show');
@@ -545,35 +517,18 @@
             };
             
             updateDistances(position.coords.latitude, position.coords.longitude);
-            startLocationUpdates(); // Start 3-minuten interval
+            startLocationUpdates();
             locationStatus.textContent = '';
           },
           function (error) {
-            let errorMessage = 'Fout bij ophalen locatie: ';
-            switch(error.code) {
-              case error.PERMISSION_DENIED:
-                errorMessage += 'Locatie toegang geweigerd. Je kunt dit later wijzigen in je browser instellingen.';
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMessage += 'Locatie niet beschikbaar.';
-                break;
-              case error.TIMEOUT:
-                errorMessage += 'Locatie ophalen duurde te lang.';
-                break;
-              default:
-                errorMessage += 'Onbekende fout.';
-                break;
-            }
-            locationStatus.textContent = errorMessage;
+            locationStatus.textContent = 'Kon locatie niet ophalen.';
             userLocation = null;
-            hasLocationAccess = false;
           }
         );
       }
 
-      // Filterknoppen (alleen in filter section, niet op kaarten)
+      // Filter buttons
       document.addEventListener('click', function (e) {
-        // Alleen reageren op filter buttons in de filter section
         if (e.target.classList.contains('filter-btn') && e.target.closest('.filter-section')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
           e.target.classList.add('active');
@@ -592,9 +547,8 @@
         }
       });
 
-      // Kaart-toggles en rating-clicks
+      // Card interactions
       document.addEventListener('click', async function (e) {
-        // Check voor sterren rating click
         if (e.target.classList.contains('rating-stars')) {
           e.stopPropagation();
           const locationTitle = e.target.getAttribute('data-location');
@@ -604,10 +558,8 @@
           return;
         }
 
-        // Skip als het een link is (titel clicks)
         if (e.target.tagName === 'A') return;
         
-        // Kaart toggle functionaliteit (ALLEEN via card-body click)
         if (e.target.closest('.card-body') === e.target || e.target.parentElement?.classList.contains('card-body')) {
           const cardBody = e.target.closest('.card-body');
           if (cardBody) {
@@ -637,7 +589,6 @@
       });
     }
 
-    // Update van hemelsbreede afstanden (behoudt Waze data, nieuwe sortering)
     function updateDistances(userLat, userLng) {
       if (!appData || !appData[currentRegion]) return;
 
@@ -646,33 +597,25 @@
       appData[currentRegion].locations.forEach(location => {
         const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
         
-        // Bewaar Waze data als die er is, update alleen hemelsbreede afstand
         if (!location.hasWazeData) {
           location.distance = Math.round(distance);
         }
         
-        // Voor sortering gebruiken we altijd de hemelsbreede afstand
         location.distanceValue = distance;
         if (!location.distance) {
           location.distance = Math.round(distance);
         }
       });
 
-      // Sorteer: eerst alfabetisch op titel, dan op hemelsbreede afstand
       appData[currentRegion].locations.sort((a, b) => {
-        // Eerst vergelijk op titel (alfabetisch)
         const titleComparison = a.title.localeCompare(b.title);
         if (titleComparison !== 0) {
           return titleComparison;
         }
-        
-        // Als titels gelijk zijn, sorteer op hemelsbreede afstand
         return a.distanceValue - b.distanceValue;
       });
 
-      // Herbouw de kaarten in nieuwe volgorde
       renderLocations();
-      
       updateStatus('✅ Afstanden bijgewerkt');
     }
 
@@ -697,7 +640,6 @@
         const card = createCard(location);
         container.appendChild(card);
         
-        // Observeer kaart voor zichtbaarheid (als IntersectionObserver beschikbaar is)
         if (visibilityObserver) {
           const cardBody = card.querySelector('.card-body');
           if (cardBody) {
@@ -713,8 +655,7 @@
 
       const dataLoaded = await loadData();
       if (dataLoaded) {
-        createFilterButtons();
-        renderLocations();
+        switchRegion('veluwe');
         console.log('App geladen!');
       } else {
         updateStatus('❌ Kon data niet laden');
@@ -724,75 +665,5 @@
     document.addEventListener('DOMContentLoaded', initializeApp);
   </script>
 
-  <style>
-    /* Styling voor location popup */
-    .location-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.7);
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      z-index: 1001;
-      max-width: 400px;
-      width: 90%;
-      display: none;
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .location-popup.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .popup-overlay.show {
-      opacity: 1;
-    }
-
-    .popup-content {
-      padding: 0;
-      color: #333;
-    }
-
-    .popup-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 15px 15px 0 0;
-      text-align: center;
-    }
-
-    .popup-header h3 {
-      margin: 0;
-      font-size: 1.3em;
-      font-weight: 600;
-    }
-
-    .popup-body {
-      padding: 25px;
-      text-align: center;
-    }
-
-    .popup-body p {
-      margin: 0 0 20px 0;
-      font-size: 1.1em;
-      line-height: 1.5;
-      color: #555;
-    }
-
-    .popup-benefits {
+</body>
+</html>
