@@ -261,17 +261,15 @@
       // Bepaal welke afstand te tonen (zonder emoticons, niet meer klikbaar)
       let distanceContent;
       let distanceClass = '';
-      let distanceTitle = '';
+      let distanceTitle = 'Klik voor route in Google Maps';
 
       if (location.hasWazeData) {
         // Toon Waze data
         distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min`;
         distanceClass = 'waze-result';
-        distanceTitle = 'Rijafstand via Waze';
       } else {
         // Toon hemelsbreede afstand (standaard)
         distanceContent = `${location.distance} km`;
-        distanceTitle = 'Hemelsbreede afstand';
       }
 
       // Beoordeling sterren
@@ -286,18 +284,23 @@
         }
       }
 
+      // Maak een info URL (bijvoorbeeld Wikipedia of eigen info pagina)
+      const infoUrl = location.infoUrl || `https://nl.wikipedia.org/wiki/${encodeURIComponent(location.title)}`;
+
       card.innerHTML = `
         <div class="card-header">
           <div class="category ${location.category}">${appData.categoryLabels[location.category]}</div>
-          <h3><a href="${location.mapsUrl}" target="_blank">${location.title}</a></h3>
+          <h3><a href="${infoUrl}" target="_blank" title="Meer informatie over ${location.title}">${location.title}</a></h3>
         </div>
         <div class="card-body" data-location="${location.title}">
           <p>${location.description}</p>
         </div>
         <div class="card-footer">
-          <div class="distance-pill ${distanceClass}" title="${distanceTitle}" data-location="${location.title}">
-            ${distanceContent}
-          </div>
+          <a href="${location.mapsUrl}" target="_blank" class="distance-pill-link" title="${distanceTitle}">
+            <div class="distance-pill ${distanceClass}" data-location="${location.title}">
+              ${distanceContent}
+            </div>
+          </a>
           <div class="rating-stars" data-location="${location.title}" title="Klik om beoordeling te geven">
             ${starsContent}
           </div>
@@ -836,6 +839,16 @@
       align-items: center;
     }
 
+    .distance-pill-link {
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .distance-pill-link:hover {
+      transform: scale(1.05);
+    }
+
     .distance-pill {
       background: rgba(0, 123, 255, 0.1);
       color: #007bff;
@@ -845,6 +858,7 @@
       font-weight: 500;
       border: 1px solid rgba(0, 123, 255, 0.2);
       transition: all 0.2s ease;
+      cursor: pointer;
     }
 
     .distance-pill.waze-result {
