@@ -1079,3 +1079,64 @@ html, body {
       font-size: 0.9em;
       color: #666;
     }
+    
+    /* Voeg deze CSS toe aan je styles.css bestand */
+
+/* Styling voor informatielinks in titels */
+.info-link {
+text-decoration: none;
+transition: all 0.2s ease;
+border-radius: 4px;
+padding: 2px 4px;
+margin: -2px -4px;
+}
+
+/* Links met beschikbare informatie - blauw en klikbaar */
+.info-link.available {
+color: #2563eb;
+cursor: pointer;
+}
+
+.info-link.available:hover {
+color: #1d4ed8;
+background-color: #eff6ff;
+text-decoration: underline;
+}
+
+/* Titels zonder beschikbare informatie - grijs en niet klikbaar */
+.info-link.unavailable {
+color: #6b7280;
+cursor: default;
+}
+
+/* Extra indicator voor brontype (optioneel) */
+.info-link.available::after {
+content: “ ℹ️”;
+font-size: 0.8em;
+opacity: 0.6;
+margin-left: 2px;
+}
+
+/* Verschillende kleuren voor verschillende bronnen */
+.info-link.available[title*=“VVV”]::after {
+content: “ 🏛️”;
+}
+
+.info-link.available[title*=“Natuurmonumenten”]::after {
+content: “ 🌿”;
+}
+
+.info-link.available[title*=“Staatsbosbeheer”]::after {
+content: “ 🌲”;
+}
+
+.info-link.available[title*=“Wikipedia”]::after {
+content: “ 📖”;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+.info-link.available::after {
+display: none; /* Verberg iconen op mobiele apparaten */
+}
+}
