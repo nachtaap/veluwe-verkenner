@@ -297,29 +297,41 @@
     }
 
     async function updateSingleLocationWithORS(locationTitle) {
+      console.log(`updateSingleLocationWithORS aangeroepen voor: ${locationTitle}`);
+      
       if (!userLocation || !appData || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') {
         console.log('ORS update overgeslagen: geen locatie of API key');
         return;
       }
 
       const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-      if (!location) return;
+      if (!location) {
+        console.log(`Locatie niet gevonden: ${locationTitle}`);
+        return;
+      }
 
       const cards = document.querySelectorAll('.card');
       let targetCard = null;
       for (const card of cards) {
-        const titleElement = card.querySelector('h3 a');
+        const titleElement = card.querySelector('h3 a, h3 span');
         if (titleElement && titleElement.textContent === locationTitle) {
           targetCard = card;
           break;
         }
       }
 
-      if (!targetCard) return;
+      if (!targetCard) {
+        console.log(`Kaart niet gevonden voor: ${locationTitle}`);
+        return;
+      }
 
       const distanceElement = targetCard.querySelector('.distance-pill');
-      if (!distanceElement) return;
+      if (!distanceElement) {
+        console.log(`Distance element niet gevonden voor: ${locationTitle}`);
+        return;
+      }
 
+      console.log(`Start ORS API call voor: ${locationTitle}`);
       distanceElement.innerHTML = '🔄 Routeberekening...';
       distanceElement.classList.add('loading');
 
@@ -328,6 +340,8 @@
           userLocation.lat, userLocation.lng,
           location.coordinates.lat, location.coordinates.lng
         );
+
+        console.log(`ORS resultaat voor ${locationTitle}:`, orsData);
 
         if (orsData.success) {
           location.orsDistance = orsData.distance;
@@ -478,7 +492,8 @@
       
       const cards = document.querySelectorAll('.card');
       cards.forEach(card => {
-        const titleElement = card.querySelector('h3 a');
+        // Zoek naar zowel <a> als <span> elementen
+        const titleElement = card.querySelector('h3 a, h3 span');
         const mapsLink = card.querySelector('.distance-pill-link');
         
         if (titleElement && mapsLink) {
@@ -525,9 +540,11 @@
 
             if (entry.isIntersecting) {
               visibleCards.add(locationTitle);
+              console.log(`Kaart zichtbaar: ${locationTitle}`);
               scheduleORSCalculation();
             } else {
               visibleCards.delete(locationTitle);
+              console.log(`Kaart niet meer zichtbaar: ${locationTitle}`);
             }
           });
         }, {
@@ -568,15 +585,24 @@
       }
 
       function scheduleORSCalculation() {
-        if (!userLocation || visibleCards.size === 0 || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') return;
+        console.log(`scheduleORSCalculation aangeroepen. userLocation: ${!!userLocation}, visibleCards: ${visibleCards.size}, API key: ${CONFIG.orsApiKey ? 'aanwezig' : 'ontbreekt'}`);
+        
+        if (!userLocation || visibleCards.size === 0 || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') {
+          console.log('ORS berekening overgeslagen - voorwaarden niet voldaan');
+          return;
+        }
         
         if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
         
         wazeCalculationTimeout = setTimeout(async () => {
           const cardsNeedingORS = Array.from(visibleCards).filter(locationTitle => {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-            return location && !location.hasORSData && !location.orsDistance;
+            const needsORS = location && !location.hasORSData && !location.orsDistance;
+            console.log(`${locationTitle}: heeft ORS nodig? ${needsORS}`);
+            return needsORS;
           });
+          
+          console.log(`${cardsNeedingORS.length} kaarten hebben ORS berekening nodig`);
           
           if (cardsNeedingORS.length === 0) return;
           
@@ -585,6 +611,7 @@
           for (const locationTitle of cardsNeedingORS) {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             if (location && userLocation) {
+              console.log(`Start ORS berekening voor: ${locationTitle}`);
               await updateSingleLocationWithORS(locationTitle);
               // Wacht tussen requests om rate limiting te voorkomen
               await new Promise(resolve => setTimeout(resolve, 1000));
