@@ -192,17 +192,6 @@
       updateStatus('⚠️ Opslaan mislukt');
     }
 
-    function updateVisitedStatus() {
-      const regionData = appData[currentRegion];
-      if (!regionData) return;
-
-      regionData.locations.forEach(location => {
-        location.visited = regionData.visitedPlaces.includes(location.title);
-      });
-
-      regionData.locations.sort((a, b) => a.title.localeCompare(b.title));
-    }
-
     function switchRegion(newRegion) {
 currentRegion = newRegion;
 
@@ -225,7 +214,6 @@ currentRegion = newRegion;
   visibleCards.clear();
   if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
 }
-```
 
     function updateStatus(message) {
       const status = document.getElementById('syncStatus');
