@@ -193,20 +193,20 @@
     }
 
     function switchRegion(newRegion) {
-currentRegion = newRegion;
+    currentRegion = newRegion;
 
-  const title = document.querySelector('h1');
-  const description = document.getElementById('regionDescription');
-  title.textContent = CONFIG.regions[newRegion].title;
-  description.textContent = CONFIG.regions[newRegion].description;
+    const title = document.querySelector('h1');
+    const description = document.getElementById('regionDescription');
+    title.textContent = CONFIG.regions[newRegion].title;
+    description.textContent = CONFIG.regions[newRegion].description;
   
-  updateVisitedStatus();
-  createFilterButtons();
-  renderLocations();
+    updateVisitedStatus();
+    createFilterButtons();
+    renderLocations();
   
-  visibleCards.clear();
-  if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
-}
+    visibleCards.clear();
+    if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
+    }
 
     function updateStatus(message) {
       const status = document.getElementById('syncStatus');
