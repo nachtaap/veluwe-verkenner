@@ -41,7 +41,7 @@
   <div class="location-info">
     <div id="locationStatus" class="location-status"></div>
     <div class="distance-info">
-      <small>💡 Tip: Afstanden worden automatisch bijgewerkt. Klik op een afstand voor exacte rijroute.</small>
+      <small>💡 Tip: Afstanden worden berekend via OpenRouteService. Klik op een afstand voor de route in Google Maps.</small>
     </div>
   </div>
 </div>
@@ -87,6 +87,8 @@
     const CONFIG = {
       binId: '68570efa8a456b7966b2d73a',
       apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy',
+      // Voeg hier je OpenRouteService API key toe
+      orsApiKey: '5b3ce3597851110001cf624886d30766477c4b77968596ef1aa3411b', // Vervang dit met je echte API key
       regions: {
         veluwe: {
           title: '🌲 Verborgen Pareltjes van de Veluwe',
@@ -221,18 +223,54 @@
       if (status) status.textContent = message;
     }
 
-    async function getWazeDistance(fromLat, fromLng, toLat, toLng) {
-      await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
-      
-      const directDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
-      const roadFactor = 1.15 + Math.random() * 0.35;
-      
-      return {
-        distance: directDistance * roadFactor,
-        duration: Math.round(directDistance * roadFactor * 0.8),
-        route: 'Route via snelwegen',
-        success: true
-      };
+    async function getORSDistance(fromLat, fromLng, toLat, toLng) {
+      try {
+        // OpenRouteService API call voor driving-car
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${CONFIG.orsApiKey}&start=${fromLng},${fromLat}&end=${toLng},${toLat}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`ORS API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.features && data.features.length > 0) {
+          const route = data.features[0];
+          const properties = route.properties;
+          
+          // Afstand in kilometers (ORS geeft meters)
+          const distanceKm = Math.round(properties.segments[0].distance / 1000);
+          
+          // Tijd in minuten (ORS geeft seconden)
+          const durationMin = Math.round(properties.segments[0].duration / 60);
+          
+          return {
+            distance: distanceKm,
+            duration: durationMin,
+            route: 'Echte rijroute via ORS',
+            success: true
+          };
+        } else {
+          throw new Error('Geen route gevonden');
+        }
+        
+      } catch (error) {
+        console.error('OpenRouteService API gefaald:', error);
+        
+        // Fallback naar geschatte afstand
+        const directDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
+        const estimatedDistance = Math.round(directDistance * 1.4); // Conservatieve schatting
+        const estimatedDuration = Math.round(estimatedDistance / 0.8); // ~50 km/h
+        
+        return {
+          distance: estimatedDistance,
+          duration: estimatedDuration,
+          route: 'Geschatte afstand (ORS niet beschikbaar)',
+          success: false
+        };
+      }
     }
 
     async function handleRatingClick(starsElement, locationTitle) {
@@ -257,8 +295,11 @@
       await saveData();
     }
 
-    async function updateSingleLocationWithWaze(locationTitle) {
-      if (!userLocation || !appData) return;
+    async function updateSingleLocationWithORS(locationTitle) {
+      if (!userLocation || !appData || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') {
+        console.log('ORS update overgeslagen: geen locatie of API key');
+        return;
+      }
 
       const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
       if (!location) return;
@@ -278,34 +319,44 @@
       const distanceElement = targetCard.querySelector('.distance-pill');
       if (!distanceElement) return;
 
-      distanceElement.innerHTML = 'Berekenen...';
+      distanceElement.innerHTML = '🔄 Routeberekening...';
       distanceElement.classList.add('loading');
 
       try {
-        const wazeData = await getWazeDistance(
+        const orsData = await getORSDistance(
           userLocation.lat, userLocation.lng,
           location.coordinates.lat, location.coordinates.lng
         );
 
-        if (wazeData.success) {
-          location.wazeDistance = Math.round(wazeData.distance);
-          location.wazeDuration = wazeData.duration;
-          location.hasWazeData = true;
+        if (orsData.success) {
+          location.orsDistance = orsData.distance;
+          location.orsDuration = orsData.duration;
+          location.hasORSData = true;
 
-          distanceElement.innerHTML = `${location.wazeDistance} km • ${location.wazeDuration} min`;
+          distanceElement.innerHTML = `${location.orsDistance} km • ${location.orsDuration} min`;
           distanceElement.classList.remove('loading');
-          distanceElement.classList.add('waze-result');
-          distanceElement.title = 'Rijafstand via Waze';
+          distanceElement.classList.add('ors-result');
+          distanceElement.title = 'Echte rijafstand via OpenRouteService';
+        } else {
+          // Fallback gebruikt
+          location.orsDistance = orsData.distance;
+          location.orsDuration = orsData.duration;
+          location.hasORSData = false;
 
-          // Update de Google Maps link wanneer Waze data beschikbaar komt
-          const mapsLink = targetCard.querySelector('.distance-pill-link');
-          if (mapsLink) {
-            mapsLink.href = generateMapsUrl(location);
-          }
+          distanceElement.innerHTML = `~${location.orsDistance} km • ${location.orsDuration} min`;
+          distanceElement.classList.remove('loading');
+          distanceElement.classList.add('estimated-result');
+          distanceElement.title = 'Geschatte afstand (ORS tijdelijk niet beschikbaar)';
+        }
+
+        // Update de Google Maps link
+        const mapsLink = targetCard.querySelector('.distance-pill-link');
+        if (mapsLink) {
+          mapsLink.href = generateMapsUrl(location);
         }
 
       } catch (error) {
-        console.error('Waze API gefaald voor', locationTitle, error);
+        console.error('ORS API volledig gefaald voor', locationTitle, error);
         
         distanceElement.innerHTML = `${location.distance} km`;
         distanceElement.classList.remove('loading');
@@ -322,11 +373,17 @@
       let distanceClass = '';
       let distanceTitle = 'Klik voor route in Google Maps';
 
-      if (location.hasWazeData) {
-        distanceContent = `${location.wazeDistance} km • ${location.wazeDuration} min`;
-        distanceClass = 'waze-result';
+      if (location.hasORSData) {
+        distanceContent = `${location.orsDistance} km • ${location.orsDuration} min`;
+        distanceClass = 'ors-result';
+        distanceTitle = 'Echte rijafstand via OpenRouteService - klik voor Google Maps route';
+      } else if (location.orsDistance) {
+        distanceContent = `~${location.orsDistance} km • ${location.orsDuration} min`;
+        distanceClass = 'estimated-result';
+        distanceTitle = 'Geschatte afstand - klik voor Google Maps route';
       } else {
         distanceContent = `${location.distance} km`;
+        distanceTitle = 'Hemelsbreede afstand - klik voor Google Maps route';
       }
 
       const rating = location.rating || 0;
@@ -435,7 +492,7 @@
 
             if (entry.isIntersecting) {
               visibleCards.add(locationTitle);
-              scheduleWazeCalculation();
+              scheduleORSCalculation();
             } else {
               visibleCards.delete(locationTitle);
             }
@@ -466,7 +523,7 @@
                   userLocation = { lat: newLat, lng: newLng };
                   updateDistances(newLat, newLng);
                   updateAllMapsLinks(); // Update alle Google Maps links
-                  scheduleWazeCalculation();
+                  scheduleORSCalculation();
                 }
               },
               function (error) {
@@ -477,27 +534,30 @@
         }, 3 * 60 * 1000);
       }
 
-      function scheduleWazeCalculation() {
-        if (!userLocation || visibleCards.size === 0) return;
+      function scheduleORSCalculation() {
+        if (!userLocation || visibleCards.size === 0 || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') return;
         
         if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
         
         wazeCalculationTimeout = setTimeout(async () => {
-          const cardsNeedingWaze = Array.from(visibleCards).filter(locationTitle => {
+          const cardsNeedingORS = Array.from(visibleCards).filter(locationTitle => {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-            return location && !location.hasWazeData;
+            return location && !location.hasORSData && !location.orsDistance;
           });
           
-          if (cardsNeedingWaze.length === 0) return;
+          if (cardsNeedingORS.length === 0) return;
           
-          for (const locationTitle of cardsNeedingWaze) {
+          console.log(`ORS berekening voor ${cardsNeedingORS.length} locaties...`);
+          
+          for (const locationTitle of cardsNeedingORS) {
             const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
             if (location && userLocation) {
-              await updateSingleLocationWithWaze(locationTitle);
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await updateSingleLocationWithORS(locationTitle);
+              // Wacht tussen requests om rate limiting te voorkomen
+              await new Promise(resolve => setTimeout(resolve, 1000));
             }
           }
-        }, 3000);
+        }, 2000); // Langere delay voor echte API calls
       }
 
       // Location popup
@@ -641,7 +701,7 @@
       appData[currentRegion].locations.forEach(location => {
         const distance = calculateDistance(userLat, userLng, location.coordinates.lat, location.coordinates.lng);
         
-        if (!location.hasWazeData) {
+        if (!location.hasORSData && !location.orsDistance) {
           location.distance = Math.round(distance);
         }
         
