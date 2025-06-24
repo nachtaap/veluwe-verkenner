@@ -88,7 +88,7 @@
       binId: '68570efa8a456b7966b2d73a',
       apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy',
       // Voeg hier je OpenRouteService API key toe
-      orsApiKey: 'JOUW_ORS_API_KEY_HIER',
+      orsApiKey: 'JOUW_ORS_API_KEY_HIER', // Vervang dit met je echte API key
       regions: {
         veluwe: {
           title: '🌲 Verborgen Pareltjes van de Veluwe',
@@ -473,7 +473,7 @@
       }
 
       // Gebruik de nieuwe informatiebron functie
-      const infoSource = findBestInfoSource(location.title, location.coordinates);
+      const infoSource = await findBestInfoSource(location.title, location.coordinates);
       
       // Bepaal of er een link moet zijn en welke styling
       let titleContent;
