@@ -195,24 +195,20 @@
     function switchRegion(newRegion) {
 currentRegion = newRegion;
 
+```
   const title = document.querySelector('h1');
   const description = document.getElementById('regionDescription');
   title.textContent = CONFIG.regions[newRegion].title;
   description.textContent = CONFIG.regions[newRegion].description;
   
   updateVisitedStatus();
-  
-  // Als we de gebruikers locatie hebben, bereken afstanden opnieuw voor nieuwe regio
-  if (userLocation) {
-    updateDistances(userLocation.lat, userLocation.lng);
-  }
-  
   createFilterButtons();
   renderLocations();
   
   visibleCards.clear();
   if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
 }
+```
 
     function updateStatus(message) {
       const status = document.getElementById('syncStatus');
