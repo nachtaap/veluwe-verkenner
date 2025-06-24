@@ -88,7 +88,7 @@
       binId: '68570efa8a456b7966b2d73a',
       apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy',
       // Voeg hier je OpenRouteService API key toe
-      orsApiKey: '5b3ce3597851110001cf624886d30766477c4b77968596ef1aa3411b', // Vervang dit met je echte API key
+      orsApiKey: 'JOUW_ORS_API_KEY_HIER', // Vervang dit met je echte API key
       regions: {
         veluwe: {
           title: '🌲 Verborgen Pareltjes van de Veluwe',
@@ -106,6 +106,82 @@
     let locationUpdateInterval = null;
     let visibilityObserver = null;
     let visibleCards = new Set();
+    // Nieuwe functie om de beste informatiebron te vinden
+    async function findBestInfoSource(locationTitle, coordinates) {
+      const sources = [
+        // VVV bronnen
+        {
+          name: 'VVV',
+          searchUrls: [
+            `https://www.vvv.nl/nl/nederland/zoeken?query=${encodeURIComponent(locationTitle)}`,
+            `https://www.vvvveluwe.nl/zoeken?q=${encodeURIComponent(locationTitle)}`,
+            `https://www.vvvtwente.nl/zoeken?q=${encodeURIComponent(locationTitle)}`
+          ],
+          priority: 1
+        },
+        // Natuurmonumenten
+        {
+          name: 'Natuurmonumenten',
+          searchUrls: [
+            `https://www.natuurmonumenten.nl/zoeken?q=${encodeURIComponent(locationTitle)}`
+          ],
+          priority: 2
+        },
+        // Staatsbosbeheer
+        {
+          name: 'Staatsbosbeheer',
+          searchUrls: [
+            `https://www.staatsbosbeheer.nl/zoeken?query=${encodeURIComponent(locationTitle)}`
+          ],
+          priority: 2
+        },
+        // Wikipedia als fallback
+        {
+          name: 'Wikipedia',
+          searchUrls: [
+            `https://nl.wikipedia.org/wiki/${encodeURIComponent(locationTitle)}`
+          ],
+          priority: 3
+        }
+      ];
+      
+      // Voor nu gebruiken we een eenvoudige benadering
+      // In een echte implementatie zou je deze URLs kunnen controleren
+      
+      // Probeer VVV eerst
+      const vvvUrl = `https://www.vvv.nl/nl/nederland/zoeken?query=${encodeURIComponent(locationTitle)}`;
+      
+      // Voor bepaalde bekende locaties kunnen we direct de juiste links gebruiken
+      const knownSources = {
+        'Hierdensche Beek': {
+          url: 'https://www.natuurmonumenten.nl/natuurgebieden/hierdensche-beek',
+          source: 'Natuurmonumenten'
+        },
+        'Bossen bij Staverden': {
+          url: 'https://www.staatsbosbeheer.nl/natuurgebieden/bossen-bij-staverden',
+          source: 'Staatsbosbeheer'
+        },
+        'Planken Wambuis': {
+          url: 'https://www.natuurmonumenten.nl/natuurgebieden/planken-wambuis',
+          source: 'Natuurmonumenten'
+        }
+      };
+      
+      if (knownSources[locationTitle]) {
+        return {
+          url: knownSources[locationTitle].url,
+          source: knownSources[locationTitle].source,
+          hasValidLink: true
+        };
+      }
+      
+      // Voor andere locaties, probeer VVV
+      return {
+        url: vvvUrl,
+        source: 'VVV',
+        hasValidLink: true // We gaan er vanuit dat VVV altijd resultaten heeft
+      };
+    }
     let wazeCalculationTimeout = null;
     let currentRegion = 'veluwe';
 
@@ -396,7 +472,18 @@
         }
       }
 
-      const infoUrl = location.infoUrl || `https://nl.wikipedia.org/wiki/${encodeURIComponent(location.title)}`;
+      // Gebruik de nieuwe informatiebron functie
+      const infoSource = findBestInfoSource(location.title, location.coordinates);
+      
+      // Bepaal of er een link moet zijn en welke styling
+      let titleContent;
+      if (location.infoUrl || infoSource.hasValidLink) {
+        const finalUrl = location.infoUrl || infoSource.url;
+        const sourceIndicator = location.infoSource || infoSource.source;
+        titleContent = `<a href="${finalUrl}" target="_blank" class="info-link available" title="Meer informatie via ${sourceIndicator}">${location.title}</a>`;
+      } else {
+        titleContent = `<span class="info-link unavailable" title="Geen informatiepagina beschikbaar">${location.title}</span>`;
+      }
 
       // Gebruik de nieuwe generateMapsUrl functie in plaats van location.mapsUrl
       const mapsUrl = generateMapsUrl(location);
@@ -404,7 +491,7 @@
       card.innerHTML = `
         <div class="card-header">
           <div class="category-pill ${location.category}">${appData.categoryLabels[location.category]}</div>
-          <h3><a href="${infoUrl}" target="_blank" title="Meer informatie over ${location.title}">${location.title}</a></h3>
+          <h3>${titleContent}</h3>
         </div>
         <div class="card-body" data-location="${location.title}">
           <p>${location.description}</p>
