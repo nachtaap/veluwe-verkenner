@@ -87,8 +87,7 @@
     const CONFIG = {
       binId: '68570efa8a456b7966b2d73a',
       apiKey: '$2a$10$VUgmGwUgwRlPKxGI00D6pe6mR6q1.wvmkx0a34vpNrxdHpnClZ0Zy',
-      // Voeg hier je OpenRouteService API key toe
-      orsApiKey: '5b3ce3597851110001cf624886d30766477c4b77968596ef1aa3411b', // Vervang dit met je echte API key
+      orsApiKey: '5b3ce3597851110001cf624886d30766477c4b77968596ef1aa3411b',
       regions: {
         veluwe: {
           title: '🌲 Verborgen Pareltjes van de Veluwe',
@@ -106,20 +105,16 @@
     let locationUpdateInterval = null;
     let visibilityObserver = null;
     let visibleCards = new Set();
-
     let wazeCalculationTimeout = null;
     let currentRegion = 'veluwe';
 
-    // Nieuwe functie om dynamische Google Maps URL te genereren
     function generateMapsUrl(location) {
       const destination = `${location.coordinates.lat},${location.coordinates.lng}`;
       
       if (userLocation) {
-        // Als we de gebruiker zijn locatie hebben, gebruik die als startpunt
         const origin = `${userLocation.lat},${userLocation.lng}`;
         return `https://www.google.com/maps/dir/${origin}/${destination}`;
       } else {
-        // Anders gewoon de bestemming tonen
         return `https://www.google.com/maps/search/?api=1&query=${destination}`;
       }
     }
@@ -133,6 +128,8 @@
 
         if (response.ok) {
           const data = await response.json();
+          console.log('📦 Raw data from JSONBin:', data.record);
+          
           appData = {
             veluwe: {
               visitedPlaces: data.record.veluwe?.visitedPlaces || [],
@@ -151,6 +148,7 @@
             }
           };
 
+          console.log('✅ Processed appData:', appData);
           updateVisitedStatus();
           updateStatus('✅ Data geladen');
           return true;
@@ -192,20 +190,35 @@
       updateStatus('⚠️ Opslaan mislukt');
     }
 
-    function switchRegion(newRegion) {
-    currentRegion = newRegion;
+    function updateVisitedStatus() {
+      if (!appData || !appData[currentRegion] || !appData[currentRegion].locations) return;
 
-    const title = document.querySelector('h1');
-    const description = document.getElementById('regionDescription');
-    title.textContent = CONFIG.regions[newRegion].title;
-    description.textContent = CONFIG.regions[newRegion].description;
-  
-    updateVisitedStatus();
-    createFilterButtons();
-    renderLocations();
-  
-    visibleCards.clear();
-    if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
+      appData[currentRegion].locations.forEach(location => {
+        location.visited = appData[currentRegion].visitedPlaces.includes(location.title);
+      });
+
+      appData[currentRegion].locations.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    function switchRegion(newRegion) {
+      console.log('🔄 Switching to region:', newRegion);
+      console.log('🔍 Available data:', appData);
+      console.log('📍 Current region data:', appData?.[newRegion]);
+      console.log('📊 Locations count:', appData?.[newRegion]?.locations?.length || 0);
+      
+      currentRegion = newRegion;
+      
+      const title = document.querySelector('h1');
+      const description = document.getElementById('regionDescription');
+      title.textContent = CONFIG.regions[newRegion].title;
+      description.textContent = CONFIG.regions[newRegion].description;
+      
+      updateVisitedStatus();
+      createFilterButtons();
+      renderLocations();
+      
+      visibleCards.clear();
+      if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
     }
 
     function updateStatus(message) {
@@ -215,7 +228,6 @@
 
     async function getORSDistance(fromLat, fromLng, toLat, toLng) {
       try {
-        // OpenRouteService API call voor driving-car
         const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${CONFIG.orsApiKey}&start=${fromLng},${fromLat}&end=${toLng},${toLat}`;
         
         const response = await fetch(url);
@@ -230,10 +242,7 @@
           const route = data.features[0];
           const properties = route.properties;
           
-          // Afstand in kilometers (ORS geeft meters)
           const distanceKm = Math.round(properties.segments[0].distance / 1000);
-          
-          // Tijd in minuten (ORS geeft seconden)
           const durationMin = Math.round(properties.segments[0].duration / 60);
           
           return {
@@ -249,10 +258,9 @@
       } catch (error) {
         console.error('OpenRouteService API gefaald:', error);
         
-        // Fallback naar geschatte afstand
         const directDistance = calculateDistance(fromLat, fromLng, toLat, toLng);
-        const estimatedDistance = Math.round(directDistance * 1.4); // Conservatieve schatting
-        const estimatedDuration = Math.round(estimatedDistance / 0.8); // ~50 km/h
+        const estimatedDistance = Math.round(directDistance * 1.4);
+        const estimatedDuration = Math.round(estimatedDistance / 0.8);
         
         return {
           distance: estimatedDistance,
@@ -283,89 +291,6 @@
       starsElement.innerHTML = starsContent;
 
       await saveData();
-    }
-
-    async function updateSingleLocationWithORS(locationTitle) {
-      console.log(`updateSingleLocationWithORS aangeroepen voor: ${locationTitle}`);
-      
-      if (!userLocation || !appData || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') {
-        console.log('ORS update overgeslagen: geen locatie of API key');
-        return;
-      }
-
-      const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-      if (!location) {
-        console.log(`Locatie niet gevonden: ${locationTitle}`);
-        return;
-      }
-
-      const cards = document.querySelectorAll('.card');
-      let targetCard = null;
-      for (const card of cards) {
-        const titleElement = card.querySelector('h3 a, h3 span');
-        if (titleElement && titleElement.textContent === locationTitle) {
-          targetCard = card;
-          break;
-        }
-      }
-
-      if (!targetCard) {
-        console.log(`Kaart niet gevonden voor: ${locationTitle}`);
-        return;
-      }
-
-      const distanceElement = targetCard.querySelector('.distance-pill');
-      if (!distanceElement) {
-        console.log(`Distance element niet gevonden voor: ${locationTitle}`);
-        return;
-      }
-
-      console.log(`Start ORS API call voor: ${locationTitle}`);
-      distanceElement.innerHTML = '🔄 Routeberekening...';
-      distanceElement.classList.add('loading');
-
-      try {
-        const orsData = await getORSDistance(
-          userLocation.lat, userLocation.lng,
-          location.coordinates.lat, location.coordinates.lng
-        );
-
-        console.log(`ORS resultaat voor ${locationTitle}:`, orsData);
-
-        if (orsData.success) {
-          location.orsDistance = orsData.distance;
-          location.orsDuration = orsData.duration;
-          location.hasORSData = true;
-
-          distanceElement.innerHTML = `${location.orsDistance} km • ${location.orsDuration} min`;
-          distanceElement.classList.remove('loading');
-          distanceElement.classList.add('ors-result');
-          distanceElement.title = 'Echte rijafstand via OpenRouteService';
-        } else {
-          // Fallback gebruikt
-          location.orsDistance = orsData.distance;
-          location.orsDuration = orsData.duration;
-          location.hasORSData = false;
-
-          distanceElement.innerHTML = `~${location.orsDistance} km • ${location.orsDuration} min`;
-          distanceElement.classList.remove('loading');
-          distanceElement.classList.add('estimated-result');
-          distanceElement.title = 'Geschatte afstand (ORS tijdelijk niet beschikbaar)';
-        }
-
-        // Update de Google Maps link
-        const mapsLink = targetCard.querySelector('.distance-pill-link');
-        if (mapsLink) {
-          mapsLink.href = generateMapsUrl(location);
-        }
-
-      } catch (error) {
-        console.error('ORS API volledig gefaald voor', locationTitle, error);
-        
-        distanceElement.innerHTML = `${location.distance} km`;
-        distanceElement.classList.remove('loading');
-        distanceElement.title = 'Hemelsbreede afstand';
-      }
     }
 
     function createCard(location) {
@@ -400,7 +325,6 @@
         }
       }
 
-      // Synchrone manier om informatiebron te bepalen
       const knownSources = {
         'Hierdensche Beek': {
           url: 'https://www.natuurmonumenten.nl/natuurgebieden/hierdensche-beek',
@@ -419,22 +343,17 @@
         }
       };
       
-      // Bepaal of er een link moet zijn en welke styling
       let titleContent;
       if (location.infoUrl) {
-        // Als er al een specifieke URL in de data staat
         titleContent = `<a href="${location.infoUrl}" target="_blank" class="info-link available" title="Meer informatie">${location.title}</a>`;
       } else if (knownSources[location.title]) {
-        // Voor bekende locaties met goede bronnen
         const source = knownSources[location.title];
         titleContent = `<a href="${source.url}" target="_blank" class="info-link available" title="Meer informatie via ${source.source}">${location.title}</a>`;
       } else {
-        // Voor andere locaties, probeer VVV
         const vvvUrl = `https://www.vvv.nl/nl/nederland/zoeken?query=${encodeURIComponent(location.title)}`;
         titleContent = `<a href="${vvvUrl}" target="_blank" class="info-link available" title="Zoeken via VVV">${location.title}</a>`;
       }
 
-      // Gebruik de nieuwe generateMapsUrl functie in plaats van location.mapsUrl
       const mapsUrl = generateMapsUrl(location);
 
       card.innerHTML = `
@@ -475,13 +394,11 @@
       });
     }
 
-    // Nieuwe functie om alle Google Maps links bij te werken
     function updateAllMapsLinks() {
       if (!appData || !appData[currentRegion]) return;
       
       const cards = document.querySelectorAll('.card');
       cards.forEach(card => {
-        // Zoek naar zowel <a> als <span> elementen
         const titleElement = card.querySelector('h3 a, h3 span');
         const mapsLink = card.querySelector('.distance-pill-link');
         
@@ -497,12 +414,11 @@
     }
 
     function setupEventListeners() {
-      // Region selector
       document.getElementById('regionSelect').addEventListener('change', function(e) {
+        console.log('📍 Region selector changed to:', e.target.value);
         switchRegion(e.target.value);
       });
 
-      // Scroll to top
       const scrollToTopBtn = document.getElementById('scrollToTop');
       
       window.addEventListener('scroll', function() {
@@ -520,7 +436,6 @@
         });
       });
 
-      // Intersection Observer
       if ('IntersectionObserver' in window) {
         visibilityObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -530,7 +445,6 @@
             if (entry.isIntersecting) {
               visibleCards.add(locationTitle);
               console.log(`Kaart zichtbaar: ${locationTitle}`);
-              scheduleORSCalculation();
             } else {
               visibleCards.delete(locationTitle);
               console.log(`Kaart niet meer zichtbaar: ${locationTitle}`);
@@ -542,74 +456,6 @@
         });
       }
 
-      function startLocationUpdates() {
-        if (locationUpdateInterval) clearInterval(locationUpdateInterval);
-        
-        locationUpdateInterval = setInterval(() => {
-          if (userLocation) {
-            navigator.geolocation.getCurrentPosition(
-              function (position) {
-                const newLat = position.coords.latitude;
-                const newLng = position.coords.longitude;
-                
-                const distanceMoved = calculateDistance(
-                  userLocation.lat, userLocation.lng, 
-                  newLat, newLng
-                ) * 1000;
-                
-                if (distanceMoved > 100) {
-                  console.log(`Locatie update: ${distanceMoved.toFixed(0)}m verplaatst`);
-                  userLocation = { lat: newLat, lng: newLng };
-                  updateDistances(newLat, newLng);
-                  updateAllMapsLinks(); // Update alle Google Maps links
-                  scheduleORSCalculation();
-                }
-              },
-              function (error) {
-                console.log('Locatie update gefaald:', error);
-              }
-            );
-          }
-        }, 3 * 60 * 1000);
-      }
-
-      function scheduleORSCalculation() {
-        console.log(`scheduleORSCalculation aangeroepen. userLocation: ${!!userLocation}, visibleCards: ${visibleCards.size}, API key: ${CONFIG.orsApiKey ? 'aanwezig' : 'ontbreekt'}`);
-        
-        if (!userLocation || visibleCards.size === 0 || !CONFIG.orsApiKey || CONFIG.orsApiKey === 'JOUW_ORS_API_KEY_HIER') {
-          console.log('ORS berekening overgeslagen - voorwaarden niet voldaan');
-          return;
-        }
-        
-        if (wazeCalculationTimeout) clearTimeout(wazeCalculationTimeout);
-        
-        wazeCalculationTimeout = setTimeout(async () => {
-          const cardsNeedingORS = Array.from(visibleCards).filter(locationTitle => {
-            const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-            const needsORS = location && !location.hasORSData && !location.orsDistance;
-            console.log(`${locationTitle}: heeft ORS nodig? ${needsORS}`);
-            return needsORS;
-          });
-          
-          console.log(`${cardsNeedingORS.length} kaarten hebben ORS berekening nodig`);
-          
-          if (cardsNeedingORS.length === 0) return;
-          
-          console.log(`ORS berekening voor ${cardsNeedingORS.length} locaties...`);
-          
-          for (const locationTitle of cardsNeedingORS) {
-            const location = appData[currentRegion].locations.find(loc => loc.title === locationTitle);
-            if (location && userLocation) {
-              console.log(`Start ORS berekening voor: ${locationTitle}`);
-              await updateSingleLocationWithORS(locationTitle);
-              // Wacht tussen requests om rate limiting te voorkomen
-              await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-          }
-        }, 2000); // Langere delay voor echte API calls
-      }
-
-      // Location popup
       const locationPopup = document.getElementById('locationPopup');
       const popupOverlay = document.getElementById('popupOverlay');
       const allowLocationBtn = document.getElementById('allowLocationBtn');
@@ -669,8 +515,7 @@
             };
             
             updateDistances(position.coords.latitude, position.coords.longitude);
-            updateAllMapsLinks(); // Update alle Google Maps links na het krijgen van locatie
-            startLocationUpdates();
+            updateAllMapsLinks();
             locationStatus.textContent = '';
           },
           function (error) {
@@ -680,7 +525,6 @@
         );
       }
 
-      // Filter buttons
       document.addEventListener('click', function (e) {
         if (e.target.classList.contains('filter-btn') && e.target.closest('.filter-section')) {
           document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -700,7 +544,6 @@
         }
       });
 
-      // Card interactions
       document.addEventListener('click', async function (e) {
         if (e.target.classList.contains('rating-stars')) {
           e.stopPropagation();
