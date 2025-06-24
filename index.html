@@ -472,17 +472,38 @@
         }
       }
 
-      // Gebruik de nieuwe informatiebron functie
-      const infoSource = await findBestInfoSource(location.title, location.coordinates);
+      // Synchrone manier om informatiebron te bepalen
+      const knownSources = {
+        'Hierdensche Beek': {
+          url: 'https://www.natuurmonumenten.nl/natuurgebieden/hierdensche-beek',
+          source: 'Natuurmonumenten',
+          hasValidLink: true
+        },
+        'Bossen bij Staverden': {
+          url: 'https://www.staatsbosbeheer.nl/natuurgebieden/bossen-bij-staverden',
+          source: 'Staatsbosbeheer',
+          hasValidLink: true
+        },
+        'Planken Wambuis': {
+          url: 'https://www.natuurmonumenten.nl/natuurgebieden/planken-wambuis',
+          source: 'Natuurmonumenten',
+          hasValidLink: true
+        }
+      };
       
       // Bepaal of er een link moet zijn en welke styling
       let titleContent;
-      if (location.infoUrl || infoSource.hasValidLink) {
-        const finalUrl = location.infoUrl || infoSource.url;
-        const sourceIndicator = location.infoSource || infoSource.source;
-        titleContent = `<a href="${finalUrl}" target="_blank" class="info-link available" title="Meer informatie via ${sourceIndicator}">${location.title}</a>`;
+      if (location.infoUrl) {
+        // Als er al een specifieke URL in de data staat
+        titleContent = `<a href="${location.infoUrl}" target="_blank" class="info-link available" title="Meer informatie">${location.title}</a>`;
+      } else if (knownSources[location.title]) {
+        // Voor bekende locaties met goede bronnen
+        const source = knownSources[location.title];
+        titleContent = `<a href="${source.url}" target="_blank" class="info-link available" title="Meer informatie via ${source.source}">${location.title}</a>`;
       } else {
-        titleContent = `<span class="info-link unavailable" title="Geen informatiepagina beschikbaar">${location.title}</span>`;
+        // Voor andere locaties, probeer VVV
+        const vvvUrl = `https://www.vvv.nl/nl/nederland/zoeken?query=${encodeURIComponent(location.title)}`;
+        titleContent = `<a href="${vvvUrl}" target="_blank" class="info-link available" title="Zoeken via VVV">${location.title}</a>`;
       }
 
       // Gebruik de nieuwe generateMapsUrl functie in plaats van location.mapsUrl
